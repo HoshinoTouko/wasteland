@@ -173,7 +173,7 @@ $ hexo d // Deploy
 $ hexo s // Local development server
 ```
 
-我使用了爆款 NexT （https://theme-next.org/）主题，因为这个主题的确简单好看。我随意增加了几个插件，用于改善博客的开发和访问体验
+我使用了爆款 [NexT 主题](https://theme-next.org/)，因为这个主题的确简单好看。我随意增加了几个插件，用于改善博客的开发和访问体验
 
 - https://github.com/acwong00/hexo-addlink
 - https://github.com/hexojs/hexo-deployer-git

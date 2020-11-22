@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="baidu-site-verification" content="bbraDbqXFf">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-simple.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="心血来潮我的 surface pro 4 实在是太老了，发热也越发严重，最近甚至经常过热关机。于是前段时间花了 2k 装了台能跑现有不少大型网游的主机，装的我非常愉悦。这台主机用的 AMD 平台，鲁大师能跑24w+，目前正在逐渐成为我的主力用机。装了一台就想装第二台。我做了些简单的调研，决定用 1k 左右的预算装一台功耗较低，性能足够的 NAS。 目前我已经用 NAS 实现了单臂软路由、BT 下载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="家庭网络管理(1): 组装一台千元 NAS">
+<meta property="og:url" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/index.html">
+<meta property="og:site_name" content="Wasteland">
+<meta property="og:description" content="心血来潮我的 surface pro 4 实在是太老了，发热也越发严重，最近甚至经常过热关机。于是前段时间花了 2k 装了台能跑现有不少大型网游的主机，装的我非常愉悦。这台主机用的 AMD 平台，鲁大师能跑24w+，目前正在逐渐成为我的主力用机。装了一台就想装第二台。我做了些简单的调研，决定用 1k 左右的预算装一台功耗较低，性能足够的 NAS。 目前我已经用 NAS 实现了单臂软路由、BT 下载">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/chassis-with-power.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/chassis-fan.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/radiator.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/HDD-and-SSD.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/memory.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/motherboard.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/motherboard-with-radiator.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/overview.jpg">
+<meta property="article:published_time" content="2020-06-04T04:05:28.000Z">
+<meta property="article:modified_time" content="2020-11-21T13:17:33.770Z">
+<meta property="article:author" content="Touko Hoshino">
+<meta property="article:tag" content="NAS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/chassis-with-power.png">
+
+<link rel="canonical" href="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>家庭网络管理(1): 组装一台千元 NAS | Wasteland</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68278825-5"></script>
+    <script pjax>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-68278825-5');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Wasteland" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wasteland</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">being explored by Touko</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-posts">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-archive"></i>Posts</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/page/links/" rel="section"><i class="fa fa-fw fa-link"></i>Links</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/HoshinoTouko" class="github-corner" title="My GitHub" aria-label="My GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          家庭网络管理(1): 组装一台千元 NAS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-04 12:05:28" itemprop="dateCreated datePublished" datetime="2020-06-04T12:05:28+08:00">2020-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-21 21:17:33" itemprop="dateModified" datetime="2020-11-21T21:17:33+08:00">2020-11-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NAS/" itemprop="url" rel="index"><span itemprop="name">NAS</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="心血来潮"><a href="#心血来潮" class="headerlink" title="心血来潮"></a>心血来潮</h1><p>我的 surface pro 4 实在是太老了，发热也越发严重，最近甚至经常过热关机。于是前段时间花了 2k 装了台能跑现有不少大型网游的主机，装的我非常愉悦。这台主机用的 AMD 平台，鲁大师能跑24w+，目前正在逐渐成为我的主力用机。装了一台就想装第二台。我做了些简单的调研，决定用 1k 左右的预算装一台功耗较低，性能足够的 NAS。</p>
+<p>目前我已经用 NAS 实现了单臂软路由、BT 下载、PLEX、DNS 等一系列功能。今后我会慢慢更新这块内容。</p>
+<h1 id="配置选择"><a href="#配置选择" class="headerlink" title="配置选择"></a>配置选择</h1><p>由于给自己开了一个不算太高的预算，所以一切资源都要精打细算。首先列出我的需求</p>
+<ul>
+<li>占地空间较小</li>
+<li>千兆板载网卡</li>
+<li>SATA 至少 4 个</li>
+<li>功耗较低</li>
+<li>PCIE 能插万兆</li>
+<li>核显</li>
+<li>有升级空间</li>
+</ul>
+<h2 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h2><p>首先选择 CPU。有朋友在微博推荐 200GE 板 U 套装，这里也推荐，挺不错，只要 500，性能和价格相符，TDP 也只有 35W。但是因为前段时间已经装了一台 AMD 的机子了，CPU 就不选择 AMD 的了。经过各种对比，选择了低功耗六代 i3-6100T。原本打算考虑奔腾 G5600T，但是掐指一算发现超预算了。我是盯着天梯图和 TDP 找的。后来发现在实际使用中，不一定要买低功耗版本，因为很多情况下，Intel 只是对其做了功耗上限的限制，其他和标压版本相差无几。高性能的 U 在运行相同的计算任务的时候，理论上功耗也差不多，所以 TDP 并不是一个需要非常关注的点。</p>
+<h2 id="主板和机箱"><a href="#主板和机箱" class="headerlink" title="主板和机箱"></a>主板和机箱</h2><p>主板和机箱需要一起考虑。由于我并不打算上赛扬 J 平台，ITX 的主板价格也很贵，所以就无缘 ITX 了。于是我考虑 m-ATX 的主板和机箱。机箱我看中了金河田的 <code>预见 N1</code> 。这个机箱非常小巧，整体只有 <code>202 * 328 * 260mm</code> ，支持 ATX 电源，2 个 3.5 盘位 + 2 个 2.5 or 1 个 3.5 盘位。如果电源用 SFX 或者直流，还能再装 2-4 个 3.5 硬盘。支持一个机箱散热风扇。综合考虑，我选择了这款机箱。</p>
+<p>选择机箱后，我开始考虑主板。为了给以后升级 8-9 代 U 留出空间，根据机箱要求的主板大小（最大 230*185mm），我选择了支持 6、7 代，能刷 BIOS 上 8、9 代 CPU 的 技嘉 B250M-D2VX-SI （226 * 185 mm）。</p>
+<h2 id="内存和其他"><a href="#内存和其他" class="headerlink" title="内存和其他"></a>内存和其他</h2><p>内存没什么好说的，枭鲸前段时间搞活动，89 RMB 的 DDR4 2666 8G 条。希望能够长期稳定运行。</p>
+<p>其他配件都是零零散散买起来的，有刚好或者喜欢的就买了。</p>
+<h2 id="最终配置单"><a href="#最终配置单" class="headerlink" title="最终配置单"></a>最终配置单</h2><a id="more"></a>
+
+<table>
+<thead>
+<tr>
+<th>部件</th>
+<th>型号</th>
+<th>入手渠道</th>
+<th>价格</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主板</td>
+<td>技嘉 B250M-D2VX-SI</td>
+<td>tb</td>
+<td>165</td>
+<td>目测网吧拆机</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>Intel i3-6100T</td>
+<td>tb</td>
+<td>315</td>
+<td></td>
+</tr>
+<tr>
+<td>内存</td>
+<td>枭鲸 8G DDR4 2666 普条</td>
+<td>pdd</td>
+<td>89</td>
+<td>打折抢的，平时好像 119</td>
+</tr>
+<tr>
+<td>电源</td>
+<td>先马 破坏神 300W</td>
+<td>jd</td>
+<td>85.9</td>
+<td></td>
+</tr>
+<tr>
+<td>机箱</td>
+<td>金河田 预见 N1</td>
+<td>jd</td>
+<td>129</td>
+<td></td>
+</tr>
+<tr>
+<td>SSD</td>
+<td>影驰 铁甲战将 120G</td>
+<td>jd</td>
+<td>109</td>
+<td></td>
+</tr>
+<tr>
+<td>HDD</td>
+<td>1T * 2</td>
+<td>奶鱼送的</td>
+<td>0</td>
+<td>按 1T 100 算，200</td>
+</tr>
+<tr>
+<td>散热</td>
+<td>酷冷至尊 夜鹰</td>
+<td>jd</td>
+<td>16.9</td>
+<td></td>
+</tr>
+<tr>
+<td>风扇</td>
+<td>先马 游戏风暴</td>
+<td>jd</td>
+<td>9.4</td>
+<td></td>
+</tr>
+<tr>
+<td>转接头</td>
+<td>山泽 DVI to HDMI</td>
+<td>jd</td>
+<td>6.9</td>
+<td></td>
+</tr>
+<tr>
+<td>合计</td>
+<td></td>
+<td></td>
+<td>926.1</td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="装机"><a href="#装机" class="headerlink" title="装机"></a>装机</h1><h2 id="配件一览"><a href="#配件一览" class="headerlink" title="配件一览"></a>配件一览</h2><img src="/blog/2020/06/home-network-1-DIY-NAS/chassis-with-power.png" class="" title="机箱和电源">
+
+<p>金河田这款机箱采用了电源前置设计，用内置的电源线连接到机箱后部。这种设计降低了机箱的整体高度，充分利用空间。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/chassis-fan.png" class="" title="先马 游戏风暴 机箱风扇">
+
+<p>这个风扇是之前装台式机剩下的。红 + 黑的配色很漂亮（虽然装在机箱里就看不到了），运行时的噪音也很小。反正功耗不大，我就装了一个图一乐。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/radiator.png" class="" title="酷冷至尊 夜鹰 散热器">
+
+<p>便宜的散热器，没什么特殊的地方。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/HDD-and-SSD.png" class="" title="两块 3.5 寸 1T 机械硬盘和 2.5 寸 120G 固态硬盘">
+
+<p>奶鱼送了我俩 1T 的机械硬盘，加上我自己配的固态做缓存，运行 UNRAID 系统就已经很舒服了。机箱顶部有一个硬盘架，用减震螺丝固定，倒挂在机箱中。图中的机械硬盘已经装在硬盘架上了。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/memory.png" class="" title="枭鲸 8G DDR4 2666 普条">
+
+<p>内存是 pdd 打折抢的枭鲸普条，反正终身保固，也不怕翻车。我在台式机上用的也是枭鲸的条子，目前用起来一切正常，就是不太敢超频。</p>
+<h2 id="组装"><a href="#组装" class="headerlink" title="组装"></a>组装</h2><img src="/blog/2020/06/home-network-1-DIY-NAS/motherboard.png" class="" title="CPU 安装">
+
+<p>先把 CPU 怼上主板。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/motherboard-with-radiator.png" class="" title="CPU 散热器安装">
+
+<p>安装散热器底座，涂硅脂，上散热。不得不说这种下压式的散热器安装十分困难，需要大力向下压。向下压散热器的时候我特别害怕大力出奇迹，把主板压断了。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/overview.jpg" class="" title="整体外观">
+
+<p>装完散热器之后，上内存，接线，不合盖点亮测试良好，最后上硬盘。整机安装大概花了一个多小时。我对这套平台的性能信心很足，估计跑个黑群晖+软路由，再加一系列的 Docker 应用不是问题。</p>
+<h2 id="功耗情况"><a href="#功耗情况" class="headerlink" title="功耗情况"></a>功耗情况</h2><p>实际测试中，所有硬盘都启动的功耗大约在 35W 左右，CPU 满负载功耗大约 55W。这是一个我可以接受的范围。</p>
+<p>之后我将安装（破解的） UNRAID 系统，会在下一篇文章继续记录。</p>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-1-DIY-NAS/">https://wasteland.touko.moe//blog/2020/06/home-network-1-DIY-NAS/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://weibo.com/OranL">
+            <span class="icon">
+              <i class="fa fa-weibo"></i>
+            </span>
+
+            <span class="label">Weibo</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://twitter.com/HoshinoTouko">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+
+            <span class="label">Twitter</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NAS/" rel="tag"># NAS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/04/intranet-cluster-management/" rel="prev" title="优雅地管理内网集群">
+      <i class="fa fa-chevron-left"></i> 优雅地管理内网集群
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/06/home-network-2-enjoy-with-UNRAID/" rel="next" title="家庭网络管理(2): 部署和使用 UNRAID">
+      家庭网络管理(2): 部署和使用 UNRAID <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+        </div>
+      </div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#心血来潮"><span class="nav-number">1.</span> <span class="nav-text">心血来潮</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置选择"><span class="nav-number">2.</span> <span class="nav-text">配置选择</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU"><span class="nav-number">2.1.</span> <span class="nav-text">CPU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主板和机箱"><span class="nav-number">2.2.</span> <span class="nav-text">主板和机箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存和其他"><span class="nav-number">2.3.</span> <span class="nav-text">内存和其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最终配置单"><span class="nav-number">2.4.</span> <span class="nav-text">最终配置单</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#装机"><span class="nav-number">3.</span> <span class="nav-text">装机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配件一览"><span class="nav-number">3.1.</span> <span class="nav-text">配件一览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组装"><span class="nav-number">3.2.</span> <span class="nav-text">组装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功耗情况"><span class="nav-number">3.3.</span> <span class="nav-text">功耗情况</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Touko Hoshino"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Touko Hoshino</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/HoshinoTouko" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/OranL" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;OranL" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/HoshinoTouko" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.popiask.cn/touko_h" title="Popi → https:&#x2F;&#x2F;www.popiask.cn&#x2F;touko_h" rel="noopener" target="_blank"><i class="fa fa-fw fa-question"></i>Popi</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/./atom.xml" title="RSS → .&#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://entry.touko.moe/" title="https:&#x2F;&#x2F;entry.touko.moe&#x2F;" rel="noopener" target="_blank">Homepage</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cv.touko.moe/" title="https:&#x2F;&#x2F;cv.touko.moe&#x2F;" rel="noopener" target="_blank">CV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://savepoint.touko.moe/" title="https:&#x2F;&#x2F;savepoint.touko.moe&#x2F;" rel="noopener" target="_blank">Legacy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script pjax>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/',]
+      });
+      });
+  </script>
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://wasteland.touko.moe/blog/2020/06/home-network-1-DIY-NAS/";
+    this.page.identifier = "/blog/2020/06/home-network-1-DIY-NAS/";
+    this.page.title = "家庭网络管理(1): 组装一台千元 NAS";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://wasteland-by-touko.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : '66c2de026ccab80a2791133be76c66da',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

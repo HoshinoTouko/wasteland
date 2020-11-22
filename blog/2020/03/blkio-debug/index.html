@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="baidu-site-verification" content="bbraDbqXFf">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-simple.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="该文完稿于 2020-03-13 凌晨  Background最近在做一个与 Docker 相关的实验，其中需要限制 Docker 容器中应用程序的 IO，比如 NginX 的 IO。这听起来很简单，毕竟远在 Feb 4th, 2016 release 的 Docker v1.10 就在其功能中加入了限制容器 IO 的参数  Constraints on disk I&#x2F;O: Various op">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 限制磁盘 IO 无效排错及总结">
+<meta property="og:url" content="https://wasteland.touko.moe/blog/2020/03/blkio-debug/index.html">
+<meta property="og:site_name" content="Wasteland">
+<meta property="og:description" content="该文完稿于 2020-03-13 凌晨  Background最近在做一个与 Docker 相关的实验，其中需要限制 Docker 容器中应用程序的 IO，比如 NginX 的 IO。这听起来很简单，毕竟远在 Feb 4th, 2016 release 的 Docker v1.10 就在其功能中加入了限制容器 IO 的参数  Constraints on disk I&#x2F;O: Various op">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-03-15T17:47:48.000Z">
+<meta property="article:modified_time" content="2020-11-21T13:17:33.758Z">
+<meta property="article:author" content="Touko Hoshino">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="blkio">
+<meta property="article:tag" content="Cgroups">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wasteland.touko.moe/blog/2020/03/blkio-debug/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Docker 限制磁盘 IO 无效排错及总结 | Wasteland</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68278825-5"></script>
+    <script pjax>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-68278825-5');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Wasteland" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wasteland</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">being explored by Touko</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-posts">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-archive"></i>Posts</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/page/links/" rel="section"><i class="fa fa-fw fa-link"></i>Links</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/HoshinoTouko" class="github-corner" title="My GitHub" aria-label="My GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/03/blkio-debug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker 限制磁盘 IO 无效排错及总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-16 01:47:48" itemprop="dateCreated datePublished" datetime="2020-03-16T01:47:48+08:00">2020-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-21 21:17:33" itemprop="dateModified" datetime="2020-11-21T21:17:33+08:00">2020-11-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>该文完稿于 2020-03-13 凌晨</p>
+</blockquote>
+<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><p>最近在做一个与 Docker 相关的实验，其中需要限制 Docker 容器中应用程序的 IO，比如 NginX 的 IO。这听起来很简单，毕竟远在 Feb 4th, 2016 release 的 Docker v1.10 就在其功能中加入了限制容器 IO 的参数</p>
+<blockquote>
+<p><strong>Constraints on disk I/O:</strong> Various options for setting constraints on disk I/O have been added to <code>docker run</code>: <code>--device-read-bps</code>, <code>--device-write-bps</code>, <code>--device-read-iops</code>, <code>--device-write-iops</code>, and <code>--blkio-weight-device</code>.</p>
+<p><a href="https://www.docker.com/blog/docker-1-10/" target="_blank" rel="noopener">https://www.docker.com/blog/docker-1-10/</a></p>
+</blockquote>
+<p>就在一切都顺利进行，我写完包含了 <code>NginX</code> 的 <code>Dockerfile</code> ，准备满心欢喜地开始我的 <code>1MB/s</code> 实验的时候，一道晴天霹雳打在我心上——</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@53ace8551c27:/<span class="comment">#$ dd if=500M.file bs=1M count=500 of=/dev/null</span></span><br><span class="line">500+0 records <span class="keyword">in</span></span><br><span class="line">500+0 records out</span><br><span class="line">524288000 bytes (524 MB, 500 MiB) copied, 0.132448 s, 4.0 GB/s</span><br></pre></td></tr></table></figure>
+
+<p>当然问题现在已经解决了。为了重现当时的情况，我们从头开始。</p>
+<h1 id="Toolbox"><a href="#Toolbox" class="headerlink" title="Toolbox"></a>Toolbox</h1><p>我们简单地使用 Debian 作为测试的 Docker Image。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull debian</span><br></pre></td></tr></table></figure>
+
+<p>并且使用 <code>dd</code> 命令生成一个 500M 的 000 文件，测试磁盘读写速度。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=/dev/zero of=500M.file bs=1M count=500</span><br><span class="line">$ dd <span class="keyword">if</span>=500M.file bs=1M count=500 of=/dev/null</span><br></pre></td></tr></table></figure>
+
+<h1 id="Yesterday-Once-More"><a href="#Yesterday-Once-More" class="headerlink" title="Yesterday Once More *"></a>Yesterday Once More *</h1><blockquote>
+<p>* <a href="https://open.spotify.com/track/3wM6RTAnF7IQpMFd7b9ZcL" target="_blank" rel="noopener">Yesterday Once More – Carpenters</a></p>
+</blockquote>
+<h2 id="初次碰壁"><a href="#初次碰壁" class="headerlink" title="初次碰壁"></a>初次碰壁</h2><p>拉镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull debian</span><br><span class="line"></span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/debian</span><br><span class="line">50e431f79093: Pull complete</span><br><span class="line">Digest: sha256:a63d0b2ecbd723da612abf0a8bdb594ee78f18f691d7dc652ac305a490c9b71a</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> debian:latest</span><br><span class="line">docker.io/library/debian:latest</span><br></pre></td></tr></table></figure>
+
+<p>找到宿主机的设备路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ sudo fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/vda: 50 GiB, 53687091200 bytes, 104857600 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel <span class="built_in">type</span>: gpt</span><br><span class="line">Disk identifier: -</span><br><span class="line"></span><br><span class="line">Device      Start       End   Sectors  Size Type</span><br><span class="line">/dev/vda1  227328 104857566 104630239 49.9G Linux filesystem</span><br><span class="line">/dev/vda14   2048     10239      8192    4M BIOS boot</span><br><span class="line">/dev/vda15  10240    227327    217088  106M EFI System</span><br><span class="line"></span><br><span class="line">Partition table entries are not <span class="keyword">in</span> disk order.</span><br></pre></td></tr></table></figure>
+
+<p>起一个 Docker，限制对应设备的读写速度</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -it --rm --device-read-bps /dev/vda:1MB  --device-write-bps /dev/vda:1MB debian</span><br><span class="line"></span><br><span class="line">root@9f79e6469b67:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=/dev/zero of=500M.file bs=1M count=500</span><br><span class="line"></span><br><span class="line">500+0 records <span class="keyword">in</span></span><br><span class="line">500+0 records out</span><br><span class="line">524288000 bytes (524 MB, 500 MiB) copied, 0.728238 s, 720 MB/s</span><br><span class="line"></span><br><span class="line">$ dd <span class="keyword">if</span>=500M.file bs=1M count=500 of=/dev/null</span><br><span class="line"></span><br><span class="line">500+0 records <span class="keyword">in</span></span><br><span class="line">500+0 records out</span><br><span class="line">524288000 bytes (524 MB, 500 MiB) copied, 0.132448 s, 4.0 GB/s</span><br></pre></td></tr></table></figure>
+
+<p><strong>？</strong></p>
+<p>这是一个非常可怕的事情。我限制的 <code>1MB/s</code> 并不工作。这个实验是基于这个假设进行的，如果没有办法限制设备的 IO，实验也没有办法继续进行了。</p>
+<a id="more"></a>
+
+<h2 id="另辟蹊径"><a href="#另辟蹊径" class="headerlink" title="另辟蹊径"></a>另辟蹊径</h2><p>为了完成实验，我找了大量的资料。首先我把焦点放在使用 <code>systemd</code> 控制资源限制上。</p>
+<p>根据 <code>systemd</code> 的文档（ <a href="https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options" target="_blank" rel="noopener">https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options</a> ），我们可以在对应服务的 systemd 配置文件中增加一些参数来实现自动化的资源控制，包括 CPU 资源限制，Memory 资源限制，进程数资源限制和 IO 限制。</p>
+<blockquote>
+<p>IOAccounting =</p>
+<blockquote>
+<p>Turn on Block I/O accounting for this unit, if the unified control group hierarchy is used on the system. Takes a boolean argument. Note that turning on block I/O accounting for one unit will also implicitly turn it on for all units contained in the same slice and all for its parent slices and the units contained therein. The system default for this setting may be controlled with <code>DefaultIOAccounting=</code> in <a href="https://www.freedesktop.org/software/systemd/man/systemd-system.conf.html#" target="_blank" rel="noopener">systemd-system.conf(5)</a>.</p>
+<p>This setting replaces <code>BlockIOAccounting=</code> and disables settings prefixed with <code>BlockIO</code> or <code>StartupBlockIO</code>.</p>
+</blockquote>
+<p>IOReadBandwidthMax=<em><code>device</code></em> <em><code>bytes</code><em><code>,</code>IOWriteBandwidthMax=</em><code>device</code></em> <em><code>bytes</code></em></p>
+<blockquote>
+<p>Set the per-device overall block I/O bandwidth maximum limit for the executed processes, if the unified control group hierarchy is used on the system. This limit is not work-conserving and the executed processes are not allowed to use more even if the device has idle capacity. Takes a space-separated pair of a file path and a bandwidth value (in bytes per second) to specify the device specific bandwidth. The file path may be a path to a block device node, or as any other file in which case the backing block device of the file system of the file is used. If the bandwidth is suffixed with K, M, G, or T, the specified bandwidth is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes, respectively, to the base of 1000. (Example: “/dev/disk/by-path/pci-0000:00:1f.2-scsi-0:0:0:0 5M”). This controls the “<code>io.max</code>“ control group attributes. Use this option multiple times to set bandwidth limits for multiple devices. For details about this control group attribute, see <a href="https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#io-interface-files" target="_blank" rel="noopener">IO Interface Files</a>.</p>
+<p>These settings replace <code>BlockIOReadBandwidth=</code> and <code>BlockIOWriteBandwidth=</code> and disable settings prefixed with <code>BlockIO</code> or <code>StartupBlockIO</code>.</p>
+<p>Similar restrictions on block device discovery as for <code>IODeviceWeight=</code> apply, see above.</p>
+</blockquote>
+</blockquote>
+<p>这个方法一听就非常靠谱。 <code>systemd</code> 是一个让人又爱又恨的工具，我曾经为了从 <code>service</code> 切换到 <code>systemctl</code> 不知道背了多久这个命令的单词拼写。由于我们需要限制 NginX 的 IO 资源，首先要找到 NginX 的 <code>systemd</code> 配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl status nginx</span><br><span class="line"></span><br><span class="line">● nginx.service - A high performance web server and a reverse proxy server</span><br><span class="line">   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset:</span><br><span class="line">   Active: active (running) since Wed 2020-03-11 14:17:51 UTC; 24h ago</span><br><span class="line">     Docs: man:nginx(8)</span><br><span class="line">  Process: 3677 ExecStop=/sbin/start-stop-daemon --quiet --stop --retry QUIT/5</span><br><span class="line">  Process: 3685 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (co</span><br><span class="line">  Process: 3678 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces</span><br><span class="line"> Main PID: 3687 (nginx)</span><br><span class="line">    Tasks: 17 (<span class="built_in">limit</span>: 4915)</span><br><span class="line">   CGroup: /system.slice/nginx.service</span><br><span class="line">           ├─3687 nginx: master process /usr/sbin/nginx -g daemon on; master_p</span><br><span class="line">           ├─3688 nginx: worker process</span><br><span class="line">           ...</span><br></pre></td></tr></table></figure>
+
+<p>然后进入 <code>/lib/systemd/system/nginx.service</code> ，修改 <code>[Service]</code> 块，增加三行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IOAccounting=<span class="literal">true</span></span><br><span class="line">IOReadBandwidthMax=/dev/vda 1M</span><br><span class="line">IOWriteBandwidthMax=/dev/vda 1M</span><br></pre></td></tr></table></figure>
+
+<p>Reload daemon and nginx。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl daemon-reload</span><br><span class="line">$ sudo systemctl restart nginx</span><br></pre></td></tr></table></figure>
+
+<p>由于我在 NginX 的网页目录下放了一个测试下载速度的文件，我换了内网其他机器去拉。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://10.10.194.18/dash/test.file</span><br><span class="line">--2020-03-12 15:07:57--  http://10.10.194.18/dash/test.file</span><br><span class="line">Connecting to 10.10.194.18:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 104857600 (100M) [application/octet-stream]</span><br><span class="line">Saving to: ‘test.file’</span><br><span class="line"></span><br><span class="line">test.file           100%[=================&gt;] 100.00M   339MB/s    <span class="keyword">in</span> 0.3s</span><br><span class="line"></span><br><span class="line">2020-03-12 15:07:57 (339 MB/s) - ‘test.file’ saved [104857600/104857600]</span><br></pre></td></tr></table></figure>
+
+<p>这个结果无疑告诉我这次尝试又失败了。</p>
+<h2 id="曙光初现"><a href="#曙光初现" class="headerlink" title="曙光初现"></a>曙光初现</h2><p>这个问题真的很奇怪，为什么我对资源的限制会不起作用。我后来在 NginX 的 <code>systemd</code> 配置文件中增加了 Memory 的 limit 是 work 的，但是 IO 相关的就不行。在本地虚拟机测试中，不管是 Docker 的 IO 限制还是 NginX 的 <code>systemd</code> 资源控制都是生效的，甚至一度让我怀疑是远程服务器的镜像问题。因为根据我咨询运维人员的情况来看，远程机器的镜像都经过特殊定制，有可能是这个原因。</p>
+<p>不过，后来我的 Teammate 给了我一个 <strong>很重要的提示</strong> 。通过给 <code>dd</code> 命令增加参数 <code>oflag=direct</code> ，在 Docker 中可以得到限速后的效果。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@9f79e6469b67:/<span class="comment"># dd if=500M.file bs=1M count=500 of=500.out oflag=direct</span></span><br><span class="line">^C</span><br><span class="line">18+0 records <span class="keyword">in</span></span><br><span class="line">18+0 records out</span><br><span class="line">18874368 bytes (19 MB, 18 MiB) copied, 18.0052 s, 1.0 MB/s</span><br></pre></td></tr></table></figure>
+
+<p>这个参数的作用是什么呢？GNU <a href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation" target="_blank" rel="noopener">https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation</a> 介绍如下</p>
+<blockquote>
+<p><strong>‘oflag=flag[,flag]…’</strong></p>
+<p>Access the output file using the flags specified by the flag argument(s). (No spaces around any comma(s).)</p>
+<p>Here are the flags. Not every flag is supported on every operating system.</p>
+<blockquote>
+<p><strong>‘direct’</strong></p>
+<p>Use direct I/O for data, avoiding the buffer cache. Note that the kernel may impose restrictions on read or write buffer sizes. For example, with an ext4 destination file system and a Linux-based kernel, using ‘oflag=direct’ will cause writes to fail with <code>EINVAL</code> if the output buffer size is not a multiple of 512.</p>
+</blockquote>
+</blockquote>
+<p>这说明远程服务器的读写缓存对硬盘 IO 产生了巨大的影响。虽然我记得之前不知道在哪里看到过说，Cgroups 的磁盘 IO 限制模块 blkio 会对读写 buffer 进行限制，但是由于这是远程服务器，并且镜像经过定制，可能在系统底层绕开了这一限制，用于提升服务器 IO。</p>
+<p>我也曾经考虑过读写 buffer 的问题，但是当时执行命令清空读写缓存时，遇上了这样的问题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">-bash: /proc/sys/vm/drop_caches: Permission denied</span><br></pre></td></tr></table></figure>
+
+<p>我便没有继续。</p>
+<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>最终，我们把问题锁定在服务器的读写缓存上。既然已经知道了问题所在，解决起来也就相对容易。虽然没有办法直接将清除缓存命令写进特定位置，但是可以用这条命令解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">"/bin/echo 1 &gt; /proc/sys/vm/drop_caches"</span></span><br></pre></td></tr></table></figure>
+
+<p>这是工作的。至于为啥，我没研究。</p>
+<p>还有另一套方案，将磁盘缓存的超时时间设置极低，也可以解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> 100 &gt; /proc/sys/vm/dirty_expire_centisecs</span><br><span class="line">$ sudo <span class="built_in">echo</span> 100 &gt; /proc/sys/vm/dirty_writeback_centisecs</span><br></pre></td></tr></table></figure>
+
+<p>当然，这些命令都要在宿主机进行操作，因为 Docker 本质只是一个在宿主机上虚拟化的线程。<code>/proc/sys/vm/</code> 文件夹对 Docker 容器来说，只是一个 Read-Only 的文件系统。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@9f79e6469b67:/<span class="comment"># echo 100 &gt; /proc/sys/vm/dirty_writeback_centisecs</span></span><br><span class="line">bash: /proc/sys/vm/dirty_writeback_centisecs: Read-only file system</span><br></pre></td></tr></table></figure>
+
+<p>最终，在清除缓存后，一切都变得正常起来。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@9f79e6469b67:/<span class="comment"># dd if=500M.file bs=1M count=500 of=/dev/null</span></span><br><span class="line">^C</span><br><span class="line">44+0 records <span class="keyword">in</span></span><br><span class="line">43+0 records out</span><br><span class="line">45088768 bytes (45 MB, 43 MiB) copied, 44.4906 s, 1.0 MB/s</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ wget 10.10.194.18/dash/test.file</span><br><span class="line">--2020-03-12 15:42:29--  http://10.10.194.18/dash/test.file</span><br><span class="line">Connecting to 10.10.194.18:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 104857600 (100M) [application/octet-stream]</span><br><span class="line">Saving to: ‘test.file.1’</span><br><span class="line"></span><br><span class="line">test.file.1         100%[=================&gt;] 100.00M  1005KB/s    <span class="keyword">in</span> 1m 45s</span><br><span class="line"></span><br><span class="line">2020-03-12 15:44:14 (977 KB/s) - ‘test.file.1’ saved [104857600/104857600]</span><br></pre></td></tr></table></figure>
+
+<h1 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h1><p>我觉得这篇文章要是就这么结束，内容应该有点太少了。在填坑过程中，我还研究了不少和系统资源控制相关的内容。</p>
+<h2 id="Cgroup"><a href="#Cgroup" class="headerlink" title="Cgroup"></a>Cgroup</h2><p>Cgroup 是 Linux 用于控制进程资源的一种方式，从 2.6.24 内核中开始搭载，v2 版本于 4.5 内核开始搭载。它的配置文件在文件系统中的组织方式是 <code>/sys/fs/cgroup/{Resource}/{defaultConfigs}</code> 和 <code>/sys/fs/cgroup/{Resource}/{Groups}/.../{configs}</code> 。对应的限制内容会被写在目录的文件下，限制进程的 <code>pid</code> 会被写在目录的 <code>tasks</code> 文件夹下。简单看看本文主角 <strong>blkio</strong> 文件夹下的结构。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/sys/fs/cgroup/blkio$ ls</span><br><span class="line">blkio.io_merged                   blkio.throttle.io_serviced</span><br><span class="line">blkio.io_merged_recursive         blkio.throttle.read_bps_device</span><br><span class="line">blkio.io_queued                   blkio.throttle.read_iops_device</span><br><span class="line">blkio.io_queued_recursive         blkio.throttle.write_bps_device</span><br><span class="line">blkio.io_service_bytes            blkio.throttle.write_iops_device</span><br><span class="line">blkio.io_service_bytes_recursive  blkio.time</span><br><span class="line">blkio.io_service_time             blkio.time_recursive</span><br><span class="line">blkio.io_service_time_recursive   blkio.weight</span><br><span class="line">blkio.io_serviced                 blkio.weight_device</span><br><span class="line">blkio.io_serviced_recursive       cgroup.clone_children</span><br><span class="line">blkio.io_wait_time                cgroup.procs</span><br><span class="line">blkio.io_wait_time_recursive      cgroup.sane_behavior</span><br><span class="line">blkio.leaf_weight                 docker</span><br><span class="line">blkio.leaf_weight_device          notify_on_release</span><br><span class="line">blkio.reset_stats                 release_agent</span><br><span class="line">blkio.sectors                     system.slice</span><br><span class="line">blkio.sectors_recursive           tasks</span><br><span class="line">blkio.throttle.io_service_bytes   user.slice</span><br></pre></td></tr></table></figure>
+
+<p>之前我们修改的 <code>systemd/nginx.service</code> 的内容被放在 <code>system.slice</code> 下，docker 的资源限制被放在 <code>docker/</code> 和 <code>docker/container_id</code> 下。</p>
+<p>看看 cgroup 支持哪些资源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ lssubsys  -m</span><br><span class="line">cpuset /sys/fs/cgroup/cpuset</span><br><span class="line">cpu,cpuacct /sys/fs/cgroup/cpu,cpuacct</span><br><span class="line">blkio /sys/fs/cgroup/blkio</span><br><span class="line">memory /sys/fs/cgroup/memory</span><br><span class="line">devices /sys/fs/cgroup/devices</span><br><span class="line">freezer /sys/fs/cgroup/freezer</span><br><span class="line">net_cls,net_prio /sys/fs/cgroup/net_cls,net_prio</span><br><span class="line">perf_event /sys/fs/cgroup/perf_event</span><br><span class="line">hugetlb /sys/fs/cgroup/hugetlb</span><br><span class="line">pids /sys/fs/cgroup/pids</span><br><span class="line">rdma /sys/fs/cgroup/rdma</span><br></pre></td></tr></table></figure>
+
+<p>简单验证一下生效的几个配置。</p>
+<h2 id="Docker-资源限制"><a href="#Docker-资源限制" class="headerlink" title="Docker 资源限制"></a>Docker 资源限制</h2><p>Docker ID: 9f79e6469b67</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker inspect 9f79e6469b67 | grep Pid</span><br><span class="line">            <span class="string">"Pid"</span>: 6510,</span><br><span class="line">            <span class="string">"PidMode"</span>: <span class="string">""</span>,</span><br><span class="line">            <span class="string">"PidsLimit"</span>: null,</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/fs/cgroup/blkio/docker/9f79e6469b67... </span><br><span class="line">$ ls</span><br><span class="line">blkio.io_merged                   blkio.sectors_recursive</span><br><span class="line">blkio.io_merged_recursive         blkio.throttle.io_service_bytes</span><br><span class="line">blkio.io_queued                   blkio.throttle.io_serviced</span><br><span class="line">blkio.io_queued_recursive         blkio.throttle.read_bps_device</span><br><span class="line">blkio.io_service_bytes            blkio.throttle.read_iops_device</span><br><span class="line">blkio.io_service_bytes_recursive  blkio.throttle.write_bps_device</span><br><span class="line">blkio.io_service_time             blkio.throttle.write_iops_device</span><br><span class="line">blkio.io_service_time_recursive   blkio.time</span><br><span class="line">blkio.io_serviced                 blkio.time_recursive</span><br><span class="line">blkio.io_serviced_recursive       blkio.weight</span><br><span class="line">blkio.io_wait_time                blkio.weight_device</span><br><span class="line">blkio.io_wait_time_recursive      cgroup.clone_children</span><br><span class="line">blkio.leaf_weight                 cgroup.procs</span><br><span class="line">blkio.leaf_weight_device          notify_on_release</span><br><span class="line">blkio.reset_stats                 tasks</span><br><span class="line">blkio.sectors</span><br><span class="line">$ cat tasks</span><br><span class="line">6510</span><br><span class="line">$ cat blkio.throttle.read_bps_device</span><br><span class="line">252:0 1048576</span><br></pre></td></tr></table></figure>
+
+<p>其中，252 : 0 是磁盘设备号 <code>&lt;major&gt;:&lt;minor&gt;</code> ，1048576 = 1024 * 1024</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ls -l /dev/vda</span><br><span class="line">brw-rw---- 1 root disk 252, 0 Mar 11 13:32 /dev/vda</span><br></pre></td></tr></table></figure>
+
+<p>这说明在我们启动一个资源受限的 Docker 时，Docker 会自动在自身 cgroup 资源限制组下生成名为 <code>container_id</code> 的文件夹，然后将对应容器的 Pid 和限制资源规则写入。</p>
+<h2 id="Systemd-资源限制"><a href="#Systemd-资源限制" class="headerlink" title="Systemd 资源限制"></a>Systemd 资源限制</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/fs/cgroup/blkio/system.slice/nginx.service</span><br><span class="line">$ cat tasks</span><br><span class="line">6648</span><br><span class="line">6651</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ cat blkio.throttle.read_bps_device</span><br><span class="line">252:0 1000000</span><br><span class="line">$ sudo systemctl status nginx</span><br><span class="line">● nginx.service - A high performance web server and a reverse proxy server</span><br><span class="line">   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset:</span><br><span class="line">   Active: active (running) since Thu 2020-03-12 15:06:14 UTC; 1h 5min ago</span><br><span class="line">     Docs: man:nginx(8)</span><br><span class="line">  Process: 6632 ExecStop=/sbin/start-stop-daemon --quiet --stop --retry QUIT/5</span><br><span class="line">  Process: 6646 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (co</span><br><span class="line">  Process: 6633 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces</span><br><span class="line"> Main PID: 6648 (nginx)</span><br><span class="line"> ...</span><br></pre></td></tr></table></figure>
+
+<p>NginX 的所有进程 Pid 和 <code>.../system.slice/nginx.service/tasks</code> 中的 Pid 一一对应。</p>
+<p><code>systemd</code> 的资源限制工作方式和 Docker 类似。</p>
+<p>有趣的是，Docker 采用 2 ^ 10  作为单位，而 systemd 采用 1000 作为单位。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li>[Systemd] <a href="https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options" target="_blank" rel="noopener">https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options</a></li>
+<li>[dd] <a href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation" target="_blank" rel="noopener">https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation</a></li>
+<li>[Disk Cache] <a href="https://stackoverflow.com/questions/20215516/disabling-disk-cache-in-linux" target="_blank" rel="noopener">https://stackoverflow.com/questions/20215516/disabling-disk-cache-in-linux</a></li>
+<li>[Disk Cache] <a href="https://unix.stackexchange.com/questions/48138/how-to-throttle-per-process-i-o-to-a-max-limit" target="_blank" rel="noopener">https://unix.stackexchange.com/questions/48138/how-to-throttle-per-process-i-o-to-a-max-limit</a></li>
+<li>[Disk Cache] <a href="https://unix.stackexchange.com/questions/109496/echo-3-proc-sys-vm-drop-caches-permission-denied-as-root" target="_blank" rel="noopener">https://unix.stackexchange.com/questions/109496/echo-3-proc-sys-vm-drop-caches-permission-denied-as-root</a></li>
+<li>[Cgroup] <a href="https://coolshell.cn/articles/17049.html" target="_blank" rel="noopener">https://coolshell.cn/articles/17049.html</a></li>
+<li>[Cgroup] <a href="https://tech.meituan.com/2015/03/31/cgroups.html" target="_blank" rel="noopener">https://tech.meituan.com/2015/03/31/cgroups.html</a></li>
+<li>[Cgroup] <a href="https://cizixs.com/2017/08/25/linux-cgroup/" target="_blank" rel="noopener">https://cizixs.com/2017/08/25/linux-cgroup/</a></li>
+<li>[Cgroup blkio] <a href="https://andrestc.com/post/cgroups-io/" target="_blank" rel="noopener">https://andrestc.com/post/cgroups-io/</a></li>
+<li>[Cgroup blkio] <a href="https://www.kernel.org/doc/Documentation/cgroup-v1/blkio-controller.txt" target="_blank" rel="noopener">https://www.kernel.org/doc/Documentation/cgroup-v1/blkio-controller.txt</a></li>
+<li>[Docker IO] <a href="https://stackoverflow.com/questions/36145817/how-to-limit-io-speed-in-docker-and-share-file-with-system-in-the-same-time" target="_blank" rel="noopener">https://stackoverflow.com/questions/36145817/how-to-limit-io-speed-in-docker-and-share-file-with-system-in-the-same-time</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/blkio-debug/">https://wasteland.touko.moe//blog/2020/03/blkio-debug/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://weibo.com/OranL">
+            <span class="icon">
+              <i class="fa fa-weibo"></i>
+            </span>
+
+            <span class="label">Weibo</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://twitter.com/HoshinoTouko">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+
+            <span class="label">Twitter</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/blkio/" rel="tag"># blkio</a>
+              <a href="/tags/Cgroups/" rel="tag"># Cgroups</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/03/customize-hexo/" rel="prev" title="Customize Hexo and Theme NexT">
+      <i class="fa fa-chevron-left"></i> Customize Hexo and Theme NexT
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/03/write-thesis-with-latex/" rel="next" title="使用 LaTeX 完成你的毕业论文">
+      使用 LaTeX 完成你的毕业论文 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+        </div>
+      </div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Toolbox"><span class="nav-number">2.</span> <span class="nav-text">Toolbox</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Yesterday-Once-More"><span class="nav-number">3.</span> <span class="nav-text">Yesterday Once More *</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初次碰壁"><span class="nav-number">3.1.</span> <span class="nav-text">初次碰壁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#另辟蹊径"><span class="nav-number">3.2.</span> <span class="nav-text">另辟蹊径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#曙光初现"><span class="nav-number">3.3.</span> <span class="nav-text">曙光初现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题解决"><span class="nav-number">3.4.</span> <span class="nav-text">问题解决</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Appendix"><span class="nav-number">4.</span> <span class="nav-text">Appendix</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cgroup"><span class="nav-number">4.1.</span> <span class="nav-text">Cgroup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-资源限制"><span class="nav-number">4.2.</span> <span class="nav-text">Docker 资源限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Systemd-资源限制"><span class="nav-number">4.3.</span> <span class="nav-text">Systemd 资源限制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Touko Hoshino"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Touko Hoshino</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/HoshinoTouko" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/OranL" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;OranL" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/HoshinoTouko" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.popiask.cn/touko_h" title="Popi → https:&#x2F;&#x2F;www.popiask.cn&#x2F;touko_h" rel="noopener" target="_blank"><i class="fa fa-fw fa-question"></i>Popi</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/./atom.xml" title="RSS → .&#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://entry.touko.moe/" title="https:&#x2F;&#x2F;entry.touko.moe&#x2F;" rel="noopener" target="_blank">Homepage</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cv.touko.moe/" title="https:&#x2F;&#x2F;cv.touko.moe&#x2F;" rel="noopener" target="_blank">CV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://savepoint.touko.moe/" title="https:&#x2F;&#x2F;savepoint.touko.moe&#x2F;" rel="noopener" target="_blank">Legacy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script pjax>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://wasteland.touko.moe/blog/2020/03/blkio-debug/',]
+      });
+      });
+  </script>
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://wasteland.touko.moe/blog/2020/03/blkio-debug/";
+    this.page.identifier = "/blog/2020/03/blkio-debug/";
+    this.page.title = "Docker 限制磁盘 IO 无效排错及总结";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://wasteland-by-touko.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'a4beb6919d991e9a832ab49fd532889e',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

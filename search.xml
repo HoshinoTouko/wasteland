@@ -1,0 +1,1353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>我的第一台黑苹果主机</title>
+    <url>//blog/2020/11/my-first-hackintosh/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>近期，拼拼凑凑从各类垃圾中组装出了一台轻便的 ITX 主机。主板是真白丢给我的，在他那不能工作的 <code>华擎 H110M-ITX</code> ；CPU 是我之前测试 QL3X 时点亮用的 <code>Pentium G4500T</code> 6 代低压 U；电源是 tb 买的韩国牌子 <code>全汉代工 450W SFX</code> ；机箱是 <code>酷鱼 T40</code> ；内存是 <code>影驰 镭 RGB 灯条 3200MHz 8G×2</code>；硬盘是以前捡的 <code>昂达 480G SSD</code>，显卡是亮机卡 <code>NVIDIA Quadro K600</code>。这么一套东西装起来，我就想，能不能搞个黑苹果玩玩。于是，查了一段时间的资料，准备动手。</p>
+<blockquote>
+<p>本文仅记录点亮黑苹果的过程。其他驱动的修改预计会在后续记录。</p>
+</blockquote>
+<h2 id="配置价格"><a href="#配置价格" class="headerlink" title="配置价格"></a>配置价格</h2><p>装机之前，大致估算一下目前这套机器的价格。散热我用的酷冷十几块的（AMD 原装）散热铝块，就不计入总价了。</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主板</td>
+<td align="center">ASRock H110M-ITX</td>
+<td align="center">150</td>
+</tr>
+<tr>
+<td align="center">CPU</td>
+<td align="center">Pentium G4500T</td>
+<td align="center">230</td>
+</tr>
+<tr>
+<td align="center">内存</td>
+<td align="center">影驰 镭 RGB 灯条 3200MHz 8G×2</td>
+<td align="center">400</td>
+</tr>
+<tr>
+<td align="center">电源</td>
+<td align="center">全汉代工 450W SFX</td>
+<td align="center">130</td>
+</tr>
+<tr>
+<td align="center">硬盘</td>
+<td align="center">昂达 480G SSD</td>
+<td align="center">240</td>
+</tr>
+<tr>
+<td align="center">机箱 &amp; 延长线</td>
+<td align="center">酷鱼 T40</td>
+<td align="center">140</td>
+</tr>
+<tr>
+<td align="center">显卡</td>
+<td align="center">NVIDIA Quadro K600</td>
+<td align="center">140</td>
+</tr>
+<tr>
+<td align="center">总价</td>
+<td align="center"></td>
+<td align="center">1430</td>
+</tr>
+</tbody></table>
+<p>其中内存可以不用这么好的，CPU 可以再上好一些的，显卡可以换矿卡（等矿难）。整机价格偏高，不过既然都是捡来的垃圾，那就无所谓性价比了。</p>
+<h2 id="上机图片"><a href="#上机图片" class="headerlink" title="上机图片"></a>上机图片</h2><p>酷鱼 T40 的设计十分紧凑，附带扶手，单手就能轻松提起。机器显卡为倒装，很有意思。由于是非模组电源，走线较为凌乱。</p>
+<a id="more"></a>
+
+<img src="/blog/2020/11/my-first-hackintosh/1.case_graphic_card.JPG" class="" title="机箱 显卡面">
+
+<img src="/blog/2020/11/my-first-hackintosh/2.case_mb.JPG" class="" title="机箱 主板面">
+
+<img src="/blog/2020/11/my-first-hackintosh/3.case_view.JPG" class="" title="机箱 全览">
+
+<h1 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h1><p>安装黑苹果首先需要准备一块大号U盘（至少32G）。我用了一块从 Surface 上拆下来的 <code>PM961</code> + <code>ACASIS NVMe 硬盘盒</code> 作为安装介质。不能使用 SD 卡。一开始我使用的是 SD 卡 + 读卡器，结果一直无法通过 Etcher 写入 dmg 文件后的镜像校验。</p>
+<img src="/blog/2020/11/my-first-hackintosh/4.nvme.JPG" class="" title="NVMe 和硬盘盒">
+
+<p>其次，需要准备 安装介质写入工具。我使用的是 <code>balenaEtcher</code> 作为写入工具。</p>
+<p>同时最重要的，带引导的黑苹果镜像。我主要从</p>
+<ul>
+<li>黑苹果星球 <a href="https://heipg.cn/" target="_blank" rel="noopener">https://heipg.cn/</a></li>
+<li>黑果小兵 <a href="https://blog.daliansky.net/" target="_blank" rel="noopener">https://blog.daliansky.net/</a></li>
+</ul>
+<p>上下载镜像。</p>
+<p>这类镜像一般由几个分区组成。OpenCore / Clover 引导分区，白苹果分区，WePE 分区（用于应急）。需要安装黑苹果的电脑由 OpenCore 引导启动（Clover 底层也是 OpenCore 了），模拟 Mac 相关硬件，最后启动白苹果系统。</p>
+<h2 id="镜像烧录"><a href="#镜像烧录" class="headerlink" title="镜像烧录"></a>镜像烧录</h2><p>此处以从 heipg.cn 上下载的最新版本的 <code>Catalina</code> 为例。下载镜像，并使用 <code>balenaEtcher</code> 烧录进 U 盘。</p>
+<img src="/blog/2020/11/my-first-hackintosh/6.etcher.png" class="" title="balenaEtcher 烧录">
+
+<p>确认 Etcher 烧录没有报错后，弹出 U 盘并重新插入，准备修改 EFI。</p>
+<h2 id="微调-EFI"><a href="#微调-EFI" class="headerlink" title="微调 EFI"></a>微调 EFI</h2><p>此类打包好的镜像文件一般集成了现有大多数常用驱动程序。我们首先要做的是点亮系统，再考虑其他硬件的运行情况。最开始安装黑苹果的过程中，我没有考虑 CPU 的影响，结果安装触发了 <code>PANIC</code>。经各种资料查阅，发现是由于我使用的奔腾 CPU 并不被苹果官方支持，需要微调 EFI，让 OC / Clover 欺骗苹果系统。</p>
+<p>EFI 分区在 Windows 下不默认挂载。我们需要使用 <code>diskpart</code> 工具将其挂载至硬盘驱动器目录中。打开<strong>带管理员权限的</strong> <code>PowerShell (Admin)</code>，执行</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">diskpart</span><br></pre></td></tr></table></figure>
+
+<p>进入 diskpart 后，</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">DISKPART&gt; list disk</span><br><span class="line"></span><br><span class="line">  Disk <span class="comment">###  Status         Size     Free     Dyn  Gpt</span></span><br><span class="line">  --------  -------------  -------  -------  ---  ---</span><br><span class="line">  Disk <span class="number">0</span>    Online          <span class="number">447</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">1</span>    Online          <span class="number">931</span> GB  <span class="number">1024</span> KB        *</span><br><span class="line">  Disk <span class="number">2</span>    Online          <span class="number">953</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">4</span>    Online          <span class="number">238</span> GB   <span class="number">225</span> GB        *</span><br></pre></td></tr></table></figure>
+
+<p>选择 U 盘对应的 Disk</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">DISKPART&gt; select disk <span class="number">4</span></span><br><span class="line"></span><br><span class="line">Disk <span class="number">4</span> is now the selected disk.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; list partition</span><br><span class="line"></span><br><span class="line">  Partition <span class="comment">###  Type              Size     Offset</span></span><br><span class="line">  -------------  ----------------  -------  -------</span><br><span class="line">  Partition <span class="number">1</span>    System             <span class="number">200</span> MB    <span class="number">20</span> KB</span><br><span class="line">  Partition <span class="number">2</span>    Primary             <span class="number">12</span> GB   <span class="number">200</span> MB</span><br><span class="line">  Partition <span class="number">3</span>    Primary            <span class="number">380</span> MB    <span class="number">12</span> GB</span><br></pre></td></tr></table></figure>
+
+<p>选择对应分区。EFI 分区一般为 <code>200MB</code>。最后进入分区并分配盘符</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">DISKPART&gt; select partition <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Partition <span class="number">1</span> is now the selected partition.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; assign letter=H</span><br><span class="line"></span><br><span class="line">DiskPart successfully assigned the drive letter or mount point.</span><br></pre></td></tr></table></figure>
+
+<p>运行后，EFI 分区可以在电脑中看到。修改 <code>/EFI/OC/config.plist</code> </p>
+<p>对于 Clover，修改 <code>KernelCPU</code> 附近的代码为</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>KernelCpu<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">false</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>FakeCPUID<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>0x0306A0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于 OpenCore，修改 <code>Kernel - Emulate</code> 附近的代码为</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>Cpuid1Data<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span>oAYDAAAAAAAAAAAAAAAAAA==<span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>Cpuid1Mask<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span>/////wAAAAAAAAAAAAAAAA==<span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>以欺骗苹果系统，让其认为该 CPU 是 <code>Ivy Bridge 的 i5 CPU</code>。</p>
+<p>由于我使用的是 Windows 系统，需要手撸配置文件。由于 OpenCore 这项的表示方法是 id + mask，并且是 <strong>Little Endian</strong> 的。所以对于 Clover 中的 <code>0x0306A0</code> ，需要将其转换为 A0 06 03 00，掩码 11 11 11 11，补齐后面 12 个 <code>00</code> 后，使用工具 <a href="https://cryptii.com/pipes/base64-to-hex" target="_blank" rel="noopener">https://cryptii.com/pipes/base64-to-hex</a> 转换为对应的 Base 64 编码。</p>
+<p>太麻烦了，还是用 Clover 吧。</p>
+<p>设置结束后，不要忘了在 <code>diskpart</code> 中执行</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">remove letter=H</span><br></pre></td></tr></table></figure>
+
+<p>取消挂载，避免占用盘符。</p>
+<h2 id="BIOS-设置"><a href="#BIOS-设置" class="headerlink" title="BIOS 设置"></a>BIOS 设置</h2><p>BIOS 设置可以参考 <a href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html" target="_blank" rel="noopener">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a> 。基本思路是</p>
+<ul>
+<li>关闭 CFG Lock</li>
+<li>关闭 VT-d</li>
+<li>关闭核显，使用独显（在我这套硬件配置下）</li>
+<li>关闭 Fast Boot</li>
+<li>关闭 Secure Boot</li>
+<li>关闭 CSM</li>
+</ul>
+<h1 id="实机安装"><a href="#实机安装" class="headerlink" title="实机安装"></a>实机安装</h1><p>插电，开机。由于我原有一个 Windows 系统，所以先进入 PE 删除原有系统。开机连点对应按键进入 Boot 菜单（我是华擎所以是 F11），第一个分区是 OpenCore，第二个是 WePE。</p>
+<p>这一步总是报错然后卡住。最后我用 heipg.cn 双引导 Catalina 中 Clover 引导，终于进入了系统。</p>
+<h2 id="执行安装程序"><a href="#执行安装程序" class="headerlink" title="执行安装程序"></a>执行安装程序</h2><img src="/blog/2020/11/my-first-hackintosh/5.macos_loading.JPG" class="" title="MacOS loading">
+
+<img src="/blog/2020/11/my-first-hackintosh/7.macos_install_navi.JPG" class="" title="MacOS 安装初始界面">
+
+<p>如果顺利，等苹果 logo 读条完成后，就可以进入 MacOS 安装界面了。</p>
+<p>首先选择磁盘工具，抹除原有磁盘上的所有数据。</p>
+<img src="/blog/2020/11/my-first-hackintosh/8.macos_install_format.JPG" class="" title="磁盘格式化界面">
+
+<p>之后选择安装 MacOS，一路下一步即可。保持引导 U 盘插在电脑上，等待几次重启后就安装完毕了。</p>
+<img src="/blog/2020/11/my-first-hackintosh/9.macos_install.JPG" class="" title="MacOS 安装界面">
+
+<h2 id="建立本机引导"><a href="#建立本机引导" class="headerlink" title="建立本机引导"></a>建立本机引导</h2><p>安装完成，进入系统后，安装 <code>Clover Configuration</code>，然后通过 <code>Clover Configuration</code> 挂载隐藏的 EFI 分区，将 U 盘上的 EFI 分区下 EFI 文件夹复制到机器的 EFI 分区中。注意区分好哪个是机器的 EFI 分区，哪个是 U 盘的。</p>
+<p>至此，可以关机，拔掉 U 盘，重新启动等待机器自动进入 MacOS 系统了。</p>
+<img src="/blog/2020/11/my-first-hackintosh/10.rebuild_EFI.JPG" class="" title="EFI 分区拷贝">
+
+<img src="/blog/2020/11/my-first-hackintosh/11.OS_info.jpg" class="" title="系统信息">
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html" target="_blank" rel="noopener">https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html</a></li>
+<li><a href="https://www.mfpud.com/topics/1031/" target="_blank" rel="noopener">https://www.mfpud.com/topics/1031/</a></li>
+<li><a href="https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html" target="_blank" rel="noopener">https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html</a></li>
+<li><a href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html" target="_blank" rel="noopener">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a></li>
+<li><a href="https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/" target="_blank" rel="noopener">https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/</a></li>
+<li><a href="https://oc.skk.moe/7-kernel.html" target="_blank" rel="noopener">https://oc.skk.moe/7-kernel.html</a></li>
+<li><a href="https://cryptii.com/pipes/base64-to-hex" target="_blank" rel="noopener">https://cryptii.com/pipes/base64-to-hex</a></li>
+<li><a href="https://www.bilibili.com/read/cv7941995/" target="_blank" rel="noopener">https://www.bilibili.com/read/cv7941995/</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/">https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Hackintosh</category>
+      </categories>
+      <tags>
+        <tag>Hackintosh</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在树莓派上运行 OpenWrt 作为软路由</title>
+    <url>//blog/2020/07/raspi-as-router/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前我用 NAS 虚拟化了一台 OpenWrt 用作软路由。随着使用频率的增加，我越发离不开它带来的优秀的上网体验。但是用虚拟化的软路由总觉得有些不舒适，比如万一 NAS 掉线（虽然暂时没出现过），内网就会瞬间瘫痪。同时，用这种方法虚拟出来的软路由和小米路由自带的 Mesh 功能有冲突，小米路由无法获取 Mesh 节点的拓扑图，也没有办法进行完整的设备管理（识别不出设备）。</p>
+<p>解决方案是在小米路由器的上级部署软路由，将原本放在小米路由器内网的软路由移动到光猫内网。我先用树莓派 4 作为软路由进行测试，另一块 1037U 主板在路上。光猫只有一个千兆网口，但是恰好前些时间我买了台网件的 GS105 ，得以在光猫的内网中接入更多千兆设备。</p>
+<img src="/blog/2020/07/raspi-as-router/1.netgear-gs105.jpg" class="" title="网件 GS105 交换机">
+
+<p>这是一个五口非网管型交换机，自适应 10/100/1000M，带指示灯，发热量不大，价格百元内。这样一来，网络拓扑就可以进行下面的改动</p>
+<img src="/blog/2020/07/raspi-as-router/2.change-of-topology.jpg" class="" title="网络拓扑变化">
+
+<p>将内网的 DHCP 分发任务交给小米路由，允许小米路由 app 完全发挥功能，带来更严格的 WiFi 接入控制和 Mesh 组网体验。另一方面，改变静态 IP 配置将小米路由的网关设置为软路由地址，让其流量通过作为软单臂路由的树莓派，达到科学上网等目的。</p>
+<h1 id="树莓派组装"><a href="#树莓派组装" class="headerlink" title="树莓派组装"></a>树莓派组装</h1><a id="more"></a>
+
+<p>树莓派和外壳都是我从咸鱼购入的。我前期测试过树莓派 3B 的性能，的确不太行，因此这次买了树莓派 4 做软路由，外加一个红色的外壳、一个噪音超大的蓝光散热风扇和几块散热片，总价不到 230。</p>
+<img src="/blog/2020/07/raspi-as-router/3.pi.jpg" class="" title="树莓派和配件">
+
+<p>先上散热片。考虑后期可能会更换其他散热，我没有直接把散热片粘在机器上，而是先粘上一层导热垫，用导热垫自身的黏性固定散热片。其中两块大的散热垫分别对应 CPU 和内存，还有一块不知道贴哪，就随便贴了个图一乐。</p>
+<p>然后将外壳风扇的 5V 供电安装在树莓派 5V 针脚和接地上。根据 <a href="https://www.raspberrypi.org/documentation/usage/gpio/" target="_blank" rel="noopener">https://www.raspberrypi.org/documentation/usage/gpio/</a> 的定义，将红色和黑色两条线分别接在 4、6 号针脚即可。</p>
+<img src="/blog/2020/07/raspi-as-router/4.pi-assembling.jpg" class="" title="Pi 组装">
+
+<p>实际使用中，风扇转速太大，噪音感人，光害也很令人头疼。我打算目前不接这个风扇。如果未来热量堆积严重，我会考虑更换其他的静音风扇。</p>
+<h1 id="OpenWrt-安装和配置"><a href="#OpenWrt-安装和配置" class="headerlink" title="OpenWrt 安装和配置"></a>OpenWrt 安装和配置</h1><h2 id="烧录-OpenWrt-系统"><a href="#烧录-OpenWrt-系统" class="headerlink" title="烧录 OpenWrt 系统"></a>烧录 OpenWrt 系统</h2><p>从 OpenWrt 的官网可以检查当前 OpenWrt 在树莓派各版本系统镜像的发行情况。在树莓派 4 上，官方目前没有正式发行的 Release 版本，只有 Snapshot 版本的 OpenWrt 镜像。Snapshot 版本的镜像不带 LuCi 界面，因此，在安装过程中可能会遇到一些麻烦。</p>
+<img src="/blog/2020/07/raspi-as-router/5.openwrt-pi-versions.jpg" class="" title="OpenWrt">
+
+<blockquote>
+<p>The Raspberry Pi is supported in the brcm2708 target.<br>Subtargets are bcm2708 for Raspberry Pi 1, bcm2709 for the Raspberry Pi 2, bcm2710 for the Raspberry Pi 3, bcm2711 for the Raspberry Pi 4.</p>
+</blockquote>
+<p>根据官方说明，树莓派 4 选择的对应 <code>subtarget</code> 为 <code>bcm2711</code>，因此我们可以顺藤摸瓜到 <a href="https://downloads.openwrt.org/snapshots/targets/bcm27xx/bcm2711/" target="_blank" rel="noopener">https://downloads.openwrt.org/snapshots/targets/bcm27xx/bcm2711/</a> 下载对应的系统镜像 <code>rpi-4-ext4-factory.img.gz</code>。如果网不好，也可以到我们的老朋友 TUNA 镜像的另一个分身 - 北外开源软件镜像站 <a href="https://mirrors.bfsu.edu.cn/openwrt/snapshots/targets/bcm27xx/bcm2711/" target="_blank" rel="noopener">https://mirrors.bfsu.edu.cn/openwrt/snapshots/targets/bcm27xx/bcm2711/</a> 下载。为什么不直接从 TUNA 下载呢？因为截止目前，所有对 <a href="https://mirrors.tuna.tsinghua.edu.cn/openwrt/snapshots/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/openwrt/snapshots/</a> 的访问都会被重定向至 <a href="https://mirrors.bfsu.edu.cn/openwrt/snapshots/" target="_blank" rel="noopener">https://mirrors.bfsu.edu.cn/openwrt/snapshots/</a> 。</p>
+<p>插上读卡器，打开 <code>Raspberry Pi Imager</code> ，烧录系统。</p>
+
+
+<h2 id="OpenWrt-网络初始配置"><a href="#OpenWrt-网络初始配置" class="headerlink" title="OpenWrt 网络初始配置"></a>OpenWrt 网络初始配置</h2><p>把 SD 卡插进树莓派，通电开机。第一次开机时，先将电脑直接和树莓派的网口相连。因为 OpenWrt 默认 IP 为 192.168.1.1 并默认开启 DHCP ，只要将电脑接入，IP 就会自动分配。为了避免可能的路由冲突，可以禁用其他网卡。</p>
+<img src="/blog/2020/07/raspi-as-router/7.first-connect.jpg" class="">
+
+<p>由于树莓派是单网口的，如果这个网口用于连接 PC，就没有办法上网了。此时需要通过 SSH 连接树莓派进行网络配置。Snapshot 的 OpenWrt 系统默认无密码，在使用 SSH 客户端连接时，需要选择 <code>none</code> 的连接方式。</p>
+<img src="/blog/2020/07/raspi-as-router/8.first-ssh.png" class="" title="首次连接 SSH">
+
+<p>先运行命令 <code>passwd</code> 设置 root 密码。密码设置完成后，断开并重连 SSH 测试密码设置是否正确。</p>
+<p>然后修改网络配置。我准备接入网段为 192.168.1.1/24 的局域网，网关是 192.168.1.1，为了避免 IP 冲突，让树莓派可以上网，需要修改网络配置。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi /etc/config/network</span><br></pre></td></tr></table></figure>
+
+<p>可以看到默认的 <code>lan</code> 网络设置为</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">config<span class="built_in"> interface </span><span class="string">'lan'</span></span><br><span class="line">        option<span class="built_in"> type </span><span class="string">'bridge'</span></span><br><span class="line">        option ifname <span class="string">'eth0'</span></span><br><span class="line">        option proto <span class="string">'static'</span></span><br><span class="line">        option ipaddr <span class="string">'192.168.1.1'</span></span><br><span class="line">        option netmask <span class="string">'255.255.255.0'</span></span><br><span class="line">        option ip6assign <span class="string">'60'</span></span><br></pre></td></tr></table></figure>
+
+<p>根据需求，修改 IP 地址，增加网关地址和 DNS</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">config<span class="built_in"> interface </span><span class="string">'lan'</span></span><br><span class="line">        option<span class="built_in"> type </span><span class="string">'bridge'</span></span><br><span class="line">        option ifname <span class="string">'eth0'</span></span><br><span class="line">        option proto <span class="string">'static'</span></span><br><span class="line">        option ipaddr <span class="string">'192.168.1.2'</span></span><br><span class="line">        option netmask <span class="string">'255.255.255.0'</span></span><br><span class="line">        option ip6assign <span class="string">'60'</span></span><br><span class="line">        option gateway <span class="string">'192.168.1.1'</span></span><br><span class="line">        option<span class="built_in"> dns </span><span class="string">'119.29.29.29'</span></span><br></pre></td></tr></table></figure>
+
+<p>最后运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
+
+<p>此时控制台会显示 <code>&#39;radio0&#39; is disabled</code> 然后无响应，因为网络接口发生了变化。</p>
+<p>将树莓派接回交换机，SSH 连接刚才设置的 IP 地址。如果设置无误，此时可以连上树莓派。初次连接的网络配置完成。</p>
+<h2 id="安装-LuCi"><a href="#安装-LuCi" class="headerlink" title="安装 LuCi"></a>安装 LuCi</h2><p>替换 OpenWrt 软件源为北外源</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -i <span class="string">'s_downloads.openwrt.org_mirrors.bfsu.edu.cn/openwrt_'</span> /etc/opkg/distfeeds.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg install luci</span><br></pre></td></tr></table></figure>
+
+<p>如有需要，可以安装语言包</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">opkg install luci-i18n-base-zh-cn</span><br></pre></td></tr></table></figure>
+
+<p>直接访问设置好的 IP 地址，就能在图形界面正常使用 OpenWrt 了。</p>
+<img src="/blog/2020/07/raspi-as-router/9.raspi4-luci.jpg" class="">
+
+<h1 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h1><p>为了让树莓派能够胜任原有 NAS 上虚拟化的软路由的工作，我对树莓派 + Clash 的性能做了一次测试。目标代理用的是 V2 + TLS + WS。</p>
+<img src="/blog/2020/07/raspi-as-router/10.compare.jpg" class="">
+
+<p>在不走代理的情况下，树莓派的网络吞吐和 NAS 相比在误差范围内。 在代理的情况下，由于 ARM 的性能和 x86 的 NAS 有一定差距，NAS 基本跑满了代理的带宽，而树莓派只有大约 2/3 的性能，日常使用差别不会太明显。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://openwrt.org/toh/raspberry_pi_foundation/raspberry_pi" target="_blank" rel="noopener">https://openwrt.org/toh/raspberry_pi_foundation/raspberry_pi</a></li>
+<li><a href="https://www.raspberrypi.org/documentation/usage/gpio/" target="_blank" rel="noopener">https://www.raspberrypi.org/documentation/usage/gpio/</a></li>
+<li><a href="https://openwrt.org/docs/guide-user/luci/luci.essentials" target="_blank" rel="noopener">https://openwrt.org/docs/guide-user/luci/luci.essentials</a></li>
+<li><a href="https://openwrt.org/zh-cn/doc/uci/network" target="_blank" rel="noopener">https://openwrt.org/zh-cn/doc/uci/network</a></li>
+<li><a href="https://mirrors.bfsu.edu.cn/help/openwrt/" target="_blank" rel="noopener">https://mirrors.bfsu.edu.cn/help/openwrt/</a></li>
+<li><a href="https://openwrt.org/packages/pkgdata/luci-i18n-base-lang" target="_blank" rel="noopener">https://openwrt.org/packages/pkgdata/luci-i18n-base-lang</a></li>
+<li><a href="https://openwrt.org/docs/guide-user/services/nas/sftp.server" target="_blank" rel="noopener">https://openwrt.org/docs/guide-user/services/nas/sftp.server</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/07/raspi-as-router/">https://wasteland.touko.moe//blog/2020/07/raspi-as-router/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>Router</category>
+        <category>Raspi</category>
+      </categories>
+      <tags>
+        <tag>Router</tag>
+        <tag>Raspi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在树莓派上运行 Home Assistant，支持米家等 IoT 设备接入 HomeKit</title>
+    <url>//blog/2020/06/run-hass-on-raspberry/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="捡了块树莓派"><a href="#捡了块树莓派" class="headerlink" title="捡了块树莓派"></a>捡了块树莓派</h2><p>临时被叫回学校办毕业手续，想起当年（五年前）我在淘宝买了块树莓派 2B，给家里做了个通过 HTTP 代理自动分流国内外流量的工具。那块树莓派被我带到了学校，放着吃灰三年多了。这次回学校，就顺手把这块树莓派带了回来。</p>
+<p>最近优化了家里的网络，大学四年也断断续续买了不少米家的 IoT 设备。米家设备能够原生支持 HomeKit 也应该只是最近的事，我手上只有一个台灯、三个智能插座能够加入 HomeKit 管理。因此，我打算把这台树莓派挂在 IoT 设备专用中继路由器下，作为一个中介，将其他无法原生支持 HomeKit 的米家设备接入 HomeKit，实现统一管理。</p>
+<p>为什么我不直接用米家做管理呢？一是米家的操作逻辑比较恼人；二是米家无法长期运行于后台，一些和离家、回家相关的自动化逻辑无法很好的运行。接入 HomeKit 后，这种情况会得到一定的改善。</p>
+<h2 id="桥接平台的选择"><a href="#桥接平台的选择" class="headerlink" title="桥接平台的选择"></a>桥接平台的选择</h2><p>通过资料调查和实际测试，我最终选择了 Home Assistant 作为接入智能家居设备的平台。同类解决方案还有很多，比如同样提供智能家居接入方案的 Home Bridge，ioBroker 等。我同时尝试了 Home Bridge，但是由于米家相关插件文档模糊，接入后无法正常连接挂载在网关的设备，最终作罢。</p>
+<p>其实 Home Assistant 的安装也并不容易。安装过程存在各种各样的问题和 bug，我尝试了非常多种方案才成功运行。</p>
+<h1 id="树莓派的初步配置"><a href="#树莓派的初步配置" class="headerlink" title="树莓派的初步配置"></a>树莓派的初步配置</h1><h2 id="SD-卡安装树莓派系统"><a href="#SD-卡安装树莓派系统" class="headerlink" title="SD 卡安装树莓派系统"></a>SD 卡安装树莓派系统</h2><p>我掏出了之前留在机器上的传家宝 TF 卡 三星 EVO+ 32G，不料卡在经过几次刷写后，自动写保护了。于是我又从 NS 里掏出了从 tb 20 RMB 买的朗科 32G TF 卡。现在 TF 卡的价格真的越来越便宜了，我打算屯一堆，免得弄坏了没有替换卡。</p>
+<a id="more"></a>
+
+<img src="/blog/2020/06/run-hass-on-raspberry/1.disk-management-on-windows.png" class="" title="Windows Disk Management">
+
+<p>打开 Windows 自带的 Disk Management，将原有 SD 卡分区删除，创建一个大的 FAT32 分区。这一步也可以用树莓派官方自带的 <code>Raspberry Pi Imager</code> 格盘。这个软件可以在 <a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/</a> 下载到，推荐用这个软件烧写系统盘。</p>
+<img src="/blog/2020/06/run-hass-on-raspberry/2.raspi-imager.png" class="" title="Raspberry Pi Imager">
+
+<p>由于是树莓派 2B，性能一般，所以需要尽可能地压榨硬件资源。在系统选择页面 <a href="https://www.raspberrypi.org/downloads/raspberry-pi-os/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/raspberry-pi-os/</a> 中，我选择了不带图形界面的 <code>Raspberry Pi OS (32-bit) Lite</code>。下载并解压，然后用官方烧写工具烧写系统镜像。这张 TF 卡的速度意外的很快，在 USB 3.0 读卡器下，大约有80-90MB/S 的写入速度。</p>
+<img src="/blog/2020/06/run-hass-on-raspberry/3.raspi-imager-write.png" class="" title="Raspberry Pi Imager Write OS">
+
+<img src="/blog/2020/06/run-hass-on-raspberry/4.raspi-imager-write-successful.png" class="" title="Raspberry Pi Imager Write Successful">
+
+<p>现在的树莓派官方系统是默认不开启 SSH 功能的。开启 SSH 功能的方法除了通过外接显示器在命令行输入 <code>sudo raspi-config</code> 外，也可以直接在烧写后的 TF 卡根目录下创建命名为 <code>SSH</code> 的空文件，以激活 SSH 功能。烧写完成后，由于软件会自动弹出对应设备，需要重新插拔一下读卡器，并创建对应空文件。</p>
+<p>我预先在 DHCP 服务器上设置了分配的静态 IP。如果不清楚树莓派被分配到的 IP，可以在路由器中 DHCP 租约下找到被分配的 IP 地址。建议要在路由器上做好 IP 分配。</p>
+<h2 id="镜像源"><a href="#镜像源" class="headerlink" title="镜像源"></a>镜像源</h2><p>官方系统默认的账户和密码是 pi / raspberry。登入 SSH 后，更换清华的镜像以提高 apt 更新速度。以 Debian 10（buster）为例</p>
+<blockquote>
+<h1 id="编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代："><a href="#编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代：" class="headerlink" title="编辑 /etc/apt/sources.list 文件，删除原文件所有内容，用以下内容取代："></a>编辑 <code>/etc/apt/sources.list</code> 文件，删除原文件所有内容，用以下内容取代：</h1><p>deb <a href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a> buster main non-free contrib rpi<br>deb-src <a href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a> buster main non-free contrib rpi</p>
+<h1 id="编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代："><a href="#编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代：" class="headerlink" title="编辑 /etc/apt/sources.list.d/raspi.list 文件，删除原文件所有内容，用以下内容取代："></a>编辑 <code>/etc/apt/sources.list.d/raspi.list</code> 文件，删除原文件所有内容，用以下内容取代：</h1><p>deb <a href="http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/</a> buster main ui</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装-Home-Assistant"><a href="#安装-Home-Assistant" class="headerlink" title="安装 Home Assistant"></a>安装 Home Assistant</h1><h2 id="Home-Assistant，Hass-和-Hassbian-的关系"><a href="#Home-Assistant，Hass-和-Hassbian-的关系" class="headerlink" title="Home Assistant，Hass 和 Hassbian 的关系"></a>Home Assistant，Hass 和 Hassbian 的关系</h2><p>这三者之间的关系把我绕进去了，我也是在经过大量搜索才明白了他们到底是什么。这个统一管理的程序叫 <strong>Home Assistant</strong>，它曾经叫 <strong>Hass.io</strong>。 <strong>Hassbian</strong> 是一个由官方封装好的，可以开箱即用运行 Home Assistant 的系统，且仅能运行 Home Assistant 系统，命名应该是参考了 Raspbian ，并且是基于其构建的。</p>
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>因为我们使用的是基于 Python3 运行的 Home Assistant，所以要安装 Py3 相关的依赖。同时，为了避免对运行的其他程序的影响，更方便维护，使用 python venv 作为虚拟环境运行程序。由于我在上海，所以我更换了交大的 pypi 镜像。也可以考虑清华镜像或科大镜像。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt install -y python3 python3-dev python3-venv python3-pip libffi-dev libssl-dev autoconf</span><br><span class="line">sudo apt install -y libavahi-compat-libdnssd-dev</span><br><span class="line">sudo pip3 install -i https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple pip -U</span><br><span class="line">sudo pip3 config <span class="built_in">set</span> global.index-url https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple</span><br><span class="line"></span><br><span class="line"><span class="comment"># Tsinghua tuna pypi</span></span><br><span class="line"><span class="comment"># sudo pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U</span></span><br><span class="line"><span class="comment"># sudo pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="启动虚拟环境"><a href="#启动虚拟环境" class="headerlink" title="启动虚拟环境"></a>启动虚拟环境</h2><p>创建 homeassistant 用户并配置 python 虚拟环境用于运行程序</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo useradd -rm homeassistant</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /srv</span><br><span class="line">sudo mkdir homeassistant</span><br><span class="line">sudo chown homeassistant:homeassistant homeassistant</span><br><span class="line"></span><br><span class="line">sudo su -s /bin/bash homeassistant</span><br><span class="line"><span class="built_in">cd</span> /srv/homeassistant</span><br><span class="line">python3 -m venv .</span><br><span class="line"><span class="built_in">source</span> bin/activate</span><br></pre></td></tr></table></figure>
+
+<p>后期重新进入虚拟环境的命令是</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -u homeassistant -H -s</span><br><span class="line"><span class="built_in">source</span> /srv/homeassistant/bin/activate</span><br></pre></td></tr></table></figure>
+
+<p>可以将 <code>sudo -u homeassistant -H -s &amp;&amp; cd ~</code> 写入 <code>/home/homeassistant/.bashrc</code> 尾部，这样当切换到 homeassistant 用户时，就会默认激活虚拟环境。</p>
+<h2 id="安装并运行-Home-Assistant"><a href="#安装并运行-Home-Assistant" class="headerlink" title="安装并运行 Home Assistant"></a>安装并运行 Home Assistant</h2><p>由于程序 BUG，在安装最新版本 Home Assistant 时，不会自动下载所有依赖。经过各种资料查找和尝试，我确认了可以先安装 0.100.3 版本并运行，再安装最新版本程序。</p>
+<p>在控制台运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip3 install homeassistant==0.100.3</span><br><span class="line">hass</span><br></pre></td></tr></table></figure>
+
+<p>等待 Home Assistant 安装所需的依赖并启动服务器。当控制台提示</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">2020-06-20 18:27:32 INFO (MainThread) [homeassistant.core] Timer:starting</span><br></pre></td></tr></table></figure>
+
+<p>时，代表程序已经可以正常运行了。此时 Ctrl + C 结束进程，然后安装最新版的 Home Assistant。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip3 install homeassistant -U</span><br><span class="line">hass</span><br></pre></td></tr></table></figure>
+
+<p>继续等待一段时间的依赖安装，然后进入 <a href="http://IP:8123" target="_blank" rel="noopener">http://IP:8123</a> 配置 Home Assistant。</p>
+<img src="/blog/2020/06/run-hass-on-raspberry/5.install-finished.png" class="" title="Home Assistant 安装完成">
+
+<h1 id="配置-Home-Assistant"><a href="#配置-Home-Assistant" class="headerlink" title="配置 Home Assistant"></a>配置 Home Assistant</h1><h2 id="接入米家"><a href="#接入米家" class="headerlink" title="接入米家"></a>接入米家</h2><p>小米在米家 app 开放了部分绿米 IoT 设备的管理接口，允许第三方管理程序管理 IoT 智能设备。但是大多数米家设备并没有在明面上开放管理密钥。但是实际情况中，所有通过蓝牙或 Zigbee 协议连接的智能设备都需要配置网关，网关需要接入 WiFi，算上原本就通过 WiFi 接入的设备，所有米家设备都可以从内网进行访问。米家 app 也是通过内网 WiFi 进行控制的</p>
+<p>感谢开源社区和开发者的工作，封装好了各种插件，使我们能够直接配置获取到的 token 和设备地址，将 IoT 设备接入 Home Assistant。设备的接入方式可以在 <a href="https://www.home-assistant.io/integrations/#search/xiaomi" target="_blank" rel="noopener">https://www.home-assistant.io/integrations/#search/xiaomi</a> 页面找到，配置文件样例也包含在页面中。可以通过 Android 系统下 <code>米家 5.4.54</code> 版本程序泄露的日志获取 token ，参考 <a href="https://zhuanlan.zhihu.com/p/62681849" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/62681849</a></p>
+<img src="/blog/2020/06/run-hass-on-raspberry/6.hass-sample.png" class="" title="Home Assistant 界面">
+
+<p>根据各处的教程，我将我的设备接入了 Home Assistant。上面的截图就是界面平时的样子，可以手动更改界面排序。我打算在之后用一块独立的电子墨水屏显示状态。由于我刚组了 Mesh，重命名了 WiFi ，所以以前的部分设备掉线了，图中没有相关的设备信息</p>
+<p>支持的米家设备可以在 <a href="https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB" target="_blank" rel="noopener">https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB</a> 查询到，可以说基本覆盖全了</p>
+<h2 id="桥接至-Apple-HomeKit"><a href="#桥接至-Apple-HomeKit" class="headerlink" title="桥接至 Apple HomeKit"></a>桥接至 Apple HomeKit</h2><p>桥接至 HomeKit 的方法也很简单。在 /home/homeassistant/.homeassistant 下的 <code>configuration.yaml</code> 中新增一行</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">homekit:</span></span><br></pre></td></tr></table></figure>
+
+<p>然后重启程序即可。重启后就可以在左下角的通知处看到接入 HomeKit 的消息。至于自动化、联动等操作，我打算全部通过 HomeKit 和米家管理。因此，这部分配置我没有继续研究下去</p>
+<img src="/blog/2020/06/run-hass-on-raspberry/7.homekit-code.png" class="" title="接入 HomeKit">
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://blog.csdn.net/fanmengmeng1/article/details/46366695" target="_blank" rel="noopener">https://blog.csdn.net/fanmengmeng1/article/details/46366695</a></li>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/raspbian/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/help/raspbian/</a></li>
+<li><a href="https://www.home-assistant.io/docs/installation/raspberry-pi/" target="_blank" rel="noopener">https://www.home-assistant.io/docs/installation/raspberry-pi/</a></li>
+<li><a href="https://home-assistant.cc/installation/general/" target="_blank" rel="noopener">https://home-assistant.cc/installation/general/</a></li>
+<li><a href="https://github.com/home-assistant/core/issues/28361" target="_blank" rel="noopener">https://github.com/home-assistant/core/issues/28361</a></li>
+<li><a href="https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB" target="_blank" rel="noopener">https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/62681849" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/62681849</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/run-hass-on-raspberry/">https://wasteland.touko.moe//blog/2020/06/run-hass-on-raspberry/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>家庭网络管理(4): 单网口安装 OpenWRT 实现单臂软路由</title>
+    <url>//blog/2020/06/home-network-4-soft-router-at-unraid/</url>
+    <content><![CDATA[<h1 id="软路由"><a href="#软路由" class="headerlink" title="软路由"></a>软路由</h1><p>为了进一步发挥 NAS 的作用，我决定在它上面部署一个软路由。因为软路由可以更好地管理流量，部署科学上网，特别是在主路由小米 AC2100 <code>MT7621</code> 方案性能有限的情况下，x86 架构的软路由能够进行的加解密运算能力远远超过主路由。我的 NAS 只有板载千兆单网口，实现起来没有多网口路由器那么优雅，好在还是能够用单臂路由的方法实现软路由。</p>
+<h1 id="网络拓扑规划"><a href="#网络拓扑规划" class="headerlink" title="网络拓扑规划"></a>网络拓扑规划</h1><h2 id="设备一览"><a href="#设备一览" class="headerlink" title="设备一览"></a>设备一览</h2><p>在规划网络之前，需要先清点一下我有哪些设备，这些设备分别有哪些上网的需求。</p>
+<p>路由器，我有</p>
+<ul>
+<li>一台联通的光猫</li>
+<li>一台小米 AC2100</li>
+<li>一台小米 R3</li>
+<li>一台老旧的小米 3C（大概就不用了）</li>
+</ul>
+<p>终端设备我有</p>
+<ul>
+<li>若干 PC</li>
+<li>若干手机</li>
+</ul>
+<p>IoT 设备我有</p>
+<ul>
+<li>遍布房间的传感器</li>
+<li>智能插座</li>
+<li>开关</li>
+</ul>
+<p>因此，我打算将光猫作为拨号终端；小米 AC2100 作为主路由，保留小米原有系统（后来我把它刷成 OpenWRT 了）；小米 R3 无线桥接 AC2100，作为 IoT 的接入点（因为位置的原因，AC 2100 摆放在光猫边上，2.4G 没有办法很好地覆盖整个屋子，所以要用 R3 中继）。光猫的无线功能关闭，避免影响其他网络的速度。</p>
+<h2 id="拓扑规划"><a href="#拓扑规划" class="headerlink" title="拓扑规划"></a>拓扑规划</h2><p>NAS 使用网线连接小米 AC2100。UNRAID 系统通过网桥（一般为 br0）让虚拟机和 Docker 上网，可以理解为一个二层交换机。我简单做个一个拓扑图，解释我打算规划的拓扑结构。</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/%E5%8D%95%E8%87%82%E8%B7%AF%E7%94%B1%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png" class="" title="单臂路由网络拓扑图">
+
+<p>我的规划如图，光猫负责拨号，小米 AC2100 作为主路由处理流量，R3 通过无线中继服务 IoT 设备，NAS 虚拟化各种服务和软路由提供功能。其中，主路由的 IP 地址为 192.168.31.1，软路由的 IP 地址为 192.168.31.2。为了让所有流量在转发至公网时经过软路由处理，由 AC2100、R3 所有通过 AP 接入的设备和有线接入的设备都要以 192.168.31.2（软路由） 作为网关，而软路由要以 192.168.31.1（主路由） 作为网关。为了实现这个功能，整个 LAN 中只能由软路由一个 DHCP 服务端。即，让新加入的设备自动以软路由作为网关。</p>
+<h1 id="单臂软路由配置"><a href="#单臂软路由配置" class="headerlink" title="单臂软路由配置"></a>单臂软路由配置</h1><h2 id="选择系统"><a href="#选择系统" class="headerlink" title="选择系统"></a>选择系统</h2><a id="more"></a>
+
+<p>首先下载 OpenWRT 系统安装文件。进入 <a href="https://downloads.openwrt.org/releases/" target="_blank" rel="noopener">https://downloads.openwrt.org/releases/</a> 选择对应版本和对应系统架构。由于我是 x86，所以我下载了 x86 generic 版本（openwrt-19.07.3-x86-generic-combined-ext4.img）<a href="https://downloads.openwrt.org/releases/19.07.3/targets/x86/generic/" target="_blank" rel="noopener">https://downloads.openwrt.org/releases/19.07.3/targets/x86/generic/</a>。将其解压，复制到 NAS 上任意位置。由于该镜像已经打包好，可以作为硬盘使用，所以不用额外预留其他空间用于存放文件。</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-image.png" class="" title="OpenWRT 镜像">
+
+<h2 id="部署虚拟机"><a href="#部署虚拟机" class="headerlink" title="部署虚拟机"></a>部署虚拟机</h2><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-vm-setting.png" class="" title="OpenWRT VM 设置">
+
+<p>添加 VM - Linux，直通 CPU 建议全选上，毕竟处理网络流量比较耗费算力。BIOS 改为 SeaBIOS，主硬盘 Manual，指向 OpenWRT 镜像位置，其他保持默认即可。</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-network-config.png" class="" title="OpenWRT 初次运行网络设置">
+
+<p>创建虚拟机并自动运行。进入 VNC，先用 <code>passwd</code> 命令修改默认密码，然后进入 <code>vi /etc/config/network</code> 修改为预定的内网 IP 地址。保存配置文件， <code>/etc/init.d/network restart</code> 重启网络配置。浏览器访问内网 IP 地址，一切顺利的话，机器就能启动了。由于我是演示，使用 192.168.31.3 作为 IP。</p>
+<p>如果 VNC 中观察到 <code>Switching to clocksource tsc</code> 或者其他错误导致按回车也没反应，可以考虑更换其他架构的镜像。</p>
+<h2 id="初期配置"><a href="#初期配置" class="headerlink" title="初期配置"></a>初期配置</h2><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-interface-settings.png" class="" title="OpenWRT UI 界面网络设置">
+
+<p>安装完路由系统后，首先需要对系统进行一些初期配置。浏览器进入设置好的 IP，<code>Network</code> - <code>Interfaces</code> - <code>Edit LAN</code>，增加 <code>gateway</code> 为主路由（在我这是小米 AC2100）的 IP 地址，IPv4 broadcast<br> 保持默认，DNS 随意设置（但是一定要设置）。切换到 <code>DHCP Server</code> 选项卡，将 <code>Advanced Settings</code> 的 <code>Force</code> 勾选。</p>
+<p>SSH 登录路由，执行 <code>sed -i &#39;s_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_&#39; /etc/opkg/distfeeds.conf</code> 更换国内 OpenWRT 源，更新软件包 <code>opkg update</code> ，执行 <code>opkg install luci-i18n-base-zh-cn</code> 安装中文 Web 界面。如果安装过程无法正常进行，请重新检查联网设置。</p>
+<h2 id="测试联网情况"><a href="#测试联网情况" class="headerlink" title="测试联网情况"></a>测试联网情况</h2><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/local-test.png" class="" title="本地联网测试">
+
+<p>为了测试软路由工作情况，我们可以手工设置本地网关，修改网关至软路由对应的 IP 地址，查看连接情况。如果一切正常，就可以关掉主路由上的 DHCP 服务，让软路由提供 DHCP 服务了。一般来说，只要初期配置中路由命令行能够正常更新软件包，这一步也不会有太多问题。</p>
+<p>在软路由提供 DHCP 服务后，新接入的设备和需要更新 DHCP 租约的设备都会以软路由作为网关访问外网。从路径上看，就是 终端 - 主路由 - 软路由（处理流量） - 主路由 - WAN。</p>
+<h1 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h1><h2 id="延迟"><a href="#延迟" class="headerlink" title="延迟"></a>延迟</h2><p>我使用高精度延迟测试工具 hrping 进行测试，这个工具可以从 <a href="http://www.cfos.de/en/download/start-download.htm?file=/hrping-v507.zip" target="_blank" rel="noopener">http://www.cfos.de/en/download/start-download.htm?file=/hrping-v507.zip</a> 下载。我将一台电脑连接至联通光猫 192.168.1.1 ，关闭防火墙，进行长时间 ping 测试。</p>
+<p><strong>软路由作为网关</strong></p>
+<p>tracert</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/tracert.png" class="" title="Tracert 结果">
+
+<p>ping</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/ping-test-with-gateway.png" class="" title="软路由作为网关">
+
+<p><strong>主路由作为网关</strong></p>
+<p>ping</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/ping-test-without-gateway.png" class="" title="主路由作为网关">
+
+<p>可以看到，使用软路由作为路由，仅增加了 0.5ms 的延迟，稳定性也没有较大的变化。相对于软路由的好处来说，这个延迟增加是可以接受的。</p>
+<h2 id="带宽和功耗"><a href="#带宽和功耗" class="headerlink" title="带宽和功耗"></a>带宽和功耗</h2><h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>我使用 iperf3 作为带宽测试工具，测试终端间、终端到软路由、软路由和 NAS 之间的带宽和功耗。以下简单列出一些测试结果</p>
+<p>AC2100 的网口为千兆</p>
+<h4 id="NAS-静止功耗"><a href="#NAS-静止功耗" class="headerlink" title="NAS 静止功耗"></a>NAS 静止功耗</h4><p>29.59W</p>
+<h4 id="PC（软路由网关）-PC（光猫-LAN）"><a href="#PC（软路由网关）-PC（光猫-LAN）" class="headerlink" title="PC（软路由网关）- PC（光猫 LAN）"></a>PC（软路由网关）- PC（光猫 LAN）</h4><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/bandwidth-test-1.png" class="" title="软路由 PC - 光猫 LAN">
+
+<p>由于联通的光猫只有一个千兆口，剩下全是百兆口，所以实际测速只有百兆。此时的 NAS 功耗为 37 - 40W</p>
+<h4 id="PC（软路由网关）-软路由"><a href="#PC（软路由网关）-软路由" class="headerlink" title="PC（软路由网关） - 软路由"></a>PC（软路由网关） - 软路由</h4><p>800Mb 49W</p>
+<h4 id="PC（软路由网关）-NAS"><a href="#PC（软路由网关）-NAS" class="headerlink" title="PC（软路由网关） - NAS"></a>PC（软路由网关） - NAS</h4><p>930Mb 53W</p>
+<h4 id="软路由-NAS-（网桥内网）"><a href="#软路由-NAS-（网桥内网）" class="headerlink" title="软路由 - NAS （网桥内网）"></a>软路由 - NAS （网桥内网）</h4><p>6.5-7.5Gb 58W</p>
+<h4 id="软路由-V2Ray-加密带宽和功耗"><a href="#软路由-V2Ray-加密带宽和功耗" class="headerlink" title="软路由 V2Ray 加密带宽和功耗"></a>软路由 V2Ray 加密带宽和功耗</h4><p>我通过 OpenClash 挂 V2Ray 的梯子，远程访问我的服务器，测试经过 V2Ray 加密之后的功耗。实际测试结果为</p>
+<p>100Mb 37W<br>260Mb 43W</p>
+<h3 id="TCP-with-V2Ray"><a href="#TCP-with-V2Ray" class="headerlink" title="TCP with V2Ray"></a>TCP with V2Ray</h3><p>上述 V2Ray 的测试让我突发奇想，打算测试一下 NAS CPU 在满载 V2Ray 时的负载，看看这块 CPU 对 V2Ray 流量的处理能力。为了让 iperf3 通过代理，我简单编写了一个（自攻自受）的反向代理，让 V2Ray 在此期间进行一轮加密和一轮解密。iperf3 的流量穿过一层 V2Ray 的隧道，在网桥内网中测试。</p>
+<p><strong>软路由 - NAS （没有 V2Ray）</strong></p>
+<p>6.5-7.5Gb 58W</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/test-without-v2ray.png" class="" title="没有 V2Ray， CPU 负载">
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/test-without-v2ray-res.png" class="" title="没有 V2Ray， 带宽">
+
+<p><strong>软路由 - NAS （V2Ray 一次加密，一次解密 + 反向代理）</strong></p>
+<p>2.5-3Gb 58W</p>
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/test-with-v2ray.png" class="" title="没有 V2Ray， CPU 负载">
+<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/test-with-v2ray-res.png" class="" title="没有 V2Ray， 带宽">
+
+<p>结果表明这块 CPU 的性能和功耗还是非常棒的，在满载的情况下可以同时处理 2.5Gb 带宽以上的 V2Ray 流量（实际情况应该和这个不同，实际情况中不需要一次加密和一次解密，但是需要考虑其他运算，例如 ws，tls），应付日常使用绰绰有余。</p>
+<h1 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h1><p>一切看起来都很美好，但是也有美中不足的地方。UNRAID 运行的 Docker 无法以软路由作为网关，即 UNRAID Docker 的流量无法经过软路由。目前我并不知道为什么会这样，可能是由于启动顺序不同导致的问题。因为如果要修改 UNRAID 的默认网关，需要停止整个阵列。一旦阵列停止，Docker 和 VM（包括软路由）也需要停止。如果修改完设置，启动阵列时，Docker 会因为没有 DHCP 服务器而无法分配到 IP 地址（一般来说 VM 启动优先级更慢）。我正在继续寻找解决方案。</p>
+<p>由于 CPU 性能足够，我打算下一步上万兆网卡和万兆交换机，让内网进一步加速。同时，我打算直接在 NAS 上安装万兆网卡。这块主板还有一个 PCIE x16 插槽，可以插一张多口万兆网卡实现软路由硬件直通，进一步提高效率。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://openwrt.org/toh/views/toh_fwdownload" target="_blank" rel="noopener">https://openwrt.org/toh/views/toh_fwdownload</a></li>
+<li><a href="http://www.cfos.de/en/ping/ping.htm" target="_blank" rel="noopener">http://www.cfos.de/en/ping/ping.htm</a></li>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/</a></li>
+<li><a href="https://post.smzdm.com/p/az502200/" target="_blank" rel="noopener">https://post.smzdm.com/p/az502200/</a></li>
+<li><a href="https://www.jianshu.com/p/da01ce070688" target="_blank" rel="noopener">https://www.jianshu.com/p/da01ce070688</a></li>
+<li><a href="https://post.smzdm.com/p/ax027g83/" target="_blank" rel="noopener">https://post.smzdm.com/p/ax027g83/</a></li>
+<li><a href="https://toutyrater.github.io/app/reverse.html" target="_blank" rel="noopener">https://toutyrater.github.io/app/reverse.html</a></li>
+<li><a href="https://iperf.fr/iperf-doc.php" target="_blank" rel="noopener">https://iperf.fr/iperf-doc.php</a></li>
+<li>感谢拓扑绘画工具 <a href="https://www.processon.com/" target="_blank" rel="noopener">https://www.processon.com/</a> 尽管使用中还遇上很多 BUG</li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-4-soft-router-at-unraid/">https://wasteland.touko.moe//blog/2020/06/home-network-4-soft-router-at-unraid/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>NAS</category>
+        <category>Router</category>
+      </categories>
+      <tags>
+        <tag>NAS</tag>
+        <tag>Router</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>家庭网络管理(3): UNRAID 安装黑群晖和其他常用软件</title>
+    <url>//blog/2020/06/home-network-3-hack-synology-and-more/</url>
+    <content><![CDATA[<h1 id="NAS-该用来做什么"><a href="#NAS-该用来做什么" class="headerlink" title="NAS 该用来做什么"></a>NAS 该用来做什么</h1><p>我打算将 NAS 定位为一个家庭用的小型多媒体平台，并作为软路由处理流量。因此， NAS 应该要能满足我挂 BT 下载的需求，并且还要能够直接读取 BT 下载的内容，以家庭影院的形式展现。经过筛选，我选择安装以下 Docker 软件</p>
+<ul>
+<li>Transmission （BT 下载，Web UI 控制）</li>
+<li>Plex Media Server （家庭影院）</li>
+<li>Pi-Hole （DNS 广告过滤和自定义 Host）</li>
+<li>V2Ray （公网访问内网，等于 VPN）</li>
+<li>NginX （统一反代 Web UI，管理端口暴露规则）</li>
+</ul>
+<p>以及，感谢 UNRAID 对 kvm 的良好支持，我还安装了</p>
+<ul>
+<li>黑群晖</li>
+</ul>
+<h1 id="黑群晖"><a href="#黑群晖" class="headerlink" title="黑群晖"></a>黑群晖</h1><p>群晖是一个卖软件的 NAS 硬件商，其软件十分好用，新手友好。自然，我先选择安装破解的群晖系统。实际上，装完群晖后，我几乎没有使用里面的功能，因为我还是比较倾向于用 UNRAID 自带的 Docker 完成我需要的服务。不过我在研究黑群晖安装的过程中，学习了一些经验，这里做一下记录。</p>
+<h2 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h2><img src="/blog/2020/06/home-network-3-hack-synology-and-more/xpenology-download.png" class="" title="XPENOLOGY 黑群晖引导">
+
+<p>安装黑群晖的原理是安装一个第三方的、破解后的引导，来欺骗群晖系统镜像正常工作。因此我们需要下载破解的引导作为启动盘，然后去官方网站上下载安装镜像就可以了。破解的引导我推荐在 <a href="https://xpenology.club/downloads/" target="_blank" rel="noopener">https://xpenology.club/downloads/</a> 下载。网站中 DSM 6.2指的是支持 <code>DSM 6.2</code> 的系统，引导的文件名最后一串为群晖的机型。在安装时注意下载对应系统和机型的镜像。可以在 <a href="https://archive.synology.com/download/DSM/" target="_blank" rel="noopener">https://archive.synology.com/download/DSM/</a> 下载。</p>
+<p>由于我的虚拟机无法正常启动 <code>Jun’s Loader v1.04b DS918+</code> ，这里以 <code>Jun’s Loaders DSM 6.2</code> - <code>Jun’s Loader v1.03b DS3617xs</code> 为例。下载对应引导并解压，将引导拷贝至 NAS。我创建了一个共享文件夹 HackSynology 用于放置群晖相关文件。</p>
+<a id="more"></a>
+
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/creat-share.png" class="" title="XPENOLOGY 创建共享目录">
+
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/xpenology-boot.png" class="" title="XPENOLOGY 黑群晖引导文件">
+
+<p>然后到群晖官网，下载对应的系统镜像。在此处样例中，我下载了 <code>DSM_DS3617xs_23739.pat</code> 文件。将这两个文件准备好，就可以开始安装黑群晖了。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/dsm-download.png" class="" title="群晖官方系统镜像">
+
+<h2 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h2><img src="/blog/2020/06/home-network-3-hack-synology-and-more/vm-and-bios.png" class="" title="创建 Linux 虚拟机，设置 BIOS">
+
+<p>创建一个 Linux 虚拟机，命名，选择直通的 CPU 核心。UNRAID 的这点我很喜欢，它能够手动指定虚拟机使用其中的某几个核心，避免虚拟机大量占用资源。这里我选择了 CPU 1 作为黑群晖的核心。RAM 1-2GB 就够了。由于兼容性问题，此处需要选择 <code>i440fx-4.2</code> 和 <code>Sea-BIOS</code> 。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/vm-disk.png" class="" title="设置硬盘和启动引导分区">
+
+<p>启动引导和挂载硬盘如图所示设置。其中挂载硬盘的大小可以按照个人喜好修改，总线填写 <code>SATA</code>，类型为 <code>qcow2</code> ，这样动态分配空间，不需要创建硬盘时就占用对应容量。主硬盘指向下载的破解启动引导，总线类型为 USB。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/vm-mac-and-start.png" class="" title="关闭创建后启动">
+
+<p>网卡随意，手动关闭最下方的 <code>Start VM atfer creation</code> 并保存。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/vm-net-model-type.png" class="" title="找到虚拟网卡">
+
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/vm-net-model-type-changed.png" class="" title="修改虚拟网卡为 e1000">
+
+<p>重新进入编辑页面，点击右上方的 <code>FORM VIEW</code> ，转为 <code>XML VIEW</code> ，搜索 <code>&lt;model type=</code> ，将虚拟网卡型号修改为 <code>e1000</code> 或 <code>vmxnet3</code> （理论性能更佳，未验证）。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/vm-start.png" class="" title="启动虚拟机">
+
+<p>此时可以保存，启动机器。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><img src="/blog/2020/06/home-network-3-hack-synology-and-more/synology-boot-normally.png" class="" title="虚拟机正常启动">
+
+<p>如果一切正常，VNC 中可以看到上方的情况。此时可以打开 <a href="http://find.synology.com/" target="_blank" rel="noopener">http://find.synology.com/</a> ，搜索内网的群晖新机器地址。如果找不到，可能需要从 <a href="https://www.synology.com/en-global/support/download" target="_blank" rel="noopener">https://www.synology.com/en-global/support/download</a> 下载 Synology Assistant 进一步寻找。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/lan-synology-device-found.png" class="" title="找到内网群晖">
+
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/manual-install.png" class="" title="手动选择安装镜像">
+
+<p>正常进行安装流程。当需要安装系统镜像时，选择手动安装，上传从官网下载的系统镜像。一定要保证版本和机型对应。如果无法安装系统镜像，首先检查版本是否正确，如果都没问题，可以考虑更换破解引导的版本。我一开始测试的是 <code>DS918+</code> 机型的破解引导，后来发现不能工作，于是更换了现在的 <code>DS3617xs</code> 。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/restart.png" class="" title="完成安装，重启">
+
+<p>安装完成后，如果 Web 界面显示重启，黑群晖就成功以虚拟机的形式被安装了。之后进入群晖系统，进行初期配置。群晖的交互足够用户友好，不存在什么困难，这里就不再赘述。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/success.png" class="">
+
+<h1 id="其他-Docker-应用"><a href="#其他-Docker-应用" class="headerlink" title="其他 Docker 应用"></a>其他 Docker 应用</h1><h2 id="Transmission-with-web-UI"><a href="#Transmission-with-web-UI" class="headerlink" title="Transmission (with web UI)"></a>Transmission (with web UI)</h2><img src="/blog/2020/06/home-network-3-hack-synology-and-more/transmission-install.png" class="" title="Transmission 安装">
+
+<p>Transmission 的安装很容易。进入 Apps 搜索 Transmission，找到作者是 linuxserver 的，下载即可。我简单提供一份配置样本。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/transmission-settings.png" class="" title="Transmission 配置">
+
+<p>9091 端口是 Transmission 的 Web UI，/downloads 是默认下载文件夹，其他按照默认配置就好。值得一提的是，我额外增加了一个参数 <code>TRANSMISSION_WEB_HOME</code> ，设置为 <code>/transmission-web-control/</code> ，这是一个自带的 Web 界面美化插件，类似一个主题，添加 Variable 变量即可。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/transmission-web.png" class="" title="Transmission Web">
+
+<p>安装完成后，可以从 Docker - Transmission 进入 Web UI，添加下载或是管理做种了。</p>
+<h2 id="PLEX"><a href="#PLEX" class="headerlink" title="PLEX"></a>PLEX</h2><h3 id="主程序安装"><a href="#主程序安装" class="headerlink" title="主程序安装"></a>主程序安装</h3><img src="/blog/2020/06/home-network-3-hack-synology-and-more/plex-install.png" class="" title="PLEX 安装">
+
+<p>PLEX 在 Apps 中自带官方打包好的版本，直接安装即可。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/plex-settings.png" class="" title="PLEX 配置">
+
+<p>设置可以参考上图。其中 <code>Key 1: PLEX_CLAIM</code> 需要在官网 <a href="https://www.plex.tv/" target="_blank" rel="noopener">https://www.plex.tv/</a> 注册后，进入 <a href="https://plex.tv/claim" target="_blank" rel="noopener">https://plex.tv/claim</a> 申请。PLEX Claim ID 有效期很短，申请后建议立刻启动服务器，进入 Web UI 界面完成绑定流程。失效了也没有关系，重新进入 claim 页面申请、重新填写 Docker 设置中的变量就可以了。</p>
+<p>值得一提的是，为了将 Transmission 下载的内容直接导入 PLEX ，我将 Transmission 下载文件夹对应的宿主机文件夹同时挂载在 PLEX 对应的数据文件夹下。可以参考设置中最后一项 <code>Transmission Share:</code> 。这样一来，当 Transmission 完成下载，就不需要手动将媒体文件移动至 PLEX 数据文件夹中。</p>
+<h3 id="PLEX-AniDB-插件"><a href="#PLEX-AniDB-插件" class="headerlink" title="PLEX AniDB 插件"></a>PLEX AniDB 插件</h3><p>PLEX 自带的刮削器大多是欧美电影 / 电视节目的资料，较少包含动画的信息。这个问题可以通过安装第三方插件解决。这里推荐 Hama.bundle，安装方式参考 README - Installation <a href="https://github.com/ZeroQI/Hama.bundle#installation" target="_blank" rel="noopener">https://github.com/ZeroQI/Hama.bundle#installation</a> ，这里不赘述。</p>
+<blockquote>
+<ul>
+<li>“Scanners”         “Scanners/Series” folder needs creating. Absolute series Scanner.py” goes inside. <pre><code>https://raw.githubusercontent.com/ZeroQI/Absolute-Series-Scanner/master/Scanners/Series/Absolute%20Series%20Scanner.py</code></pre></li>
+<li>“Plug-ins”         <a href="https://github.com/ZeroQI/Hama.bundle" target="_blank" rel="noopener">https://github.com/ZeroQI/Hama.bundle</a> &gt; “Clone or download &gt; Download Zip. Copy Hama.bundle-master.zip\Hama.bundle-master in plug-ins folders but rename to “Hama.bundle” (remove -master) </li>
+</ul>
+</blockquote>
+<ul>
+<li><a href="https://github.com/ZeroQI/Hama.bundle" target="_blank" rel="noopener">https://github.com/ZeroQI/Hama.bundle</a></li>
+<li><a href="https://github.com/ZeroQI/Absolute-Series-Scanner/" target="_blank" rel="noopener">https://github.com/ZeroQI/Absolute-Series-Scanner/</a></li>
+</ul>
+<h2 id="Pi-Hole"><a href="#Pi-Hole" class="headerlink" title="Pi-Hole"></a>Pi-Hole</h2><img src="/blog/2020/06/home-network-3-hack-synology-and-more/pihole-install.png" class="" title="Pi-Hole 安装">
+
+<p>这是一个通过污染 DNS 解析来封锁广告的工具，也可以直接在官方的 Apps 中下载到。配置流程按照官方提供的模板微调配置即可。建议通过网桥接入，自定义一个 IP 地址。注意 Docker 设置的 IP 地址要和模板后半部分设置的 ServerIP 相同。面板的密码 <code>WEBPASSWORD</code> 可以随便写一个，在程序运行后，进入 Docker 命令行，运行命令 <code>pi-hole password</code> 重置密码。</p>
+<p>在后期修改配置的过程中，我改动了 Pi-Hole 的 IP 地址导致面板无法正常访问。此时也可以通过进入 Docker 的 Pi-Hole 命令行，运行 <code>sudo pihole -a -p</code> 重新配置程序。</p>
+<img src="/blog/2020/06/home-network-3-hack-synology-and-more/pihole-web.png" class="" title="Pi-Hole Web 界面">
+
+<p>如果有想使用域名访问 Pi-Hole 的需求，可以参考这篇文章。我还没有测试，不过看起来 it works。</p>
+<ul>
+<li><a href="https://discourse.pi-hole.net/t/how-to-enable-remote-internet-access-for-pi-hole-web-dashboard/7025" target="_blank" rel="noopener">https://discourse.pi-hole.net/t/how-to-enable-remote-internet-access-for-pi-hole-web-dashboard/7025</a></li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>关于 Nginx 和 V2Ray 的安装，主要是用于改善我个人体验和远程访问内网需求的。这些软件安装和其他平台无异。关于用法和安装过程，我会在之后的文章介绍。</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://www.reddit.com/r/unRAID/comments/7sf0hg/use_your_unraid_box_as_an_ad_blocking_dns_server/" target="_blank" rel="noopener">https://www.reddit.com/r/unRAID/comments/7sf0hg/use_your_unraid_box_as_an_ad_blocking_dns_server/</a></li>
+<li><a href="https://forums.plex.tv/t/how-do-you-install-the-official-plex-for-unraid/206596" target="_blank" rel="noopener">https://forums.plex.tv/t/how-do-you-install-the-official-plex-for-unraid/206596</a></li>
+<li><a href="https://support.plex.tv/articles/200264746-quick-start-step-by-step-guides/" target="_blank" rel="noopener">https://support.plex.tv/articles/200264746-quick-start-step-by-step-guides/</a></li>
+<li><a href="https://support.plex.tv/articles/201373823-nas-devices-and-limitations/" target="_blank" rel="noopener">https://support.plex.tv/articles/201373823-nas-devices-and-limitations/</a></li>
+<li><a href="https://handlers.sans.edu/gbruneau/pihole.htm" target="_blank" rel="noopener">https://handlers.sans.edu/gbruneau/pihole.htm</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-3-hack-synology-and-more/">https://wasteland.touko.moe//blog/2020/06/home-network-3-hack-synology-and-more/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>NAS</category>
+      </categories>
+      <tags>
+        <tag>NAS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>家庭网络管理(2): 部署和使用 UNRAID</title>
+    <url>//blog/2020/06/home-network-2-enjoy-with-UNRAID/</url>
+    <content><![CDATA[<h1 id="选择-UNRAID"><a href="#选择-UNRAID" class="headerlink" title="选择 UNRAID"></a>选择 UNRAID</h1><p>在组装完 NAS 之后，下一步就是考虑如何将 NAS 的硬件性能高效利用。经过对群晖、UNRAID、FreeNAS 等 NAS 操作系统的调研后，我决定使用 UNRAID 作为我的 NAS OS。一是因为 UNRAID 对 Docker 和 VM 的支持较好，有庞大的社区支持；二是因为 UNRAID 的阵列功能很好用，自带的软 RAID 功能可以只用一张 Parity Check 盘完成其他所有盘的校验；三是因为 UNRAID 的 Web UI （相对）比较符合我的审美。话不多说，立刻开始破解版 UNRAID 安装。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>UNRAID 的官网是 <a href="https://unraid.net/" target="_blank" rel="noopener">https://unraid.net/</a> ，价格表在 <a href="https://unraid.net/pricing" target="_blank" rel="noopener">https://unraid.net/pricing</a> 。从价格上看，Basic 订阅只要 60 刀，还是比较合适的。由于我第一次使用这个操作系统，所以先从破解版入手。</p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/unraid-pricing.png" class="" title="UNRAID 价格表">
+
+<p>安装 UNRAID 需要准备一个 U 盘作为启动盘和系统盘，并且之后整个系统就安装在这块 U 盘中。这个 U 盘在以后使用 UNRAID 时，需要一直插在 USB 口上。不能使用 SD 卡 + 读卡器，因为可能获取不到正确的设备 ID。 UNRAID 系统根据闪存的设备 ID 分发密钥。在安装之前，需要将闪存格式化成 FAT32 格式。如果 Windows 不支持格式化为 FAT32 ，可以使用 <a href="http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm" target="_blank" rel="noopener">Windows GUI version of <em>fat32format</em></a> 将闪存格式化为 FAT32 格式。<strong>切记，在进行格式化操作之前，务必做好数据备份。</strong></p>
+<p>截至目前，最新的破解版是 <code>UNRAID 6.8.2</code> ，下载地址在 <a href="http://www.hopol.cn/2020/06/1675/" target="_blank" rel="noopener">http://www.hopol.cn/2020/06/1675/</a> 。这个安装包自带密钥计算工具，可以使用 <a href="https://koolshare.cn/thread-181253-1-1.html" target="_blank" rel="noopener">https://koolshare.cn/thread-181253-1-1.html</a> 提供的一键安装工具进行安装；或者按照破解版下载页面的安装方法设置 UNRAID U 盘 启动，然后再回到 Windows 进行破解密钥生成。</p>
+<h1 id="初期配置"><a href="#初期配置" class="headerlink" title="初期配置"></a>初期配置</h1><h2 id="点亮"><a href="#点亮" class="headerlink" title="点亮"></a>点亮</h2><p>先将显示器接上运行 UNRAID 的机器。在开机启动时，狂按 Del 进入 BIOS 配置页面，修改默认主板设置。我先修改默认启动引导至装有 UNRAID 系统的 U 盘上，然后打开了 CPU 的虚拟化功能（VT-d），F10 保存重启。</p>
+<p>启动选项选择 <code>Unraid OS (Headless)</code> 。如果正常启动，在命令行可以看到 UNRAID 被分配到的 IP 地址。通过 Web 访问即可。默认账户为 root ，无密码。</p>
+<a id="more"></a>
+
+<h2 id="配置网络"><a href="#配置网络" class="headerlink" title="配置网络"></a>配置网络</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/unraid-network-settings.png" class="" title="UNRAID 静态 IP 配置">
+
+<p>第一步需要配置网络，保证机器使用固定的 IP 地址。在阵列停止的情况下，进入 SETTINGS - Network Settings 配置网络。为了让 IP 不发生变化，建议给 UNRAID 设置一个静态 IP，网关指向当前主路由。由于目前我的网络没有运行 IPv6 服务，故没有设置 v6 地址。</p>
+<h2 id="配置阵列"><a href="#配置阵列" class="headerlink" title="配置阵列"></a>配置阵列</h2><p>UNRAID 支持软 RAID 0 数据盘（data divices）、校验盘（parity devices）和缓存盘（cache devices）。其中，数据盘和校验盘建议使用机械硬盘，并且校验盘的容量必须大于任意一个数据盘。缓存盘可以使用固态硬盘。使用缓存盘将会极大改善用户体验。所有新安装的硬盘都需要先格式化再运行，格式化选项可以在主页看到。</p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/unraid-array-setting.png" class="" title="阵列配置">
+
+<p>我有两块 HDD 和一块 SSD ，因此我将 SSD 作为缓存盘，HDD 作为数据盘。我暂时不打算上校验盘。</p>
+<h3 id="共享文件夹的缓存方式"><a href="#共享文件夹的缓存方式" class="headerlink" title="共享文件夹的缓存方式"></a>共享文件夹的缓存方式</h3><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/user-share-folder.png" class="" title="User Share">
+
+<p>我们可以通过 User Share 面板创建内网共享目录，创建出的共享目录可以被 Windows 发现。在系统中挂载了缓存盘的情况下， UNRAID 有四种共享文件夹的缓存策略。</p>
+<ul>
+<li><strong>Yes</strong> 只要缓存上的可用空间大于设置的最小可用空间，总是将新文件写入缓存，反之就直接把文件写入数据盘。<br><strong>mover*</strong> 运行时，如果文件没有被占用，它就会尝试回写。哪个阵列驱动器将得到文件是由分配方法和共享的Split级别设置的组合控制的。这是一种传统的、缓存工作的方式。</li>
+<li><strong>No</strong> 直接将数据写入数据盘。<br><strong>mover*</strong> 运行时，即使缓存中有理论上属于对应共享文件夹的数据，也不会写回。这种共享方式不使用缓存。</li>
+<li><strong>Only</strong> 直接向缓存中写入新文件。如果缓存上的空闲空间低于设置的最小剩余空间，将抛出空间不足错误并写入失败。<br><strong>mover*</strong> 运行时，即使数据盘中有逻辑上属于这个共享的文件，它也不会对这个共享的文件采取任何行动。这意味着这个共享文件夹只存放于缓存，并不存放于数据盘。</li>
+<li><strong>Prefer</strong> 只要缓存上的可用空间大于设置的最小可用空间，总是将新文件写入缓存，反之就直接把文件写入数据盘。<br><strong>mover*</strong> 运行时，只要缓存上的可用空间大于设置的缓存最小可用空间，它就会尝试将数据盘上对应的共享文件夹移回缓存。<br>这样做的好处是让 VM / Docker 和存放于 appdata 中的配置文件能够更快地被读取和修改，这将大大加速配置文件的读写速度。特别是在需要校验盘进行奇偶校验计算时。即使暂时没有缓存，这个设置也适用。<br>这种策略比较特殊。它意味着 UNRAID 在这个文件共享下更<strong>“倾向于”</strong>使用缓存，但是没有缓存也不会影响实际使用。</li>
+</ul>
+<p>* 此处的 Mover 指的是根据缓存设置，在数据盘和缓存盘之间同步数据的工具，由 UNRAID 默认提供。</p>
+<h3 id="缓存性能测试"><a href="#缓存性能测试" class="headerlink" title="缓存性能测试"></a>缓存性能测试</h3><p>在并不算太好的 HDD 和 SSD 组成的阵列下，我进行了一系列缓存性能的测试。由于电脑和路由器只有千兆网口，速度并不能达到原有 SSD 的读写水平。</p>
+<p><strong>缓存策略 Yes</strong></p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/cache-test-yes.png" class="" title="缓存策略 Yes">
+
+<p><strong>缓存策略 No</strong></p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/cache-test-no.png" class="" title="缓存策略 No">
+
+<p>可以看到，虽然读写速度受限于网口带宽上限，但是使用了缓存的共享目录读写性能仍有一定的提升。我打算在之后升级万兆网卡，这个瓶颈应该可以得到解决。</p>
+<p>在机器上直接对硬盘做读写速度测试，可以得到以下结果。从理论上说，如果能够升级万兆内网，读写性能应该可以到达理论速度。下图的测试中，sdb，sdc 是机械硬盘，sdd 是固态硬盘。</p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/all-disk-test.png" class="" title="所有硬盘设备读写测试">
+
+<h1 id="常用插件安装"><a href="#常用插件安装" class="headerlink" title="常用插件安装"></a>常用插件安装</h1><h2 id="官方-Community-Apps-支持"><a href="#官方-Community-Apps-支持" class="headerlink" title="官方 Community Apps 支持"></a>官方 Community Apps 支持</h2><p>UNRAID 社区已经发展到一定的规模了，社区中不少人会制作长期适用于 UNRAID 的官方 Apps。他们有的是封装好 UNRAID 模板的 Docker 容器，有的可以给 UNRAID 增加功能。进入 Plugins - Install Plugin，输入 <a href="https://raw.githubusercontent.com/Squidly271/community.applications/master/plugins/community.applications.plg" target="_blank" rel="noopener">https://raw.githubusercontent.com/Squidly271/community.applications/master/plugins/community.applications.plg</a> 安装。安装完成后刷新 Web 页面，就可以看到上方菜单多出了一个 Apps 栏。在 Apps 中，就能安装很多 NAS 常用的工具了。</p>
+<h2 id="Nerd-Tools"><a href="#Nerd-Tools" class="headerlink" title="Nerd Tools"></a>Nerd Tools</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/NerdPack_GUI.png" class="" title="NerdPack GUI">
+
+<p>可以使用官方 Apps 后，首先我会考虑安装的是 <strong>NerdPack GUI</strong> 。这是一个可以安装额外软件（大多是 CLI 软件）的工具箱，可以理解为一个简化了的 <em>apt 源</em> ，源里的大部分程序包是 Linux 控制台操作中常用的那部分。点击 <code>Plugins</code> - <code>Nerd Tools</code> ，点击左下角 Check Update ，就可以选择安装对应软件包。这对日常使用，特别是习惯于操作常见 Linux 发行版的用户来说非常方便。</p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/NerdPack_GUI_2.png" class="" title="NerdPack GUI">
+
+<h2 id="Unassigned-Devices"><a href="#Unassigned-Devices" class="headerlink" title="Unassigned Devices"></a>Unassigned Devices</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/Unassigned_Devices.png" class="" title="Unassigned Devices">
+
+<p>这是一个支持挂载其他 NFS / SMB 虚拟盘作为数据盘的工具，在 <code>APPS</code> 里可以安装。具体使用场景虽然我还没用上，但是可以考虑一个虚拟场景：</p>
+<p>我有一块群晖数据盘，不想搬迁数据。我可以通过直通将数据盘挂载在 UNRAID 虚拟出来的黑群晖上，然后黑群晖开 SMB / NFS 给 UNRAID 使用。或者局域网中的其他 BT 下载机的下载盘，挂载在 UNRAID 下，用于 PLEX 或者 Jellyfin 播放。</p>
+<h2 id="Dynamix-S3-Sleep"><a href="#Dynamix-S3-Sleep" class="headerlink" title="Dynamix S3 Sleep"></a>Dynamix S3 Sleep</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/dynamix-s3-sleep.png" class="" title="Dynamix S3 Sleep">
+
+<p>这是一个可以自动判断硬盘是否在工作，在特定时间让 UNRAID 服务器休眠的工具，在 <code>APPS</code> 里可以安装。但是由于后来我安装了软路由，所以就没有继续开启睡眠功能。有需要的时候这个工具还是很方便的，可以定时关机，降低功耗和噪音。</p>
+<h1 id="其他调整"><a href="#其他调整" class="headerlink" title="其他调整"></a>其他调整</h1><h2 id="更换-Docker-镜像"><a href="#更换-Docker-镜像" class="headerlink" title="更换 Docker 镜像"></a>更换 Docker 镜像</h2><p>由于 UNRAID 对 Docker 生态有较大的依赖，很多 Docker 应用都可以和 UNRAID 协同工作。需要更换 Docker 国内镜像，以达到较好的使用体验。这里推荐阿里云的 Docker 镜像加速器，访问 <a href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors" target="_blank" rel="noopener">https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors</a> 就可以申请。拿到自己的 Docker 镜像加速器地址后，在 Web Terminal 中执行以下命令对 Docker 源进行更换。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-<span class="string">'EOF'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"registry-mirrors"</span>: [<span class="string">"https://&#123;YOUR_DOCKER_MIRROR_ID&#125;.mirror.aliyuncs.com"</span>]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>为了在每次重启时自动应用配置，建议将其写入 <code>\flash\config\go</code> 中。其中 <code>\flash</code> 指装有 UNRAID 的 U 盘根目录。</p>
+<h2 id="允许-Docker-虚拟机访问宿主机"><a href="#允许-Docker-虚拟机访问宿主机" class="headerlink" title="允许 Docker 虚拟机访问宿主机"></a>允许 Docker 虚拟机访问宿主机</h2><p>由于 Docker 的网络隔离，有时候我想进行一些特殊的操作就比较困难。比如我将所有的服务用一个 NginX 反代，但是使用 <code>Host</code> 或者 <code>Bridge</code> 方式暴露端口在宿主机上的服务就无法被反代。因此，我需要手工修改 UNRAID 的 Docker 设置。进入 <code>Settings</code> - <code>Docker</code> ，点击右上方的 <code>Basic View</code> ，切换成 <code>Advanced View</code> ，然后修改对应选项即可。这么做存在一定风险。我认真检查防火墙，保证外网的访问能够安全地被处理后，才进行这个操作。</p>
+<img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/docker-host-access-to-custom-networks.png" class="" title="Unassigned Devices">
+
+
+<hr>
+<p>以上，我的 UNRAID 就做好作为一台 NAS 进行工作的准备了。下一章我会继续介绍我安装的应用程序和配置，合理发挥 NAS 的功能。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://unraid.net/" target="_blank" rel="noopener">https://unraid.net/</a></li>
+<li><a href="https://forums.unraid.net/topic/38582-plug-in-community-applications/" target="_blank" rel="noopener">https://forums.unraid.net/topic/38582-plug-in-community-applications/</a></li>
+<li><a href="https://wiki.unraid.net/UnRAID_6/Getting_Started" target="_blank" rel="noopener">https://wiki.unraid.net/UnRAID_6/Getting_Started</a></li>
+<li><a href="https://wiki.unraid.net/UnRAID_6/Storage_Management" target="_blank" rel="noopener">https://wiki.unraid.net/UnRAID_6/Storage_Management</a></li>
+<li><a href="https://wiki.unraid.net/Check_Harddrive_Speed" target="_blank" rel="noopener">https://wiki.unraid.net/Check_Harddrive_Speed</a></li>
+<li><a href="https://forums.unraid.net/topic/38582-plug-in-community-applications/" target="_blank" rel="noopener">https://forums.unraid.net/topic/38582-plug-in-community-applications/</a></li>
+<li><a href="https://forums.unraid.net/topic/35866-unraid-6-nerdpack-cli-tools-iftop-iotop-screen-kbd-etc/" target="_blank" rel="noopener">https://forums.unraid.net/topic/35866-unraid-6-nerdpack-cli-tools-iftop-iotop-screen-kbd-etc/</a></li>
+<li><a href="https://forums.unraid.net/topic/77390-cannot-access-dockers-using-custombr0/" target="_blank" rel="noopener">https://forums.unraid.net/topic/77390-cannot-access-dockers-using-custombr0/</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-2-enjoy-with-UNRAID/">https://wasteland.touko.moe//blog/2020/06/home-network-2-enjoy-with-UNRAID/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>NAS</category>
+      </categories>
+      <tags>
+        <tag>NAS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>家庭网络管理(1): 组装一台千元 NAS</title>
+    <url>//blog/2020/06/home-network-1-DIY-NAS/</url>
+    <content><![CDATA[<h1 id="心血来潮"><a href="#心血来潮" class="headerlink" title="心血来潮"></a>心血来潮</h1><p>我的 surface pro 4 实在是太老了，发热也越发严重，最近甚至经常过热关机。于是前段时间花了 2k 装了台能跑现有不少大型网游的主机，装的我非常愉悦。这台主机用的 AMD 平台，鲁大师能跑24w+，目前正在逐渐成为我的主力用机。装了一台就想装第二台。我做了些简单的调研，决定用 1k 左右的预算装一台功耗较低，性能足够的 NAS。</p>
+<p>目前我已经用 NAS 实现了单臂软路由、BT 下载、PLEX、DNS 等一系列功能。今后我会慢慢更新这块内容。</p>
+<h1 id="配置选择"><a href="#配置选择" class="headerlink" title="配置选择"></a>配置选择</h1><p>由于给自己开了一个不算太高的预算，所以一切资源都要精打细算。首先列出我的需求</p>
+<ul>
+<li>占地空间较小</li>
+<li>千兆板载网卡</li>
+<li>SATA 至少 4 个</li>
+<li>功耗较低</li>
+<li>PCIE 能插万兆</li>
+<li>核显</li>
+<li>有升级空间</li>
+</ul>
+<h2 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h2><p>首先选择 CPU。有朋友在微博推荐 200GE 板 U 套装，这里也推荐，挺不错，只要 500，性能和价格相符，TDP 也只有 35W。但是因为前段时间已经装了一台 AMD 的机子了，CPU 就不选择 AMD 的了。经过各种对比，选择了低功耗六代 i3-6100T。原本打算考虑奔腾 G5600T，但是掐指一算发现超预算了。我是盯着天梯图和 TDP 找的。后来发现在实际使用中，不一定要买低功耗版本，因为很多情况下，Intel 只是对其做了功耗上限的限制，其他和标压版本相差无几。高性能的 U 在运行相同的计算任务的时候，理论上功耗也差不多，所以 TDP 并不是一个需要非常关注的点。</p>
+<h2 id="主板和机箱"><a href="#主板和机箱" class="headerlink" title="主板和机箱"></a>主板和机箱</h2><p>主板和机箱需要一起考虑。由于我并不打算上赛扬 J 平台，ITX 的主板价格也很贵，所以就无缘 ITX 了。于是我考虑 m-ATX 的主板和机箱。机箱我看中了金河田的 <code>预见 N1</code> 。这个机箱非常小巧，整体只有 <code>202 * 328 * 260mm</code> ，支持 ATX 电源，2 个 3.5 盘位 + 2 个 2.5 or 1 个 3.5 盘位。如果电源用 SFX 或者直流，还能再装 2-4 个 3.5 硬盘。支持一个机箱散热风扇。综合考虑，我选择了这款机箱。</p>
+<p>选择机箱后，我开始考虑主板。为了给以后升级 8-9 代 U 留出空间，根据机箱要求的主板大小（最大 230*185mm），我选择了支持 6、7 代，能刷 BIOS 上 8、9 代 CPU 的 技嘉 B250M-D2VX-SI （226 * 185 mm）。</p>
+<h2 id="内存和其他"><a href="#内存和其他" class="headerlink" title="内存和其他"></a>内存和其他</h2><p>内存没什么好说的，枭鲸前段时间搞活动，89 RMB 的 DDR4 2666 8G 条。希望能够长期稳定运行。</p>
+<p>其他配件都是零零散散买起来的，有刚好或者喜欢的就买了。</p>
+<h2 id="最终配置单"><a href="#最终配置单" class="headerlink" title="最终配置单"></a>最终配置单</h2><a id="more"></a>
+
+<table>
+<thead>
+<tr>
+<th>部件</th>
+<th>型号</th>
+<th>入手渠道</th>
+<th>价格</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主板</td>
+<td>技嘉 B250M-D2VX-SI</td>
+<td>tb</td>
+<td>165</td>
+<td>目测网吧拆机</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>Intel i3-6100T</td>
+<td>tb</td>
+<td>315</td>
+<td></td>
+</tr>
+<tr>
+<td>内存</td>
+<td>枭鲸 8G DDR4 2666 普条</td>
+<td>pdd</td>
+<td>89</td>
+<td>打折抢的，平时好像 119</td>
+</tr>
+<tr>
+<td>电源</td>
+<td>先马 破坏神 300W</td>
+<td>jd</td>
+<td>85.9</td>
+<td></td>
+</tr>
+<tr>
+<td>机箱</td>
+<td>金河田 预见 N1</td>
+<td>jd</td>
+<td>129</td>
+<td></td>
+</tr>
+<tr>
+<td>SSD</td>
+<td>影驰 铁甲战将 120G</td>
+<td>jd</td>
+<td>109</td>
+<td></td>
+</tr>
+<tr>
+<td>HDD</td>
+<td>1T * 2</td>
+<td>奶鱼送的</td>
+<td>0</td>
+<td>按 1T 100 算，200</td>
+</tr>
+<tr>
+<td>散热</td>
+<td>酷冷至尊 夜鹰</td>
+<td>jd</td>
+<td>16.9</td>
+<td></td>
+</tr>
+<tr>
+<td>风扇</td>
+<td>先马 游戏风暴</td>
+<td>jd</td>
+<td>9.4</td>
+<td></td>
+</tr>
+<tr>
+<td>转接头</td>
+<td>山泽 DVI to HDMI</td>
+<td>jd</td>
+<td>6.9</td>
+<td></td>
+</tr>
+<tr>
+<td>合计</td>
+<td></td>
+<td></td>
+<td>926.1</td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="装机"><a href="#装机" class="headerlink" title="装机"></a>装机</h1><h2 id="配件一览"><a href="#配件一览" class="headerlink" title="配件一览"></a>配件一览</h2><img src="/blog/2020/06/home-network-1-DIY-NAS/chassis-with-power.png" class="" title="机箱和电源">
+
+<p>金河田这款机箱采用了电源前置设计，用内置的电源线连接到机箱后部。这种设计降低了机箱的整体高度，充分利用空间。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/chassis-fan.png" class="" title="先马 游戏风暴 机箱风扇">
+
+<p>这个风扇是之前装台式机剩下的。红 + 黑的配色很漂亮（虽然装在机箱里就看不到了），运行时的噪音也很小。反正功耗不大，我就装了一个图一乐。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/radiator.png" class="" title="酷冷至尊 夜鹰 散热器">
+
+<p>便宜的散热器，没什么特殊的地方。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/HDD-and-SSD.png" class="" title="两块 3.5 寸 1T 机械硬盘和 2.5 寸 120G 固态硬盘">
+
+<p>奶鱼送了我俩 1T 的机械硬盘，加上我自己配的固态做缓存，运行 UNRAID 系统就已经很舒服了。机箱顶部有一个硬盘架，用减震螺丝固定，倒挂在机箱中。图中的机械硬盘已经装在硬盘架上了。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/memory.png" class="" title="枭鲸 8G DDR4 2666 普条">
+
+<p>内存是 pdd 打折抢的枭鲸普条，反正终身保固，也不怕翻车。我在台式机上用的也是枭鲸的条子，目前用起来一切正常，就是不太敢超频。</p>
+<h2 id="组装"><a href="#组装" class="headerlink" title="组装"></a>组装</h2><img src="/blog/2020/06/home-network-1-DIY-NAS/motherboard.png" class="" title="CPU 安装">
+
+<p>先把 CPU 怼上主板。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/motherboard-with-radiator.png" class="" title="CPU 散热器安装">
+
+<p>安装散热器底座，涂硅脂，上散热。不得不说这种下压式的散热器安装十分困难，需要大力向下压。向下压散热器的时候我特别害怕大力出奇迹，把主板压断了。</p>
+<img src="/blog/2020/06/home-network-1-DIY-NAS/overview.jpg" class="" title="整体外观">
+
+<p>装完散热器之后，上内存，接线，不合盖点亮测试良好，最后上硬盘。整机安装大概花了一个多小时。我对这套平台的性能信心很足，估计跑个黑群晖+软路由，再加一系列的 Docker 应用不是问题。</p>
+<h2 id="功耗情况"><a href="#功耗情况" class="headerlink" title="功耗情况"></a>功耗情况</h2><p>实际测试中，所有硬盘都启动的功耗大约在 35W 左右，CPU 满负载功耗大约 55W。这是一个我可以接受的范围。</p>
+<p>之后我将安装（破解的） UNRAID 系统，会在下一篇文章继续记录。</p>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-1-DIY-NAS/">https://wasteland.touko.moe//blog/2020/06/home-network-1-DIY-NAS/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>NAS</category>
+      </categories>
+      <tags>
+        <tag>NAS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>优雅地管理内网集群</title>
+    <url>//blog/2020/04/intranet-cluster-management/</url>
+    <content><![CDATA[<p>本文主要介绍了我在对内网集群进行管理的时候遇上的和解决的问题，包括统一控制，装机脚本，堡垒机，内网穿透等一系列问题。</p>
+<h1 id="突然有了内网集群"><a href="#突然有了内网集群" class="headerlink" title="突然有了内网集群"></a>突然有了内网集群</h1><p>由于科研需要，实验室购置和申请了大量服务器和显卡，并申请了从超算中虚拟出来的计算节点。如何将他们统一管理成了一个很大的问题。同时，由于机器都托管在数据中心，需要 VPN 进行访问。数据中心提供的 VPN 是上古的 <code>L2TP/IPsec with Pre-shared key</code>，还要在注册表写信息允许弱加密才能在 Windows 10 上使用， Mac / Linux 电脑完全无法连上这批机器。同时，VPN 还严格限制同时只能一个人使用，一旦使用的人数增加，需要多次申请不同的账号，管理起来十分麻烦。为了解决一系列的问题，我开始探索方案。</p>
+<h1 id="统一管理：堡垒机"><a href="#统一管理：堡垒机" class="headerlink" title="统一管理：堡垒机"></a>统一管理：堡垒机</h1><h2 id="选择-JumpServer"><a href="#选择-JumpServer" class="headerlink" title="选择 JumpServer"></a>选择 JumpServer</h2><p>俺找了有相关经验的好朋友<a href="https://www.milkfish.site/" target="_blank" rel="noopener">奶鱼</a> ，他推荐了一套堡垒机方案 <a href="https://jumpserver.org/" target="_blank" rel="noopener">JumpServer</a>。这是一套开源的堡垒机程序，支持身份认证，账号管理，资产授权，操作审计等管理功能，也支持批量部署，Web Terminal 等通过 Web 操作机器的功能。整体上看，非常符合我管理内网三十多台机器的需求。</p>
+<blockquote>
+<p>开源仓库一览</p>
+<ul>
+<li>JumpServer <a href="https://github.com/jumpserver/jumpserver" target="_blank" rel="noopener">https://github.com/jumpserver/jumpserver</a></li>
+<li>Koko (SSH, WS server) <a href="https://github.com/jumpserver/koko" target="_blank" rel="noopener">https://github.com/jumpserver/koko</a></li>
+<li>Luna (Web terminal) <a href="https://github.com/jumpserver/luna" target="_blank" rel="noopener">https://github.com/jumpserver/luna</a></li>
+</ul>
+</blockquote>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><p>要想部署一个能够管理所有服务器的堡垒机的平台，就需要给每个节点部署一个带 sudo 权限的用户。这个用户最好在不同机器上是统一的。现有的服务器用户虽然也有部分统一，但使用一个独立的用户管理所有服务器更符合直觉。我先创建一个统一的用户 <code>touko</code> ，并赋予其 <code>sudo NOPASSWD</code> 权限。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"SUDO_PASSWORD"</span> | sudo -S useradd -m touko -s /bin/bash</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"touko ALL=(ALL:ALL) NOPASSWD: ALL"</span> | sudo tee /etc/sudoers.d/touko</span><br></pre></td></tr></table></figure>
+
+<p>为了安全，我创建了一组 <code>ECDSA</code> 算法的密钥对，然后将它的公钥导入 <code>authorized_keys</code> 作为登陆密钥。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t ecdsa -C <span class="string">'jumpserver'</span></span><br><span class="line"><span class="built_in">cd</span> ~/.ssh</span><br><span class="line">cat id_ecdsa.pub &gt;&gt; authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后，将创建的 ECDSA 私钥 <code>~/.ssh/id_ecdsa</code> 备份并删除。在其他的机器上，编写脚本，拷贝私钥至脚本中，就能一键完成部署（顺便退出命令行）。</p>
+<a id="more"></a>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"SUDO_PASSWORD"</span> | sudo -S useradd -m touko -s /bin/bash</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"touko ALL=(ALL:ALL) NOPASSWD: ALL"</span> | sudo tee /etc/sudoers.d/touko</span><br><span class="line"></span><br><span class="line">sudo su touko</span><br><span class="line">mkdir ~/.ssh</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"ecdsa-sha2-nistp256 YOUR_ECDSA_KEY"</span> &gt;&gt; ~/.ssh/authorized_keys</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"PubkeyAuthentication yes"</span> | sudo tee -a /etc/ssh/sshd_config</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"</span> | sudo tee -a /etc/ssh/sshd_config</span><br><span class="line">sudo systemctl restart ssh</span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<p>这样一来，就可以用同样的私钥登录每台服务器。对需要被管理的服务器来说，只需登上去运行一次脚本，就能完成加入堡垒机的前期配置。</p>
+<h2 id="JumpServer-的安装"><a href="#JumpServer-的安装" class="headerlink" title="JumpServer 的安装"></a>JumpServer 的安装</h2><p>JumpServer 的安装有详细的文档，具体可以<a href="https://jumpserver.readthedocs.io/zh/master/install/step_by_step/" target="_blank" rel="noopener">在此查看</a>。由于规模不大，我直接使用了官方提供的 <a href="https://jumpserver.readthedocs.io/zh/master/install/setup_by_fast/" target="_blank" rel="noopener">极速安装</a> 指令。该指令只适用于 <code>CentOS 7.x</code>。该指令会安装 JumpServer 主程序，并在 Docker 下运行 koko 和 luna。koko 和 luna 有时候会假死（表现为 Web Terminal 无响应），需要手工重启 JumpServer。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /opt</span><br><span class="line">yum -y install wget git</span><br><span class="line">git <span class="built_in">clone</span> --depth=1 https://github.com/jumpserver/setuptools.git</span><br><span class="line"><span class="built_in">cd</span> setuptools</span><br><span class="line">cp config_example.conf config.conf</span><br><span class="line">vi config.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># Install</span></span><br><span class="line">./jmsctl.sh install</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><figcaption><span>手工重启 JumpServer</span></figcaption><table><tr><td class="code"><pre><span class="line">sudo docker stop jms_koko</span><br><span class="line">sudo docker stop jms_guacamole</span><br><span class="line">sudo systemctl stop jms_core</span><br><span class="line"></span><br><span class="line">sudo systemctl start jms_core </span><br><span class="line">sudo docker start jms_koko</span><br><span class="line">sudo docker start jms_guacamole</span><br></pre></td></tr></table></figure>
+
+<p>在使用极速安装之前，我一度偷懒使用 Docker 部署。但实际测试起来，用 Docker 运行的堡垒机非常不稳定，特别是 Web Terminal 经常跑着跑着就断线。最后我还是额外申请了一台 CentOS 的服务器（已有服务器全是 Ubuntu），作为集群的堡垒机。</p>
+<h2 id="JumpServer-的使用"><a href="#JumpServer-的使用" class="headerlink" title="JumpServer 的使用"></a>JumpServer 的使用</h2><p>JumpServer 的设计非常用户友好，基本不需要额外学习就能很快上手。下图是我添加完所有节点后的截图，可以一目了然的知道当前系统有多少机器，机器如何分组规划。</p>
+<img src="/blog/2020/04/intranet-cluster-management/JumpServer-Sample.png" class="" title="JumpServer Sample">
+
+<h1 id="V2Ray-内网穿透"><a href="#V2Ray-内网穿透" class="headerlink" title="V2Ray 内网穿透"></a>V2Ray 内网穿透</h1><p>堡垒机的问题解决后，下一个要解决的问题是内网穿透。我只打算将堡垒机作为用户管理和应急使用的 Web Terminal，一是由于就算是极速安装的 JumpServer ，依然会出现 Web Terminal 假死的情况。目测是由于其他两个运行于 Docker 下的程序（koko，Luna）中某个程序出问题导致的。</p>
+<p>这时候就需要内网穿透工具。经过一系列的调研和尝试，最终选择了我熟悉的 V2Ray，提供 JumpServer Web UI 和用户直接访问机器的穿透服务。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>内网穿透依赖的是 V2Ray 中的反向代理功能，该功能在 V2Ray 4.0+ 后支持。我用一张图来解释 V2Ray 中的内网穿透是如何工作的。</p>
+<img src="/blog/2020/04/intranet-cluster-management/v2ray-NAT-traversal.png" class="" title="V2Ray NAT Traversal">
+
+<p>在内网穿透用的 V2Ray 程序中，节点可以被分为两类，一类叫 <code>bridge</code>，另一类叫 <code>portal</code> 。这两类属性定义于 V2Ray 配置文件中 <code>ReverseObject</code> 项。<code>bridge</code> 作为内网的一方，会主动向 <code>portal</code> 方发起连接并长期保持。<code>bridge</code> 和 <code>portal</code> 都需要手工定义路由表来实现定向的流量转发。</p>
+<p>建议先运行公网服务器 <code>portal</code>，再运行内网服务器 <code>bridge</code>。内网服务器会根据配置的 vmess 连接方式，连接公网服务器对应端口，并接收其所有流量。这就完成了内网穿透的第一步，保持一条从内网到公网的隧道（<code>tunnel</code>），让内网服务器可以主动接受其他连接。为了实现反向代理流量的转发，我们还需要手工配置路由表。直接从配置文件入手。</p>
+<h2 id="配置文件样例"><a href="#配置文件样例" class="headerlink" title="配置文件样例"></a>配置文件样例</h2><p>此处我直接修改来自 V2Ray 白话文教程的配置文件样例。</p>
+<figure class="highlight json"><figcaption><span>内网服务器</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"reverse"</span>: &#123;</span><br><span class="line">    <span class="attr">"bridges"</span>: [&#123;</span><br><span class="line">      <span class="attr">"tag"</span>: <span class="string">"bridge"</span>,</span><br><span class="line">      <span class="attr">"domain"</span>: <span class="string">"same.as.others.com"</span></span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"outbounds"</span>: [&#123;</span><br><span class="line">    <span class="attr">"tag"</span>: <span class="string">"tunnel"</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"vmess"</span>,</span><br><span class="line">    <span class="attr">"settings"</span>: &#123;  <span class="comment">// 公网服务器 vmess 连接方式</span></span><br><span class="line">      <span class="attr">"vnext"</span>: [&#123;</span><br><span class="line">        <span class="attr">"address"</span>: <span class="string">"public.touko.moe"</span>,  </span><br><span class="line">        <span class="attr">"port"</span>: <span class="number">10086</span>,</span><br><span class="line">        <span class="attr">"users"</span>: [&#123;</span><br><span class="line">          <span class="attr">"id"</span>: <span class="string">"b831381d-6324-4d53-ad4f-8cda48b30811"</span>,</span><br><span class="line">          <span class="attr">"alterId"</span>: <span class="number">64</span></span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &#123;</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"freedom"</span>,</span><br><span class="line">    <span class="attr">"tag"</span>: <span class="string">"lan"</span></span><br><span class="line">  &#125;],</span><br><span class="line">  <span class="attr">"routing"</span>: &#123;</span><br><span class="line">    <span class="attr">"rules"</span>: [&#123;  <span class="comment">// Rule 1</span></span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"field"</span>,</span><br><span class="line">      <span class="attr">"inboundTag"</span>: [<span class="string">"bridge"</span>],</span><br><span class="line">      <span class="attr">"domain"</span>: [<span class="string">"full:same.as.others.com"</span>],</span><br><span class="line">      <span class="attr">"outboundTag"</span>: <span class="string">"tunnel"</span></span><br><span class="line">    &#125;, &#123;  <span class="comment">// Rule 2</span></span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"field"</span>,</span><br><span class="line">      <span class="attr">"inboundTag"</span>: [<span class="string">"bridge"</span>],</span><br><span class="line">      <span class="attr">"outboundTag"</span>: <span class="string">"lan"</span></span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Rule 1</code> 定义 <code>bridge</code> 应该主动连接 tag 为 tunnel 的公网服务器，并附带识别域名 <code>same.as.others.com</code> 。这个域名需要保证在 <code>bridge</code> 、 <code>portal</code> 和其路由表中都是一样的（共四处）。<code>Rule 2</code> 定义当 <code>bridge</code> 收到来自 <code>tunnel</code> 的反向连接后，转发至 tag 为 <code>lan</code> 的 outbound，在本配置文件中是 freedom，也就是直接从内网服务器的网卡发出请求。这样一来，就能直接访问内网资源。</p>
+<figure class="highlight json"><figcaption><span>公网服务器</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"reverse"</span>: &#123;</span><br><span class="line">    <span class="attr">"portals"</span>: [&#123;</span><br><span class="line">      <span class="attr">"tag"</span>: <span class="string">"portal"</span>,</span><br><span class="line">      <span class="attr">"domain"</span>: <span class="string">"same.as.others.com"</span></span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"inbounds"</span>: [&#123;</span><br><span class="line">    <span class="attr">"tag"</span>: <span class="string">"web"</span>,</span><br><span class="line">    <span class="attr">"port"</span>: <span class="number">80</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"dokodemo-door"</span>,</span><br><span class="line">    <span class="attr">"settings"</span>: &#123; <span class="comment">// 内网服务器需要暴露的 IP、端口和协议</span></span><br><span class="line">      <span class="attr">"address"</span>: <span class="string">"127.0.0.1"</span>,  </span><br><span class="line">      <span class="attr">"port"</span>: <span class="number">8080</span>,</span><br><span class="line">      <span class="attr">"network"</span>: <span class="string">"tcp"</span>  </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &#123;</span><br><span class="line">    <span class="attr">"tag"</span>: <span class="string">"tunnel"</span>,</span><br><span class="line">    <span class="attr">"port"</span>: <span class="number">10086</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"vmess"</span>,</span><br><span class="line">    <span class="attr">"settings"</span>: &#123;</span><br><span class="line">      <span class="attr">"clients"</span>: [&#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="string">"b831381d-6324-4d53-ad4f-8cda48b30811"</span>,</span><br><span class="line">        <span class="attr">"alterId"</span>: <span class="number">64</span></span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;],</span><br><span class="line">  <span class="attr">"routing"</span>: &#123;</span><br><span class="line">    <span class="attr">"rules"</span>: [&#123;  <span class="comment">// Rule 3</span></span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"field"</span>,</span><br><span class="line">      <span class="attr">"inboundTag"</span>: [<span class="string">"tunnel"</span>],</span><br><span class="line">      <span class="attr">"domain"</span>: [<span class="string">"full:same.as.others.com"</span>],</span><br><span class="line">      <span class="attr">"outboundTag"</span>: <span class="string">"portal"</span></span><br><span class="line">    &#125;, &#123;  <span class="comment">// Rule 4</span></span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"field"</span>,</span><br><span class="line">      <span class="attr">"inboundTag"</span>: [<span class="string">"web"</span>],</span><br><span class="line">      <span class="attr">"outboundTag"</span>: <span class="string">"portal"</span></span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Rule 3</code> 定义当流量从 <code>tunnel</code> 进入时，转发至 <code>portal</code>。同样的，<code>Rule 4</code> 定义当流量从 <code>web</code> 进入时，转发至 <code>portal</code>。这两个路由规则一一对应图中的 Method B 和 Method A。如果使用 Method B 访问，；流量的出口就是内网服务器的 LAN，就实现了和挂 VPN 相同的效果。如果使用 Method A 访问，就会根据 tag 为 web 的 <code>dokodemo-door</code> setting 中的配置访问对应的端口。这分别对应内网穿透暴露端口的功能和挂 VPN 访问其他内网资源的功能。</p>
+<p>值得一提的是，这里复用了内网穿透中接收内网服务器反向连接的隧道和用户访问 Method B 的隧道。在实际使用过程中，可以创建更多的 vmess inbound 并定义路由表来实现 vmess uuid 的分离。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>通过内网穿透的配置，我将堡垒机的管理面板暴露至公网，并用 NginX 反代，成功实现了不使用 VPN 管理内网集群的方法，并打包了一组 V2Ray 程序代替 VPN，使得需要进行计算任务的同学可以直接使用本地的 HTTP 代理或直接转发服务器 SSH 端口访问集群，不再需要通过 VPN。这方便了实验室硬件资源的管理，并能够更好控制由于人员流动带来的权限吊销问题。在实际运行的一个季度中，整套系统稳定性较高，V2Ray 的反向代理也没有出现崩溃的情况。除了上传文件的速度受限于公网服务器的带宽（阿里云，只有突发 5M），其他并没有什么不好的体验。JumpServer 也非常好用，特别是可以配置 2FA 严格控制用户的登录行为，甚至可以重播用户在 Web Terminal 进行的操作。在服务器宕机时，能够更方便地寻找原因。</p>
+<p>这套系统还在不断进行改进，今后会根据实际情况调整。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://jumpserver.readthedocs.io/zh/master/setup_by_fast.html" target="_blank" rel="noopener">https://jumpserver.readthedocs.io/zh/master/setup_by_fast.html</a></li>
+<li><a href="https://superuser.com/questions/67765/sudo-with-password-in-one-command-line" target="_blank" rel="noopener">https://superuser.com/questions/67765/sudo-with-password-in-one-command-line</a></li>
+<li><a href="https://blog.csdn.net/hejinjing_tom_com/article/details/7767127" target="_blank" rel="noopener">https://blog.csdn.net/hejinjing_tom_com/article/details/7767127</a></li>
+<li><a href="https://guide.v2fly.org/app/reverse.html" target="_blank" rel="noopener">https://guide.v2fly.org/app/reverse.html</a></li>
+<li><a href="https://www.v2ray.com/chapter_02/reverse.html" target="_blank" rel="noopener">https://www.v2ray.com/chapter_02/reverse.html</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/04/intranet-cluster-management/">https://wasteland.touko.moe//blog/2020/04/intranet-cluster-management/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>V2Ray</tag>
+        <tag>NAT Traverse</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 LaTeX 完成你的毕业论文</title>
+    <url>//blog/2020/03/write-thesis-with-latex/</url>
+    <content><![CDATA[<p>本文使用 <strong>武汉大学</strong> 毕业论文模板。</p>
+<h1 id="准备写论文"><a href="#准备写论文" class="headerlink" title="准备写论文"></a>准备写论文</h1><p>可喜可贺，我终于要开始动笔我的毕业论文了。虽然论文相关的实验和理论准备已经就绪了很长一段时间，但是就是提不起精神写文章。这周其他突发堆积的事情逐渐清空，我准备忙里偷闲，开始写毕业论文。</p>
+<p>某天，一同学在群里发了一份 <a href="https://github.com/mtobeiyf/whu-thesis/" target="_blank" rel="noopener">武汉大学毕业论文 LaTeX 模板</a>，我一看，巧了，老朋友写的 <code>repository</code> ，于是正好近期开工，把它下载下来用。</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><blockquote>
+<p>本文基础环境是 Windows 10，使用的 IDE 为 <strong>VSCode</strong>，Linux、Mac 配置方式类似</p>
+</blockquote>
+<h2 id="Perl"><a href="#Perl" class="headerlink" title="Perl"></a>Perl</h2><p>首先我们需要安装 Windows 下的 <code>Perl</code> 依赖。前往官网 <a href="https://www.perl.org/get.html" target="_blank" rel="noopener">https://www.perl.org/get.html</a> 我发现，有 <code>ActiveState Perl</code> 和 <code>Strawberry Perl</code> 两种版本的 <code>Perl</code> ，具体使用起来差不多，所以我选择了下载起来相对方便的 <code>草莓 Perl</code> <a href="http://strawberryperl.com/" target="_blank" rel="noopener">http://strawberryperl.com/</a> 。</p>
+<h2 id="LaTeX"><a href="#LaTeX" class="headerlink" title="LaTeX"></a>LaTeX</h2><p>Windows 下有两种广泛使用的 LaTeX 版本，分别是 <code>TeX Live</code> 和 <code>MiKTeX</code> 。 <code>TeX Live</code> 安装体积高达 <strong>6GB</strong> ，我立刻放弃，选择了安装体积较小，后续使用中<strong>按需下载</strong>的 <code>MiKTeX</code> <a href="https://miktex.org/download" target="_blank" rel="noopener">https://miktex.org/download</a> 。建议在安装时安装给<strong>当前用户</strong>，可以避免很多麻烦。</p>
+<a id="more"></a>
+
+<img src="/blog/2020/03/write-thesis-with-latex/Install-for-current-user.jpg" class="" title="Install for current user">
+
+<p>同时，我们需要手工指定镜像。根据我的使用情况， <code>HIT</code> 的源中包含了很多不可用的文件，会拖慢下载速度。打开 <code>MiKTeX</code> 客户端，进入 <code>Settings</code> - <code>General</code> - <code>Package Installation</code> 更换源。推荐更换为 <code>清华源</code> 。</p>
+<img src="/blog/2020/03/write-thesis-with-latex/Change-TeX-mirror.jpg" class="" title="Change TeX mirror">
+
+<h2 id="VSCode"><a href="#VSCode" class="headerlink" title="VSCode"></a>VSCode</h2><p>首先需要在 VSCode 中安装依赖 <code>LaTeX Workshop</code> 。</p>
+<p>VSCode 的配置文件在上述模板中包含。但是我建议对配置文件进行一定的修改，使用更方便的安装命令。并将工程和 pdf 文件构建于 <code>build/</code> 文件夹下，保持根目录干净。</p>
+<p>可以在 <a href="https://gist.github.com/HoshinoTouko/a2332b1756996d5e9c71605d0ff7591a" target="_blank" rel="noopener">https://gist.github.com/HoshinoTouko/a2332b1756996d5e9c71605d0ff7591a</a> 获取 <code>.vscode/settings.json</code> 和 <code>.latexmkrc</code> ，下载后放置于对应目录即可工作。</p>
+<h2 id="手工执行"><a href="#手工执行" class="headerlink" title="手工执行"></a>手工执行</h2><p>也可以通过手工执行的方式对工程进行编译。下载上文的 <code>.latexmkrc</code> 放置于根目录，如果无法访问 gist ，也可以复制下方文件。然后确认自己的 <code>PowerShell</code> 工作于 <code>UTF-8</code> 编码下。确认 <code>PowerShell</code> 编码可以执行 <code>chcp</code> 命令。</p>
+<figure class="highlight plain"><figcaption><span>.latexmkrc</span></figcaption><table><tr><td class="code"><pre><span class="line">$pdflatex&#x3D;q&#x2F;xelatex -synctex&#x3D;1 %O %S&#x2F;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ps"><figcaption><span>确认 PowerShell 编码</span></figcaption><table><tr><td class="code"><pre><span class="line">PS C:\Research\undergraduate<span class="literal">-thesis</span>&gt; chcp</span><br><span class="line">Active code page: <span class="number">65001</span></span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>Active code page</code> 是 65001 ，则该 PowerShell 运行于 <code>UTF-8</code> 编码下。如果不是，执行 <code>chcp 65001</code> 即可。如需更改默认 PowerShell 编码，可以通过以下方式。</p>
+<img src="/blog/2020/03/write-thesis-with-latex/Change-ps-to-UTF8.jpg" class="" title="Change ps to utf-8">
+
+<p>执行 </p>
+<figure class="highlight ps"><figcaption><span>使用 latexmk 调用 xelatex 编译 LaTeX 文档</span></figcaption><table><tr><td class="code"><pre><span class="line">latexmk <span class="literal">-xelatex</span> <span class="literal">-pdf</span> <span class="literal">-synctex</span>=<span class="number">1</span> <span class="literal">-interaction</span>=nonstopmode <span class="operator">-file</span><span class="literal">-line</span><span class="literal">-error</span> <span class="literal">-shell</span><span class="literal">-escape</span> <span class="literal">-outdir</span>=build ./main</span><br></pre></td></tr></table></figure>
+
+<p>即可在 <code>build/</code> 文件夹下完成工程构建。</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>其实我本来是想用 <code>overleaf</code> 的，但是觉得学位论文这种东西，在线保存有一定风险，还是握在自己手里比较好。所以我就捣鼓了几个小时，把环境都部署好跑起来了。本文提供的样例是武汉大学的，在 GitHub 或者 Google 根据关键词搜索，即可找到别的学校的同学制作的相关模板。例如</p>
+<ul>
+<li>浙江大学毕业设计/论文 LaTeX 模板 - <a href="https://github.com/TheNetAdmin/zjuthesis" target="_blank" rel="noopener">https://github.com/TheNetAdmin/zjuthesis</a><br>包含本科生、硕士生与博士生模板，以及英文硕博士模板</li>
+<li>Tsinghua University Thesis LaTeX Template - <a href="https://github.com/xueruini/thuthesis" target="_blank" rel="noopener">https://github.com/xueruini/thuthesis</a></li>
+<li>fduthesis - <a href="https://github.com/stone-zeng/fduthesis" target="_blank" rel="noopener">https://github.com/stone-zeng/fduthesis</a></li>
+<li>上海交通大学 XeLaTeX 学位论文及课程论文模板 - <a href="https://github.com/sjtug/SJTUThesis" target="_blank" rel="noopener">https://github.com/sjtug/SJTUThesis</a></li>
+<li>…</li>
+</ul>
+<p>希望大家度过一个特殊又充实的毕业论文假期</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li>武汉大学毕业论文 LaTeX 模版 2019 - <a href="https://github.com/mtobeiyf/whu-thesis" target="_blank" rel="noopener">https://github.com/mtobeiyf/whu-thesis</a></li>
+<li>How to make LaTeXmk work with XeLaTeX and biber - <a href="https://tex.stackexchange.com/questions/27450/how-to-make-latexmk-work-with-xelatex-and-biber" target="_blank" rel="noopener">https://tex.stackexchange.com/questions/27450/how-to-make-latexmk-work-with-xelatex-and-biber</a></li>
+<li>Using Latexmk - <a href="https://mg.readthedocs.io/latexmk.html" target="_blank" rel="noopener">https://mg.readthedocs.io/latexmk.html</a></li>
+<li>How do I run bibtex after using the -output-directory flag with pdflatex, when files are included from subdirectories? - <a href="https://tex.stackexchange.com/questions/12686/how-do-i-run-bibtex-after-using-the-output-directory-flag-with-pdflatex-when-f" target="_blank" rel="noopener">https://tex.stackexchange.com/questions/12686/how-do-i-run-bibtex-after-using-the-output-directory-flag-with-pdflatex-when-f</a></li>
+<li>CTAN 镜像使用帮助 - <a href="https://mirror.tuna.tsinghua.edu.cn/help/CTAN/" target="_blank" rel="noopener">https://mirror.tuna.tsinghua.edu.cn/help/CTAN/</a></li>
+<li>LaTeX-Workshop GitHub - <a href="https://github.com/James-Yu/LaTeX-Workshop" target="_blank" rel="noopener">https://github.com/James-Yu/LaTeX-Workshop</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/write-thesis-with-latex/">https://wasteland.touko.moe//blog/2020/03/write-thesis-with-latex/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Talk</category>
+      </categories>
+      <tags>
+        <tag>LaTeX</tag>
+        <tag>Paper</tag>
+        <tag>Thesis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker 限制磁盘 IO 无效排错及总结</title>
+    <url>//blog/2020/03/blkio-debug/</url>
+    <content><![CDATA[<blockquote>
+<p>该文完稿于 2020-03-13 凌晨</p>
+</blockquote>
+<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><p>最近在做一个与 Docker 相关的实验，其中需要限制 Docker 容器中应用程序的 IO，比如 NginX 的 IO。这听起来很简单，毕竟远在 Feb 4th, 2016 release 的 Docker v1.10 就在其功能中加入了限制容器 IO 的参数</p>
+<blockquote>
+<p><strong>Constraints on disk I/O:</strong> Various options for setting constraints on disk I/O have been added to <code>docker run</code>: <code>--device-read-bps</code>, <code>--device-write-bps</code>, <code>--device-read-iops</code>, <code>--device-write-iops</code>, and <code>--blkio-weight-device</code>.</p>
+<p><a href="https://www.docker.com/blog/docker-1-10/" target="_blank" rel="noopener">https://www.docker.com/blog/docker-1-10/</a></p>
+</blockquote>
+<p>就在一切都顺利进行，我写完包含了 <code>NginX</code> 的 <code>Dockerfile</code> ，准备满心欢喜地开始我的 <code>1MB/s</code> 实验的时候，一道晴天霹雳打在我心上——</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@53ace8551c27:/<span class="comment">#$ dd if=500M.file bs=1M count=500 of=/dev/null</span></span><br><span class="line">500+0 records <span class="keyword">in</span></span><br><span class="line">500+0 records out</span><br><span class="line">524288000 bytes (524 MB, 500 MiB) copied, 0.132448 s, 4.0 GB/s</span><br></pre></td></tr></table></figure>
+
+<p>当然问题现在已经解决了。为了重现当时的情况，我们从头开始。</p>
+<h1 id="Toolbox"><a href="#Toolbox" class="headerlink" title="Toolbox"></a>Toolbox</h1><p>我们简单地使用 Debian 作为测试的 Docker Image。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull debian</span><br></pre></td></tr></table></figure>
+
+<p>并且使用 <code>dd</code> 命令生成一个 500M 的 000 文件，测试磁盘读写速度。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=/dev/zero of=500M.file bs=1M count=500</span><br><span class="line">$ dd <span class="keyword">if</span>=500M.file bs=1M count=500 of=/dev/null</span><br></pre></td></tr></table></figure>
+
+<h1 id="Yesterday-Once-More"><a href="#Yesterday-Once-More" class="headerlink" title="Yesterday Once More *"></a>Yesterday Once More *</h1><blockquote>
+<p>* <a href="https://open.spotify.com/track/3wM6RTAnF7IQpMFd7b9ZcL" target="_blank" rel="noopener">Yesterday Once More – Carpenters</a></p>
+</blockquote>
+<h2 id="初次碰壁"><a href="#初次碰壁" class="headerlink" title="初次碰壁"></a>初次碰壁</h2><p>拉镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull debian</span><br><span class="line"></span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/debian</span><br><span class="line">50e431f79093: Pull complete</span><br><span class="line">Digest: sha256:a63d0b2ecbd723da612abf0a8bdb594ee78f18f691d7dc652ac305a490c9b71a</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> debian:latest</span><br><span class="line">docker.io/library/debian:latest</span><br></pre></td></tr></table></figure>
+
+<p>找到宿主机的设备路径</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/vda: 50 GiB, 53687091200 bytes, 104857600 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel <span class="built_in">type</span>: gpt</span><br><span class="line">Disk identifier: -</span><br><span class="line"></span><br><span class="line">Device      Start       End   Sectors  Size Type</span><br><span class="line">/dev/vda1  227328 104857566 104630239 49.9G Linux filesystem</span><br><span class="line">/dev/vda14   2048     10239      8192    4M BIOS boot</span><br><span class="line">/dev/vda15  10240    227327    217088  106M EFI System</span><br><span class="line"></span><br><span class="line">Partition table entries are not <span class="keyword">in</span> disk order.</span><br></pre></td></tr></table></figure>
+
+<p>起一个 Docker，限制对应设备的读写速度</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm --device-read-bps /dev/vda:1MB  --device-write-bps /dev/vda:1MB debian</span><br><span class="line"></span><br><span class="line">root@9f79e6469b67:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=/dev/zero of=500M.file bs=1M count=500</span><br><span class="line"></span><br><span class="line">500+0 records <span class="keyword">in</span></span><br><span class="line">500+0 records out</span><br><span class="line">524288000 bytes (524 MB, 500 MiB) copied, 0.728238 s, 720 MB/s</span><br><span class="line"></span><br><span class="line">$ dd <span class="keyword">if</span>=500M.file bs=1M count=500 of=/dev/null</span><br><span class="line"></span><br><span class="line">500+0 records <span class="keyword">in</span></span><br><span class="line">500+0 records out</span><br><span class="line">524288000 bytes (524 MB, 500 MiB) copied, 0.132448 s, 4.0 GB/s</span><br></pre></td></tr></table></figure>
+
+<p><strong>？</strong></p>
+<p>这是一个非常可怕的事情。我限制的 <code>1MB/s</code> 并不工作。这个实验是基于这个假设进行的，如果没有办法限制设备的 IO，实验也没有办法继续进行了。</p>
+<a id="more"></a>
+
+<h2 id="另辟蹊径"><a href="#另辟蹊径" class="headerlink" title="另辟蹊径"></a>另辟蹊径</h2><p>为了完成实验，我找了大量的资料。首先我把焦点放在使用 <code>systemd</code> 控制资源限制上。</p>
+<p>根据 <code>systemd</code> 的文档（ <a href="https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options" target="_blank" rel="noopener">https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options</a> ），我们可以在对应服务的 systemd 配置文件中增加一些参数来实现自动化的资源控制，包括 CPU 资源限制，Memory 资源限制，进程数资源限制和 IO 限制。</p>
+<blockquote>
+<p>IOAccounting =</p>
+<blockquote>
+<p>Turn on Block I/O accounting for this unit, if the unified control group hierarchy is used on the system. Takes a boolean argument. Note that turning on block I/O accounting for one unit will also implicitly turn it on for all units contained in the same slice and all for its parent slices and the units contained therein. The system default for this setting may be controlled with <code>DefaultIOAccounting=</code> in <a href="https://www.freedesktop.org/software/systemd/man/systemd-system.conf.html#" target="_blank" rel="noopener">systemd-system.conf(5)</a>.</p>
+<p>This setting replaces <code>BlockIOAccounting=</code> and disables settings prefixed with <code>BlockIO</code> or <code>StartupBlockIO</code>.</p>
+</blockquote>
+<p>IOReadBandwidthMax=<em><code>device</code></em> <em><code>bytes</code><em><code>,</code>IOWriteBandwidthMax=</em><code>device</code></em> <em><code>bytes</code></em></p>
+<blockquote>
+<p>Set the per-device overall block I/O bandwidth maximum limit for the executed processes, if the unified control group hierarchy is used on the system. This limit is not work-conserving and the executed processes are not allowed to use more even if the device has idle capacity. Takes a space-separated pair of a file path and a bandwidth value (in bytes per second) to specify the device specific bandwidth. The file path may be a path to a block device node, or as any other file in which case the backing block device of the file system of the file is used. If the bandwidth is suffixed with K, M, G, or T, the specified bandwidth is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes, respectively, to the base of 1000. (Example: “/dev/disk/by-path/pci-0000:00:1f.2-scsi-0:0:0:0 5M”). This controls the “<code>io.max</code>“ control group attributes. Use this option multiple times to set bandwidth limits for multiple devices. For details about this control group attribute, see <a href="https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#io-interface-files" target="_blank" rel="noopener">IO Interface Files</a>.</p>
+<p>These settings replace <code>BlockIOReadBandwidth=</code> and <code>BlockIOWriteBandwidth=</code> and disable settings prefixed with <code>BlockIO</code> or <code>StartupBlockIO</code>.</p>
+<p>Similar restrictions on block device discovery as for <code>IODeviceWeight=</code> apply, see above.</p>
+</blockquote>
+</blockquote>
+<p>这个方法一听就非常靠谱。 <code>systemd</code> 是一个让人又爱又恨的工具，我曾经为了从 <code>service</code> 切换到 <code>systemctl</code> 不知道背了多久这个命令的单词拼写。由于我们需要限制 NginX 的 IO 资源，首先要找到 NginX 的 <code>systemd</code> 配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl status nginx</span><br><span class="line"></span><br><span class="line">● nginx.service - A high performance web server and a reverse proxy server</span><br><span class="line">   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset:</span><br><span class="line">   Active: active (running) since Wed 2020-03-11 14:17:51 UTC; 24h ago</span><br><span class="line">     Docs: man:nginx(8)</span><br><span class="line">  Process: 3677 ExecStop=/sbin/start-stop-daemon --quiet --stop --retry QUIT/5</span><br><span class="line">  Process: 3685 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (co</span><br><span class="line">  Process: 3678 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces</span><br><span class="line"> Main PID: 3687 (nginx)</span><br><span class="line">    Tasks: 17 (<span class="built_in">limit</span>: 4915)</span><br><span class="line">   CGroup: /system.slice/nginx.service</span><br><span class="line">           ├─3687 nginx: master process /usr/sbin/nginx -g daemon on; master_p</span><br><span class="line">           ├─3688 nginx: worker process</span><br><span class="line">           ...</span><br></pre></td></tr></table></figure>
+
+<p>然后进入 <code>/lib/systemd/system/nginx.service</code> ，修改 <code>[Service]</code> 块，增加三行。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">IOAccounting=<span class="literal">true</span></span><br><span class="line">IOReadBandwidthMax=/dev/vda 1M</span><br><span class="line">IOWriteBandwidthMax=/dev/vda 1M</span><br></pre></td></tr></table></figure>
+
+<p>Reload daemon and nginx。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl daemon-reload</span><br><span class="line">$ sudo systemctl restart nginx</span><br></pre></td></tr></table></figure>
+
+<p>由于我在 NginX 的网页目录下放了一个测试下载速度的文件，我换了内网其他机器去拉。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget http://10.10.194.18/dash/test.file</span><br><span class="line">--2020-03-12 15:07:57--  http://10.10.194.18/dash/test.file</span><br><span class="line">Connecting to 10.10.194.18:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 104857600 (100M) [application/octet-stream]</span><br><span class="line">Saving to: ‘test.file’</span><br><span class="line"></span><br><span class="line">test.file           100%[=================&gt;] 100.00M   339MB/s    <span class="keyword">in</span> 0.3s</span><br><span class="line"></span><br><span class="line">2020-03-12 15:07:57 (339 MB/s) - ‘test.file’ saved [104857600/104857600]</span><br></pre></td></tr></table></figure>
+
+<p>这个结果无疑告诉我这次尝试又失败了。</p>
+<h2 id="曙光初现"><a href="#曙光初现" class="headerlink" title="曙光初现"></a>曙光初现</h2><p>这个问题真的很奇怪，为什么我对资源的限制会不起作用。我后来在 NginX 的 <code>systemd</code> 配置文件中增加了 Memory 的 limit 是 work 的，但是 IO 相关的就不行。在本地虚拟机测试中，不管是 Docker 的 IO 限制还是 NginX 的 <code>systemd</code> 资源控制都是生效的，甚至一度让我怀疑是远程服务器的镜像问题。因为根据我咨询运维人员的情况来看，远程机器的镜像都经过特殊定制，有可能是这个原因。</p>
+<p>不过，后来我的 Teammate 给了我一个 <strong>很重要的提示</strong> 。通过给 <code>dd</code> 命令增加参数 <code>oflag=direct</code> ，在 Docker 中可以得到限速后的效果。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@9f79e6469b67:/<span class="comment"># dd if=500M.file bs=1M count=500 of=500.out oflag=direct</span></span><br><span class="line">^C</span><br><span class="line">18+0 records <span class="keyword">in</span></span><br><span class="line">18+0 records out</span><br><span class="line">18874368 bytes (19 MB, 18 MiB) copied, 18.0052 s, 1.0 MB/s</span><br></pre></td></tr></table></figure>
+
+<p>这个参数的作用是什么呢？GNU <a href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation" target="_blank" rel="noopener">https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation</a> 介绍如下</p>
+<blockquote>
+<p><strong>‘oflag=flag[,flag]…’</strong></p>
+<p>Access the output file using the flags specified by the flag argument(s). (No spaces around any comma(s).)</p>
+<p>Here are the flags. Not every flag is supported on every operating system.</p>
+<blockquote>
+<p><strong>‘direct’</strong></p>
+<p>Use direct I/O for data, avoiding the buffer cache. Note that the kernel may impose restrictions on read or write buffer sizes. For example, with an ext4 destination file system and a Linux-based kernel, using ‘oflag=direct’ will cause writes to fail with <code>EINVAL</code> if the output buffer size is not a multiple of 512.</p>
+</blockquote>
+</blockquote>
+<p>这说明远程服务器的读写缓存对硬盘 IO 产生了巨大的影响。虽然我记得之前不知道在哪里看到过说，Cgroups 的磁盘 IO 限制模块 blkio 会对读写 buffer 进行限制，但是由于这是远程服务器，并且镜像经过定制，可能在系统底层绕开了这一限制，用于提升服务器 IO。</p>
+<p>我也曾经考虑过读写 buffer 的问题，但是当时执行命令清空读写缓存时，遇上了这样的问题</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">-bash: /proc/sys/vm/drop_caches: Permission denied</span><br></pre></td></tr></table></figure>
+
+<p>我便没有继续。</p>
+<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>最终，我们把问题锁定在服务器的读写缓存上。既然已经知道了问题所在，解决起来也就相对容易。虽然没有办法直接将清除缓存命令写进特定位置，但是可以用这条命令解决。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">"/bin/echo 1 &gt; /proc/sys/vm/drop_caches"</span></span><br></pre></td></tr></table></figure>
+
+<p>这是工作的。至于为啥，我没研究。</p>
+<p>还有另一套方案，将磁盘缓存的超时时间设置极低，也可以解决。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> 100 &gt; /proc/sys/vm/dirty_expire_centisecs</span><br><span class="line">$ sudo <span class="built_in">echo</span> 100 &gt; /proc/sys/vm/dirty_writeback_centisecs</span><br></pre></td></tr></table></figure>
+
+<p>当然，这些命令都要在宿主机进行操作，因为 Docker 本质只是一个在宿主机上虚拟化的线程。<code>/proc/sys/vm/</code> 文件夹对 Docker 容器来说，只是一个 Read-Only 的文件系统。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@9f79e6469b67:/<span class="comment"># echo 100 &gt; /proc/sys/vm/dirty_writeback_centisecs</span></span><br><span class="line">bash: /proc/sys/vm/dirty_writeback_centisecs: Read-only file system</span><br></pre></td></tr></table></figure>
+
+<p>最终，在清除缓存后，一切都变得正常起来。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@9f79e6469b67:/<span class="comment"># dd if=500M.file bs=1M count=500 of=/dev/null</span></span><br><span class="line">^C</span><br><span class="line">44+0 records <span class="keyword">in</span></span><br><span class="line">43+0 records out</span><br><span class="line">45088768 bytes (45 MB, 43 MiB) copied, 44.4906 s, 1.0 MB/s</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget 10.10.194.18/dash/test.file</span><br><span class="line">--2020-03-12 15:42:29--  http://10.10.194.18/dash/test.file</span><br><span class="line">Connecting to 10.10.194.18:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 104857600 (100M) [application/octet-stream]</span><br><span class="line">Saving to: ‘test.file.1’</span><br><span class="line"></span><br><span class="line">test.file.1         100%[=================&gt;] 100.00M  1005KB/s    <span class="keyword">in</span> 1m 45s</span><br><span class="line"></span><br><span class="line">2020-03-12 15:44:14 (977 KB/s) - ‘test.file.1’ saved [104857600/104857600]</span><br></pre></td></tr></table></figure>
+
+<h1 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h1><p>我觉得这篇文章要是就这么结束，内容应该有点太少了。在填坑过程中，我还研究了不少和系统资源控制相关的内容。</p>
+<h2 id="Cgroup"><a href="#Cgroup" class="headerlink" title="Cgroup"></a>Cgroup</h2><p>Cgroup 是 Linux 用于控制进程资源的一种方式，从 2.6.24 内核中开始搭载，v2 版本于 4.5 内核开始搭载。它的配置文件在文件系统中的组织方式是 <code>/sys/fs/cgroup/{Resource}/{defaultConfigs}</code> 和 <code>/sys/fs/cgroup/{Resource}/{Groups}/.../{configs}</code> 。对应的限制内容会被写在目录的文件下，限制进程的 <code>pid</code> 会被写在目录的 <code>tasks</code> 文件夹下。简单看看本文主角 <strong>blkio</strong> 文件夹下的结构。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/sys/fs/cgroup/blkio$ ls</span><br><span class="line">blkio.io_merged                   blkio.throttle.io_serviced</span><br><span class="line">blkio.io_merged_recursive         blkio.throttle.read_bps_device</span><br><span class="line">blkio.io_queued                   blkio.throttle.read_iops_device</span><br><span class="line">blkio.io_queued_recursive         blkio.throttle.write_bps_device</span><br><span class="line">blkio.io_service_bytes            blkio.throttle.write_iops_device</span><br><span class="line">blkio.io_service_bytes_recursive  blkio.time</span><br><span class="line">blkio.io_service_time             blkio.time_recursive</span><br><span class="line">blkio.io_service_time_recursive   blkio.weight</span><br><span class="line">blkio.io_serviced                 blkio.weight_device</span><br><span class="line">blkio.io_serviced_recursive       cgroup.clone_children</span><br><span class="line">blkio.io_wait_time                cgroup.procs</span><br><span class="line">blkio.io_wait_time_recursive      cgroup.sane_behavior</span><br><span class="line">blkio.leaf_weight                 docker</span><br><span class="line">blkio.leaf_weight_device          notify_on_release</span><br><span class="line">blkio.reset_stats                 release_agent</span><br><span class="line">blkio.sectors                     system.slice</span><br><span class="line">blkio.sectors_recursive           tasks</span><br><span class="line">blkio.throttle.io_service_bytes   user.slice</span><br></pre></td></tr></table></figure>
+
+<p>之前我们修改的 <code>systemd/nginx.service</code> 的内容被放在 <code>system.slice</code> 下，docker 的资源限制被放在 <code>docker/</code> 和 <code>docker/container_id</code> 下。</p>
+<p>看看 cgroup 支持哪些资源</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lssubsys  -m</span><br><span class="line">cpuset /sys/fs/cgroup/cpuset</span><br><span class="line">cpu,cpuacct /sys/fs/cgroup/cpu,cpuacct</span><br><span class="line">blkio /sys/fs/cgroup/blkio</span><br><span class="line">memory /sys/fs/cgroup/memory</span><br><span class="line">devices /sys/fs/cgroup/devices</span><br><span class="line">freezer /sys/fs/cgroup/freezer</span><br><span class="line">net_cls,net_prio /sys/fs/cgroup/net_cls,net_prio</span><br><span class="line">perf_event /sys/fs/cgroup/perf_event</span><br><span class="line">hugetlb /sys/fs/cgroup/hugetlb</span><br><span class="line">pids /sys/fs/cgroup/pids</span><br><span class="line">rdma /sys/fs/cgroup/rdma</span><br></pre></td></tr></table></figure>
+
+<p>简单验证一下生效的几个配置。</p>
+<h2 id="Docker-资源限制"><a href="#Docker-资源限制" class="headerlink" title="Docker 资源限制"></a>Docker 资源限制</h2><p>Docker ID: 9f79e6469b67</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect 9f79e6469b67 | grep Pid</span><br><span class="line">            <span class="string">"Pid"</span>: 6510,</span><br><span class="line">            <span class="string">"PidMode"</span>: <span class="string">""</span>,</span><br><span class="line">            <span class="string">"PidsLimit"</span>: null,</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/fs/cgroup/blkio/docker/9f79e6469b67... </span><br><span class="line">$ ls</span><br><span class="line">blkio.io_merged                   blkio.sectors_recursive</span><br><span class="line">blkio.io_merged_recursive         blkio.throttle.io_service_bytes</span><br><span class="line">blkio.io_queued                   blkio.throttle.io_serviced</span><br><span class="line">blkio.io_queued_recursive         blkio.throttle.read_bps_device</span><br><span class="line">blkio.io_service_bytes            blkio.throttle.read_iops_device</span><br><span class="line">blkio.io_service_bytes_recursive  blkio.throttle.write_bps_device</span><br><span class="line">blkio.io_service_time             blkio.throttle.write_iops_device</span><br><span class="line">blkio.io_service_time_recursive   blkio.time</span><br><span class="line">blkio.io_serviced                 blkio.time_recursive</span><br><span class="line">blkio.io_serviced_recursive       blkio.weight</span><br><span class="line">blkio.io_wait_time                blkio.weight_device</span><br><span class="line">blkio.io_wait_time_recursive      cgroup.clone_children</span><br><span class="line">blkio.leaf_weight                 cgroup.procs</span><br><span class="line">blkio.leaf_weight_device          notify_on_release</span><br><span class="line">blkio.reset_stats                 tasks</span><br><span class="line">blkio.sectors</span><br><span class="line">$ cat tasks</span><br><span class="line">6510</span><br><span class="line">$ cat blkio.throttle.read_bps_device</span><br><span class="line">252:0 1048576</span><br></pre></td></tr></table></figure>
+
+<p>其中，252 : 0 是磁盘设备号 <code>&lt;major&gt;:&lt;minor&gt;</code> ，1048576 = 1024 * 1024</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ls -l /dev/vda</span><br><span class="line">brw-rw---- 1 root disk 252, 0 Mar 11 13:32 /dev/vda</span><br></pre></td></tr></table></figure>
+
+<p>这说明在我们启动一个资源受限的 Docker 时，Docker 会自动在自身 cgroup 资源限制组下生成名为 <code>container_id</code> 的文件夹，然后将对应容器的 Pid 和限制资源规则写入。</p>
+<h2 id="Systemd-资源限制"><a href="#Systemd-资源限制" class="headerlink" title="Systemd 资源限制"></a>Systemd 资源限制</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/fs/cgroup/blkio/system.slice/nginx.service</span><br><span class="line">$ cat tasks</span><br><span class="line">6648</span><br><span class="line">6651</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat blkio.throttle.read_bps_device</span><br><span class="line">252:0 1000000</span><br><span class="line">$ sudo systemctl status nginx</span><br><span class="line">● nginx.service - A high performance web server and a reverse proxy server</span><br><span class="line">   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset:</span><br><span class="line">   Active: active (running) since Thu 2020-03-12 15:06:14 UTC; 1h 5min ago</span><br><span class="line">     Docs: man:nginx(8)</span><br><span class="line">  Process: 6632 ExecStop=/sbin/start-stop-daemon --quiet --stop --retry QUIT/5</span><br><span class="line">  Process: 6646 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (co</span><br><span class="line">  Process: 6633 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces</span><br><span class="line"> Main PID: 6648 (nginx)</span><br><span class="line"> ...</span><br></pre></td></tr></table></figure>
+
+<p>NginX 的所有进程 Pid 和 <code>.../system.slice/nginx.service/tasks</code> 中的 Pid 一一对应。</p>
+<p><code>systemd</code> 的资源限制工作方式和 Docker 类似。</p>
+<p>有趣的是，Docker 采用 2 ^ 10  作为单位，而 systemd 采用 1000 作为单位。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li>[Systemd] <a href="https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options" target="_blank" rel="noopener">https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html#Options</a></li>
+<li>[dd] <a href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation" target="_blank" rel="noopener">https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation</a></li>
+<li>[Disk Cache] <a href="https://stackoverflow.com/questions/20215516/disabling-disk-cache-in-linux" target="_blank" rel="noopener">https://stackoverflow.com/questions/20215516/disabling-disk-cache-in-linux</a></li>
+<li>[Disk Cache] <a href="https://unix.stackexchange.com/questions/48138/how-to-throttle-per-process-i-o-to-a-max-limit" target="_blank" rel="noopener">https://unix.stackexchange.com/questions/48138/how-to-throttle-per-process-i-o-to-a-max-limit</a></li>
+<li>[Disk Cache] <a href="https://unix.stackexchange.com/questions/109496/echo-3-proc-sys-vm-drop-caches-permission-denied-as-root" target="_blank" rel="noopener">https://unix.stackexchange.com/questions/109496/echo-3-proc-sys-vm-drop-caches-permission-denied-as-root</a></li>
+<li>[Cgroup] <a href="https://coolshell.cn/articles/17049.html" target="_blank" rel="noopener">https://coolshell.cn/articles/17049.html</a></li>
+<li>[Cgroup] <a href="https://tech.meituan.com/2015/03/31/cgroups.html" target="_blank" rel="noopener">https://tech.meituan.com/2015/03/31/cgroups.html</a></li>
+<li>[Cgroup] <a href="https://cizixs.com/2017/08/25/linux-cgroup/" target="_blank" rel="noopener">https://cizixs.com/2017/08/25/linux-cgroup/</a></li>
+<li>[Cgroup blkio] <a href="https://andrestc.com/post/cgroups-io/" target="_blank" rel="noopener">https://andrestc.com/post/cgroups-io/</a></li>
+<li>[Cgroup blkio] <a href="https://www.kernel.org/doc/Documentation/cgroup-v1/blkio-controller.txt" target="_blank" rel="noopener">https://www.kernel.org/doc/Documentation/cgroup-v1/blkio-controller.txt</a></li>
+<li>[Docker IO] <a href="https://stackoverflow.com/questions/36145817/how-to-limit-io-speed-in-docker-and-share-file-with-system-in-the-same-time" target="_blank" rel="noopener">https://stackoverflow.com/questions/36145817/how-to-limit-io-speed-in-docker-and-share-file-with-system-in-the-same-time</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/blkio-debug/">https://wasteland.touko.moe//blog/2020/03/blkio-debug/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+        <tag>blkio</tag>
+        <tag>Cgroups</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Customize Hexo and Theme NexT</title>
+    <url>//blog/2020/03/customize-hexo/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>我大概是从两天前开始决定使用 Hexo 的。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">橙橙橙 <span class="number">2020</span><span class="number">-03</span><span class="number">-10</span> <span class="number">15</span>:<span class="number">35</span>:<span class="number">42</span></span><br><span class="line">    你现在在用hexo吗</span><br><span class="line">锅 <span class="number">2020</span><span class="number">-03</span><span class="number">-10</span> <span class="number">16</span>:<span class="number">15</span>:<span class="number">22</span></span><br><span class="line">    对</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">橙橙橙 <span class="number">2020</span><span class="number">-03</span><span class="number">-12</span> <span class="number">18</span>:<span class="number">05</span>:<span class="number">24</span></span><br><span class="line">    你觉得hexo好还是jekyll好</span><br><span class="line">mxd <span class="number">2020</span><span class="number">-03</span><span class="number">-12</span> <span class="number">18</span>:<span class="number">12</span>:<span class="number">17</span></span><br><span class="line">    我喜欢hexo</span><br></pre></td></tr></table></figure>
+
+<p>昨天我装上了 <code>Hexo</code> ，配置了 <code>gh-pages</code> ，今天我装了一堆插件用于优化浏览体验，并把主题改成了自己喜欢的样子。我还增加了 <code>gitalk</code> 评论系统，并接入了 <code>Google Analytics</code> 服务等传统艺能。</p>
+<p>我会在这个帖子里做一些记录，关于我修改的比较重要的部分。</p>
+<h1 id="修改-Hexo-字体"><a href="#修改-Hexo-字体" class="headerlink" title="修改 Hexo 字体"></a>修改 Hexo 字体</h1><p>我修改了 <code>Hexo</code> 全局的字体，并根据自己的审美修改了字体大小和排版。修改字体需要重写 CSS ，覆盖 <code>NexT</code> 原有的样式表。</p>
+<p>在 <code>NexT</code> 的配置文件中找到如下片段</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Define custom file paths.</span></span><br><span class="line"><span class="comment"># Create your custom files in site directory `source/_data` and uncomment needed files below.</span></span><br><span class="line"><span class="attr">custom_file_path:</span></span><br><span class="line">  <span class="comment">#head: source/_data/head.swig</span></span><br><span class="line">  <span class="comment">#header: source/_data/header.swig</span></span><br><span class="line">  <span class="comment">#sidebar: source/_data/sidebar.swig</span></span><br><span class="line">  <span class="comment">#postMeta: source/_data/post-meta.swig</span></span><br><span class="line">  <span class="comment">#postBodyEnd: source/_data/post-body-end.swig</span></span><br><span class="line">  <span class="comment">#footer: source/_data/footer.swig</span></span><br><span class="line">  <span class="comment">#bodyEnd: source/_data/body-end.swig</span></span><br><span class="line">  <span class="comment">#variable: source/_data/variables.styl</span></span><br><span class="line">  <span class="comment">#mixin: source/_data/mixins.styl</span></span><br><span class="line">  <span class="attr">style:</span> <span class="string">source/_data/styles.styl</span></span><br></pre></td></tr></table></figure>
+
+<p>由于我只自定义了样式表，所以我只是把样式表的部分取消注释。我希望修改我的网站全局的字体，所以我先通过 <a href="https://www.font-converter.net/" target="_blank" rel="noopener">https://www.font-converter.net/</a> 将 ttf 字体转换成了多种格式，将其放在 <code>source/fonts</code> 文件夹下，并增加 CSS 配置。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@font-face</span> &#123;</span><br><span class="line">  <span class="attribute">font-family</span>: <span class="string">"FZS3JW"</span>;</span><br><span class="line">  <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.eot"</span>); <span class="comment">/* IE9 Compat Modes */</span></span><br><span class="line">  <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.eot?#iefix"</span>) <span class="built_in">format</span>(<span class="string">"embedded-opentype"</span>), <span class="comment">/* IE6-IE8 */</span></span><br><span class="line">    <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.otf"</span>) <span class="built_in">format</span>(<span class="string">"opentype"</span>), <span class="comment">/* Open Type Font */</span></span><br><span class="line">    <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.svg"</span>) <span class="built_in">format</span>(<span class="string">"svg"</span>), <span class="comment">/* Legacy iOS */</span></span><br><span class="line">    <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.ttf"</span>) <span class="built_in">format</span>(<span class="string">"truetype"</span>), <span class="comment">/* Safari, Android, iOS */</span></span><br><span class="line">    <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.woff"</span>) <span class="built_in">format</span>(<span class="string">"woff"</span>), <span class="comment">/* Modern Browsers */</span></span><br><span class="line">    <span class="built_in">url</span>(<span class="string">"/fonts/FZS3JW/FZS3JW.woff2"</span>) <span class="built_in">format</span>(<span class="string">"woff2"</span>); <span class="comment">/* Modern Browsers */</span></span><br><span class="line">  <span class="attribute">font-weight</span>: normal;</span><br><span class="line">  <span class="attribute">font-style</span>: normal;</span><br><span class="line">  <span class="attribute">font-display</span>: swap;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">"Times New Roman"</span>, <span class="string">"FZS3JW"</span>, <span class="string">"PingFang SC"</span>, <span class="string">"Microsoft YaHei"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，全局的字体就被修改为上述优先级了。</p>
+<h1 id="评论"><a href="#评论" class="headerlink" title="评论"></a>评论</h1><p><code>NexT</code> 提供了非常方便的评论接口，只需要申请对应的评论服务并把他们的 <code>API Key</code> 或者别的相关的东西复制过来就可以了。我这里主要记录一下 <code>gitalk</code> 的安装过程。</p>
+<h2 id="Gitalk"><a href="#Gitalk" class="headerlink" title="Gitalk"></a>Gitalk</h2><p><code>gitalk</code> 是一个使用 <code>GitHub issue</code> 作为对话记录工具的评论，我觉得想到这个点子的人一定是天才。</p>
+<p>首先我们需要创建一个 repo ，用于放所有的 issue （评论）。我创建了一个名为 <code>gitalk-wasteland</code> 的 repo 。然后我们什么都不用操作，进行下一步。</p>
+<p>进入 <code>GitHub OAuth App</code> 申请页面 <a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">https://github.com/settings/applications/new</a> ，创建一个新的 <code>OAuth App</code> 并设置 <em>Homepage URL</em> 和 <em>Authorization callback URL</em> 为 <strong>网站首页 URL</strong> 。然后根据配置文件注释，将 <em>Client ID</em> ， <em>Client Secret</em> ， <em>gitalk-wasteland(repo name)</em> 等信息填入</p>
+<a id="more"></a>
+
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<p>即可生效。这个评论模块无法在本地测试，需要部署到服务器后在之前填入的 URL 下进行测试。</p>
+<p>不要忘记打开</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Multiple Comment System Support</span></span><br><span class="line"><span class="attr">comments:</span></span><br><span class="line">  <span class="comment"># Available values: tabs | buttons</span></span><br><span class="line">  <span class="attr">style:</span> <span class="string">tabs</span></span><br><span class="line">  <span class="comment"># Choose a comment system to be displayed by default.</span></span><br><span class="line">  <span class="comment"># Available values: changyan | disqus | disqusjs | gitalk | livere | valine</span></span><br><span class="line">  <span class="attr">active:</span> <span class="string">gitalk</span></span><br><span class="line">  <span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h1><h2 id="搜索按钮-hexo-generator-searchdb"><a href="#搜索按钮-hexo-generator-searchdb" class="headerlink" title="搜索按钮 hexo-generator-searchdb"></a>搜索按钮 hexo-generator-searchdb</h2><p>GitHub: <a href="https://github.com/theme-next/hexo-generator-searchdb" target="_blank" rel="noopener">https://github.com/theme-next/hexo-generator-searchdb</a>  </p>
+<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn add hexo-generator-searchdb</span><br></pre></td></tr></table></figure>
+
+<h3 id="Configure"><a href="#Configure" class="headerlink" title="Configure"></a>Configure</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn upgrade hexo-generator-searchdb</span><br></pre></td></tr></table></figure>
+
+<h2 id="SPA-插件-PJAX-for-NexT"><a href="#SPA-插件-PJAX-for-NexT" class="headerlink" title="SPA 插件 PJAX for NexT"></a>SPA 插件 PJAX for NexT</h2><p>GitHub: <a href="https://github.com/theme-next/theme-next-pjax" target="_blank" rel="noopener">https://github.com/theme-next/theme-next-pjax</a>  </p>
+<p>在用户点击网页内链接时，通过 <code>AJAX</code> 的方式拉取新页面并渲染，达到 <code>SPA (Single Page Application)</code> 的效果。</p>
+<h3 id="Install-1"><a href="#Install-1" class="headerlink" title="Install"></a>Install</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/theme-next/theme-next-pjax <span class="built_in">source</span>/lib/pjax</span><br></pre></td></tr></table></figure>
+
+<p>But I recommend this</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git submodule add https://github.com/theme-next/theme-next-pjax <span class="built_in">source</span>/lib/pjax</span><br></pre></td></tr></table></figure>
+
+<h3 id="Configure-1"><a href="#Configure-1" class="headerlink" title="Configure"></a>Configure</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">pjax:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Update-1"><a href="#Update-1" class="headerlink" title="Update"></a>Update</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next/<span class="built_in">source</span>/lib/pjax</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
+
+<h2 id="网页加载进度条-Progress-bar-for-NexT"><a href="#网页加载进度条-Progress-bar-for-NexT" class="headerlink" title="网页加载进度条 Progress bar for NexT"></a>网页加载进度条 Progress bar for NexT</h2><p>GitHub: <a href="https://github.com/theme-next/theme-next-pace" target="_blank" rel="noopener">https://github.com/theme-next/theme-next-pace</a>  </p>
+<p>这个插件可以在页面元素加载的时候给页面增加一个进度条提示。</p>
+<h3 id="Install-2"><a href="#Install-2" class="headerlink" title="Install"></a>Install</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/theme-next/theme-next-pace <span class="built_in">source</span>/lib/pace</span><br></pre></td></tr></table></figure>
+
+<p>I recommend this as well</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git submodule add https://github.com/theme-next/theme-next-pace <span class="built_in">source</span>/lib/pace</span><br></pre></td></tr></table></figure>
+
+<h3 id="Configure-2"><a href="#Configure-2" class="headerlink" title="Configure"></a>Configure</h3><p>在 <code>NexT</code> 配置文件中启用该模块</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">pace:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Themes list:</span></span><br><span class="line">  <span class="comment"># big-counter | bounce | barber-shop | center-atom | center-circle | center-radar | center-simple</span></span><br><span class="line">  <span class="comment"># corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal</span></span><br><span class="line">  <span class="attr">theme:</span> <span class="string">minimal</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Update-2"><a href="#Update-2" class="headerlink" title="Update"></a>Update</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next/<span class="built_in">source</span>/lib/pace</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
+
+<h2 id="Sitemap-hexo-generator-sitemap"><a href="#Sitemap-hexo-generator-sitemap" class="headerlink" title="Sitemap hexo-generator-sitemap"></a>Sitemap hexo-generator-sitemap</h2><p>GitHub: <a href="https://github.com/hexojs/hexo-generator-sitemap" target="_blank" rel="noopener">https://github.com/hexojs/hexo-generator-sitemap</a>  </p>
+<h3 id="Install-3"><a href="#Install-3" class="headerlink" title="Install"></a>Install</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn add hexo-generator-sitemap</span><br></pre></td></tr></table></figure>
+
+<h3 id="Configure-3"><a href="#Configure-3" class="headerlink" title="Configure"></a>Configure</h3><p>添加设置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">sitemap:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">sitemap.xml</span></span><br><span class="line">  <span class="attr">template:</span> <span class="string">./path/to/sitemap_template.xml</span></span><br><span class="line">  <span class="attr">rel:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>添加 Sitemap 模板文件于你喜欢的位置</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">urlset</span> <span class="attr">xmlns</span>=<span class="string">"http://www.sitemaps.org/schemas/sitemap/0.9"</span>&gt;</span></span><br><span class="line">  &#123;% for post in posts %&#125;</span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">loc</span>&gt;</span>&#123;&#123; post.permalink | uriencode &#125;&#125;<span class="tag">&lt;/<span class="name">loc</span>&gt;</span></span><br><span class="line">    &#123;% if post.updated %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">lastmod</span>&gt;</span>&#123;&#123; post.updated.toISOString() &#125;&#125;<span class="tag">&lt;/<span class="name">lastmod</span>&gt;</span></span><br><span class="line">    &#123;% elif post.date %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">lastmod</span>&gt;</span>&#123;&#123; post.date.toISOString() &#125;&#125;<span class="tag">&lt;/<span class="name">lastmod</span>&gt;</span></span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  &#123;% endfor %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">urlset</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于不想被 Sitemap 包含的文件，可以在头部写入 <code>sitemap: false</code> 。</p>
+<h3 id="Update-3"><a href="#Update-3" class="headerlink" title="Update"></a>Update</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn upgrade hexo-generator-sitemap</span><br></pre></td></tr></table></figure>
+
+<h2 id="RSS-hexo-generator-feed"><a href="#RSS-hexo-generator-feed" class="headerlink" title="RSS hexo-generator-feed"></a>RSS hexo-generator-feed</h2><p>GitHub: <a href="https://github.com/hexojs/hexo-generator-feed" target="_blank" rel="noopener">https://github.com/hexojs/hexo-generator-feed</a></p>
+<h3 id="Install-4"><a href="#Install-4" class="headerlink" title="Install"></a>Install</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn add hexo-generator-feed</span><br></pre></td></tr></table></figure>
+
+<h2 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">feed:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">atom</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">atom.xml</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">hub:</span></span><br><span class="line">  <span class="attr">content:</span></span><br><span class="line">  <span class="attr">content_limit:</span> <span class="number">500</span></span><br><span class="line">  <span class="attr">content_limit_delim:</span> <span class="string">' '</span></span><br><span class="line">  <span class="attr">order_by:</span> <span class="string">-date</span></span><br><span class="line">  <span class="attr">icon:</span> <span class="string">icon.png</span></span><br><span class="line">  <span class="attr">autodiscovery:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">template:</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Update-4"><a href="#Update-4" class="headerlink" title="Update"></a>Update</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn upgrade hexo-generator-feed</span><br></pre></td></tr></table></figure>
+
+<h1 id="最后废话两句"><a href="#最后废话两句" class="headerlink" title="最后废话两句"></a>最后废话两句</h1><p>网上很多教程会让你直接修改主题内的文件。这不是不行，但是主题作者已经尽量将配置文件暴露，便于主题升级。</p>
+<p>这其中也包括对网站增加插件。举个例子，对于插件 <code>theme-next-pjax</code> ， <code>README.md</code> 中写的是将插件下载到 <code>next/source/lib</code> 下，但我的建议是用 <code>git submodule add</code> ，将其作为一整个包插入，也方便以后升级维护。</p>
+<h2 id="NexT-主题解耦合"><a href="#NexT-主题解耦合" class="headerlink" title="NexT 主题解耦合"></a>NexT 主题解耦合</h2><p>可以把 <code>NexT</code> 的配置文件放置在 <code>source/_data/next.yml</code> 下，然后修改该配置文件 <code>override: true</code> 即可将设置完全覆盖。对于自己增加的 <code>CSS</code> 、 <code>JS</code> 等文件，也可以放在 <code>NexT</code> 配置文件中提到的对应位置，这对今后的升级和维护有很大帮助。</p>
+<p>如果已经在使用 NexT 主题，确保主题文件夹的修改都备份好的情况下，执行 <code>git rm themes/next</code> ，从 git 中删除并保留主题原文件。然后执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git submodule add https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>通过增加 submodule 的方式增加主题，并且今后不要再对 <code>themes/next</code> 文件夹下的文件做任何修改，否则可能产生一个 <code>dirty commit</code> 。</p>
+<p>我在通过 <code>submodule add</code> 增加 <code>PJAX, pace</code> 的时候遇上了下面这个问题</p>
+<figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">YAMLException: end of the stream or a document separator is expected at line 9, column 102:</span><br><span class="line">     ... languages` and other directories:</span><br><span class="line">                                         ^</span><br><span class="line">    at generateError (C:<span class="symbol">\P</span>rojects<span class="symbol">\W</span>ebsite<span class="symbol">\w</span>asteland<span class="symbol">\n</span>ode_modules<span class="symbol">\j</span>s-yaml<span class="symbol">\l</span>ib<span class="symbol">\j</span>s-yaml<span class="symbol">\l</span>oader.js:167:10)</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>遇上这种问题，我推测是执行相关命令时， <code>Hexo</code> 会对 <code>source/</code> 下的所有特定后缀文件进行语法检查。我通过全局搜索含有 <code>languages and other directories:</code> 的文件定位到之前添加的 <code>submodule</code> 中 <code>README.md</code> 存在非法（不符合 YAML 语法检查器）的内容。</p>
+<p>添加配置跳过这些文件就可以解决这个问题了。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">exclude:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">lib/**/*.md</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li>关于@font-face加载前空白(FOIT)的解决方案 - <a href="https://juejin.im/post/5a7587d4f265da4e8a31c213" target="_blank" rel="noopener">https://juejin.im/post/5a7587d4f265da4e8a31c213</a>  </li>
+<li>Hexo中Gitalk配置使用教程-可能是目前最详细的教程 - <a href="https://iochen.com/2018/01/06/use-gitalk-in-hexo/" target="_blank" rel="noopener">https://iochen.com/2018/01/06/use-gitalk-in-hexo/</a>  </li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/customize-hexo/">https://wasteland.touko.moe//blog/2020/03/customize-hexo/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Web</category>
+        <category>Frontend</category>
+        <category>Blog</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Hexo Theme</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Syncthing 文件同步工具部署和 iOS 替代方案</title>
+    <url>//blog/2020/03/syncthing-all-platform/</url>
+    <content><![CDATA[<p>Syncthing Official Site: <a href="https://syncthing.net/" target="_blank" rel="noopener">https://syncthing.net/</a></p>
+<p>Syncthing Github: <a href="https://github.com/syncthing/" target="_blank" rel="noopener">https://github.com/syncthing/</a></p>
+<p>KodExplorer Official Site: <a href="https://kodcloud.com/" target="_blank" rel="noopener">https://kodcloud.com/</a></p>
+<p>KodExplorer Github: <a href="https://github.com/kalcaddle/KodExplorer" target="_blank" rel="noopener">https://github.com/kalcaddle/KodExplorer</a></p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><blockquote>
+<p>Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers in real time, safely protected from prying eyes. Your data is your data alone and you deserve to choose where it is stored, whether it is shared with some third party, and how it’s transmitted over the internet.</p>
+</blockquote>
+<p><em>Syncthing</em> 是一个实时的文件同步程序，可以在两台以上的设备之间进行实时、端对端的文件同步。在不同设备间同步的时候，还可以对每个设备分别设置文件版本控制，保留被删除的文件的副本或者更改前的旧版本，在办公、科研、文档共享和数据共享上都有很大用处。</p>
+<p>我将 <em>Syngthing</em> 安装在了学校电脑、 Surface 和远端服务器上，远端服务器有公网 IP ，方便进行快速同步。这样只要我本地的数据发生更新，远端服务器就会同步数据，并且保存文件的旧版本。</p>
+<h1 id="服务器安装"><a href="#服务器安装" class="headerlink" title="服务器安装"></a>服务器安装</h1><p>虽然是开源项目，但是我不建议使用源代码安装。源码安装不利于软件的升级和版本控制。</p>
+<p>官网对文件安装的文档说明已经非常详细了，这边简单摘抄一些，并分享在安装过程中发现的问题并提供解决方案。</p>
+<p>全平台（除了 iOS）的安装文件可以在这里找到 <a href="https://syncthing.net/downloads/" target="_blank" rel="noopener">https://syncthing.net/downloads/</a> 。</p>
+<h2 id="Deb-系"><a href="#Deb-系" class="headerlink" title="Deb 系"></a>Deb 系</h2><p>用户可以在两条 release 轨道中进行选择，分别是”stable” (latest release) 和 “candidate” (earlier release candidate) 。</p>
+<p>同时强烈建议通过 HTTPS 从 apt 源进行下载。</p>
+<p>Candidate Track 的版本升级会比 Stable Track <strong>早大约三个星期</strong>，追求刺激的用户可以使用 Candidate Track 。</p>
+<h3 id="Stable-Track"><a href="#Stable-Track" class="headerlink" title="Stable Track"></a>Stable Track</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line">sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the "stable" channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"deb https://apt.syncthing.net/ syncthing stable"</span> | sudo tee /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install syncthing</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="Candidate-Track"><a href="#Candidate-Track" class="headerlink" title="Candidate Track"></a>Candidate Track</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line">sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Candidate Version</span></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the "candidate" channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"deb https://apt.syncthing.net/ syncthing candidate"</span> | sudo tee /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install syncthing</span><br></pre></td></tr></table></figure>
+
+<h2 id="RedHat-系"><a href="#RedHat-系" class="headerlink" title="RedHat 系"></a>RedHat 系</h2><p>RedHat 系统可以直接在官网下载已经编译好的程序，并直接执行。为了方便执行，可以通过 <code>ln -s</code> 将程序可执行文件软连接到 <code>/usr/bin</code> 下。</p>
+<h2 id="Windows-amp-MacOS"><a href="#Windows-amp-MacOS" class="headerlink" title="Windows &amp; MacOS"></a>Windows &amp; MacOS</h2><p>可以直接在官网下载到可执行程序，执行后将会自动弹出 Web 页面。</p>
+<h1 id="打通-Syncthing-节点之间的第一条-P2P-连接"><a href="#打通-Syncthing-节点之间的第一条-P2P-连接" class="headerlink" title="打通 Syncthing 节点之间的第一条 P2P 连接"></a>打通 Syncthing 节点之间的第一条 P2P 连接</h1><p>让我们开始连接第一条端到端同步线路。这条线路将会在本地 PC 和远端服务器之间同步数据。</p>
+<p>我打算将我的服务器作为文件存放的主服务器，一大原因是服务器有公网地址，不需要通过 NAT 穿透来访问，这会大大提高同步速度。我的主服务器是 Debian buster。</p>
+<p>因为 <em>Syncthing</em> 并没有 iOS 客户端。为了在 iOS 上使用 <em>Syncthing</em> ，我采用了一个 Trick，用 <em>KodExplorer</em> 作为网页访问文件的工具，并将同步文件夹放置在 <em>KodExplorer</em> 的目录下。所以，如果想保持 <em>KodExplorer</em> 和 <em>Syncthing</em> 可以正常协同工作，需要单独创建一个用户来运行 <em>Syncthing</em> 和 <em>PHP</em> ，保证他们的 <strong>读写权限相同</strong> 。同时，官方也建议不要使用 root 账户运行 <em>Syncthing</em> 。</p>
+<p>我使用 <code>www</code> 用户运行 <em>PHP</em> ，所以现在默认我已经切换到 <code>www</code> 账户运行 <em>Syncthing</em> 了。</p>
+<p>我使用 <code>screen</code> 控制程序后台运行。在安装完程序后，执行命令 <code>syncthing</code> 让其在 <code>~/.config/syncthing</code> 下生成初始配置文件。程序默认监听 127.0.0.1:8384 作为其 Web GUI 页面。如果你有 <em>NginX</em> 或者 <em>Apache</em> ，可以设置一个反向代理到这个端口，就能直接进入网站页面。如果没有，需要 <code>Ctrl + C</code> 终止程序运行，并修改 <code>~/.config/syncthing/config.xml</code> 中的监听地址为 <code>0.0.0.0</code> ，然后通过公网 IP 访问该地址进行配置。如果这个页面是暴露在公网上的，请 <strong>务必设置管理员密码</strong> 。</p>
+<p>远端服务器节点配置完成后，我们开始配置本地 PC 节点。在 PC 中下载程序并运行，在 GUI 页面中点击右下角 <strong>添加远程设备</strong> ，输入从远端服务器的 ID（服务器 GUI 界面右上角操作-显示 ID），然后等待一段时间，远端服务器会收到本地 PC 发起的远程设备连接请求，同意即可。</p>
+<p>如果没有收到请求，可以检查一下远端服务器是否打开了端口 22000/TCP ，21027/UDP 防火墙。</p>
+<p>远端接受请求后，就可以添加本地同步文件夹，并和远端进行共享了。</p>
+<p>理论上说，如果两个设备都在 NAT 设备背后，也可以进行数据同步。但是在测试过程中发现数据同步速度相对缓慢，并且无法用本文的 Trick 让 iOS 设备访问。</p>
+<h1 id="Syncthing-和-KodExplorer-的协同工作"><a href="#Syncthing-和-KodExplorer-的协同工作" class="headerlink" title="Syncthing 和 KodExplorer 的协同工作"></a>Syncthing 和 KodExplorer 的协同工作</h1><p>为了让这两个程序协作，让 iOS 设备也能访问远端文件，我们需要把同步文件夹放在 <em>KodExplorer</em> 程序的 <code>data/对应用户/home</code> 文件夹下。这样，iOS 设备就可以通过浏览器访问远程文件了。</p>
+<p><em>KodExplorer</em> 的安装这里不赘述。</p>
+<p>当然，这也会有安全问题。将私人文件放在可以直接被访问到的服务器目录下是一件很危险的行为。这时候需要对 <code>data/</code> 文件夹进行访问权限控制，在 <em>NginX</em> 配置文件中增加一条即可。</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /data/ &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2020/03/syncthing-all-platform/403-Foibbden.png" class="" title="NginX 403 Foibbden">
+
+<p>这样，在 iOS 设备上，可以直接通过访问 <em>KodExplorer</em> 页面来访问文件，并且能够在多端间进行同步。</p>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/">https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Web</category>
+        <category>Tool</category>
+      </categories>
+      <tags>
+        <tag>Syncthing</tag>
+        <tag>Sync</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Start with Hexo</title>
+    <url>//blog/2020/03/start-with-hexo/</url>
+    <content><![CDATA[<h1 id="一切的结束，一切的开始"><a href="#一切的结束，一切的开始" class="headerlink" title="一切的结束，一切的开始"></a>一切的结束，一切的开始</h1><p>我又搬博客了。在咕了两年零两个月之后，我终于继续找地方写我想写的东西了。<br>此时应该放个烟花庆祝一下。如果你的城市不能放烟花，请打开一首打上花火。  </p>
+<p>我把以前的博客封存了起来。在搬家时，我顺便翻了翻它。我发现每次搬家，都会再次发觉曾经的我的幼稚。当然人是要磨练的，在不断否定自己、改变自己后，才能在成长的路上艰难地向前挪动一步。</p>
+<p>但我也会惊讶，惊讶于曾经渺小的自己爆发出来的强大的能量，和童言无忌口无遮拦的那些存粹的话。要是让我现在去修改以前的文章，可能要大段大段的砍掉让我现在念起来会面红耳赤的内容。我最终决定还是将他们悉数保留，也算是对我的青春的一种纪念。</p>
+<h2 id="鞭尸"><a href="#鞭尸" class="headerlink" title="鞭尸"></a>鞭尸</h2><p>有的文章实在值得我自己翻出来狠狠的抽自己不算厚脸皮，感受这种尴尬气氛下微妙的喉咙干燥感。以下文章全部摘自旧博客 <code>日常</code> 分类，并亲自附上吐槽。</p>
+<ul>
+<li><a href="https://savepoint.touko.moe/blog/whispers-my-way-to-developer" target="_blank" rel="noopener">我与开发的故事</a><br>我没想到当时的我竟有勇气将 Link 的内容设置为 <em>my-way-to-developer</em>，因为现在的我越发没有自信称自己为开发者。我觉得我自己就是个写代码造软件赚点外快的。可能这就是小孩子的勇气吧。</li>
+<li><a href="https://savepoint.touko.moe/blog/modify-typecho" target="_blank" rel="noopener">我和typecho的第一次(</a><br>一篇中规中矩的初级技术文章，伴随着一个自言自语式的尴尬的开场。当时的我竟然可以突破重重看不懂的代码，找到问题的核心所在，还能依葫芦画瓢写一些 “it works” 的 Apache 配置文件，实在难得。这样一个聪明的小孩，竟然没有在 SE 的道路上继续走下去，实在是可惜了。</li>
+<li><a href="https://savepoint.touko.moe/blog/deep-in-physics-and-maths" target="_blank" rel="noopener">再見，我的競賽生涯</a><br>就这点数学物理知识还是不要说自己是打竞赛的好。我感觉以前学竞赛学的那点皮毛，现在我把自己按在椅子前学两天，也能把题目做的头头是道。<br>哇，竟然还爱上杭州，半年前我提着行李箱顶着烈日在没地铁的浙大西溪校区边上走着的时候肯定无比后悔曾经说过的话。不过，只身一人从杭州前往深圳、中途中转广州的经历算是很深的记忆了。虽然他们可能远不及现在的日子精彩，但作为那时的我，也是一个值得纪念的挑战。</li>
+</ul>
+<h2 id="关于旧博客的存档"><a href="#关于旧博客的存档" class="headerlink" title="关于旧博客的存档"></a>关于旧博客的存档</h2><p>旧博客我还是做好了存档，网址是 <a href="https://savepoint.touko.moe/" target="_blank" rel="noopener">https://savepoint.touko.moe/</a> 。也不知道当时是为何停止维护了，明明刚开了两个项目连载，分别是 MIPS CPU 和 bot-framework，结果最后也没能继续做下去。</p>
+<p>在考虑旧博客命名时，我和 POJO 讨论了如下几个选项。</p>
+<ul>
+<li>archive</li>
+<li>legacy</li>
+<li>deprecated</li>
+<li>milestone</li>
+<li>pyramid</li>
+<li>savepoint</li>
+<li>ruin</li>
+</ul>
+<p>这下可好，已经把未来数次的博客搬迁取名事宜考虑好了，以后可以尽情搬迁新博客而不用担心二级域不够用。</p>
+<a id="more"></a>
+
+<h2 id="关于新博客取名"><a href="#关于新博客取名" class="headerlink" title="关于新博客取名"></a>关于新博客取名</h2><p>至于为啥叫 wasteland，大概只是因为它很帅。当我在考虑新博客取名时，随口问了句 POJO 我该用啥名好。</p>
+<p>POJO: “teenage wasteland” 。</p>
+<p>虽然我没了解过相关的歌，但是觉得这个名字实在有意思。鉴于我已经到了奔三的年龄，teenage 还是不必了，那么就取名为 <strong>wasteland</strong> 好了。我会把我想说的，有用的没用的，技术的非技术的，碎碎念还是吐槽啥的，一股脑丢到这。如果几年之后，这里的文章有人能够全读下来，那说不定对我的了解比我自己还深。</p>
+<img src="/blog/2020/03/start-with-hexo/image-20200314121336505.png" class="" title="Google Translator">
+
+<p>是的，谷歌翻译很酷</p>
+<h1 id="技术相关"><a href="#技术相关" class="headerlink" title="技术相关"></a>技术相关</h1><h2 id="Savepoint-迁移旧博客"><a href="#Savepoint-迁移旧博客" class="headerlink" title="Savepoint - 迁移旧博客"></a>Savepoint - 迁移旧博客</h2><h3 id="让-Typecho-运行在-PHP-7"><a href="#让-Typecho-运行在-PHP-7" class="headerlink" title="让 Typecho 运行在 PHP 7"></a>让 Typecho 运行在 PHP 7</h3><p>旧博客我用的是运行于 <em>PHP</em> 的 <em>Typecho</em> ，甚至一度还是 0.9 版本，三年前的某天终于找了机会升级到了 1.0。我把整站数据库打包，PHP文件打包，装在了新的网站上。<br>旧网站使用的是 <em>PHP 5.6 + Apache 2.4 + MySQL 5.6</em> 的组合，新网站已经全站切换至 <em>PHP 7.3 + NginX 1.17 + MySQL 5.6</em> 的组合。目前看来，<em>NginX</em> 用起来更顺手，并且资源消耗相比前一套系统要少一些。  </p>
+<p>意料之内，在部署过程中遇上了数据库问题。更新 <em>MySQL</em> 账号密码后，页面仍然提示 <code>Database Server Error</code>，查看访问日志发现报错为 <code>PHP message: Adapter Typecho_Db_Adapter_Mysql is not available</code>。经排查，发现是由于 <em>Typecho</em> 默认使用的 <em>MySQL</em> 适配器 <code>Mysql</code> 在 <em>PHP 7</em> 环境下已经不再使用，只需要将 <code>config.inc.php</code> 文件进行如下修改，改为使用 <code>Pdo_Mysql</code> 进行数据库连接操作。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// $db = new Typecho_db("Mysql","typecho_");</span></span><br><span class="line">$db = <span class="keyword">new</span> Typecho_db(<span class="string">"Pdo_Mysql"</span>,<span class="string">"typecho_"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>还要对 <em>Typecho</em> 的伪静态进行迁移。由于前期我使用的是 <em>Apache</em>，现在使用 <em>NginX</em>，配置文件工作方式有一定变化。</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="section">&lt;IfModule mod_rewrite.c&gt;</span></span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteEngine</span></span> <span class="literal">On</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">RewriteBase</span> /</span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteCond</span></span> <span class="variable">%&#123;REQUEST_FILENAME&#125;</span> !-d</span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteCond</span></span> <span class="variable">%&#123;REQUEST_FILENAME&#125;</span> !-f</span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteRule</span></span> ^(.*)$ /index.php/<span class="number">$1</span><span class="meta"> [L]</span></span><br><span class="line"></span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteCond</span></span> <span class="variable">%&#123;HTTP_HOST&#125;</span> ^www.touko.moe </span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteRule</span></span> (.*) http://touko.moe/<span class="number">$1</span><span class="meta"> [R=301,L]</span></span><br><span class="line"></span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteCond</span></span> <span class="variable">%&#123;HTTPS&#125;</span> !^<span class="literal">on</span>$ </span><br><span class="line"><span class="attribute"><span class="nomarkup">RewriteRule</span></span> (.*) https://<span class="variable">%&#123;SERVER_NAME&#125;</span><span class="variable">%&#123;REQUEST_URI&#125;</span><span class="meta"> [R=301] </span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">&lt;/IfModule&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面是我曾经写下的 <em>Apache</em> 配置文件，主要做了三件事</p>
+<ul>
+<li>将找不到的文件路径隐性转发给 <code>index.php</code> 处理请求 （伪静态）</li>
+<li>将 <code>www.touko.moe</code> 301 重定向至 <code>touko.moe</code> 处理</li>
+<li>将非 HTTPS 请求 301 重定向至 HTTPS（强制 HTTPS）</li>
+</ul>
+<p>在 NginX 中，上述设置修改为如下形式</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">if</span> (!-e <span class="variable">$request_filename</span>) &#123;</span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^(.*)$</span> /index.php<span class="variable">$1</span> <span class="literal">last</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">if</span> (<span class="variable">$server_port</span> !<span class="regexp">~ 443)</span>&#123;</span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^(/.*)$</span> https://<span class="variable">$host</span><span class="variable">$1</span> <span class="literal">permanent</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SEO-相关"><a href="#SEO-相关" class="headerlink" title="SEO 相关"></a>SEO 相关</h3><p>为了让曾经的链接可以正常访问，我做了一个小处理，让 <em>NginX</em> 妥善处理旧请求至旧博客存档点。由于只是域名发生了变化，只需要针对特定 URL Pattern 做 301 重定向即可。我检查了一下旧网站上文章出现的 URL ，找到了几个关键词，用以下规则完成转发</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/(category|blog|author|links|aboutme|archives|usr)(.*)</span> http://savepoint.touko.moe/<span class="variable">$1</span><span class="variable">$2</span> <span class="literal">permanent</span>;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子，当访问页面 <a href="https://touko.moe/blog/MonocycleCPU_MIPS" target="_blank" rel="noopener">https://touko.moe/blog/MonocycleCPU_MIPS</a> 时，<em>NginX</em> 将匹配 <code>blog</code> 和 <code>/MonocycleCPU_MIPS</code> 作为参数 1 和参数 2，并 301 重定向至 <code>http://savepoint.touko.moe/{1}{2}</code> ，也就是 ``<a href="http://savepoint.touko.moe/{blog}{/MonocycleCPU_MIPS}`" target="_blank" rel="noopener">http://savepoint.touko.moe/{blog}{/MonocycleCPU_MIPS}`</a> 这样就起到正常访问原网页的效果，并且对搜索引擎的影响也有一定的降低。</p>
+<p>同时，因为我使用了 <code>Disqus</code> 评论系统，还需要在他们网站上进行站点转移。在 <code>Disqus</code> 设置页面的 <code>Configure Disqus for Your Site</code> 下，可以找到 <code>Changing domains? Learn how.</code> 在这里就可以设置一键转移了。</p>
+<h3 id="Github-Pages-反向代理"><a href="#Github-Pages-反向代理" class="headerlink" title="Github Pages 反向代理"></a>Github Pages 反向代理</h3><p>我偷懒使用 <em>Jekyll</em> 建立了我的 Under Construction 页面。因为需要转发旧博客的访问，希望使用我的 <em>NginX</em> 处理所有来自 <a href="https://touko.moe/" target="_blank" rel="noopener">https://touko.moe/</a> 的请求，而不是 CNAME。在设置 Github Pages 反向代理时，需要使用假的 header 欺骗 Github 服务器，避免 404 和被多次重定向。</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> / &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> https://hoshinotouko.github.io;</span><br><span class="line">    <span class="attribute">proxy_redirect</span>     <span class="literal">off</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host hoshinotouko.github.io;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> REMOTE-HOST <span class="variable">$remote_addr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，这句配置非常重要。</p>
+<p><strong><code>proxy_set_header Host hoshinotouko.github.io;</code></strong> </p>
+<p>这样一来，网站就能呈现如下组织方式。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">touko.moe - Under construction (Will be a navi<span class="built_in"> page </span><span class="keyword">in</span> the future)</span><br><span class="line">  |</span><br><span class="line">  |- touko.moe/post/xxx -&gt; savepoint.touko.moe/post/xxx</span><br><span class="line">  |</span><br><span class="line">  |- savepoint.touko.moe</span><br><span class="line">  |</span><br><span class="line">  |- wasteland.touko.moe</span><br><span class="line">  |</span><br><span class="line">  <span class="built_in">..</span>.</span><br></pre></td></tr></table></figure>
+
+<h2 id="Wasteland-新博客"><a href="#Wasteland-新博客" class="headerlink" title="Wasteland - 新博客"></a>Wasteland - 新博客</h2><p>我使用 <em>Hexo</em> 将网站部署在 <em>Github Pages</em> 上，解析为 <a href="https://wasteland.touko.moe/">https://wasteland.touko.moe/</a> 。</p>
+<p>不得不说 <em>Hexo</em> 真是个方便的东西，日常使用只需要几个命令就能完成。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo clean // Delete all generated files</span><br><span class="line">$ hexo g // Generate</span><br><span class="line">$ hexo d // Deploy</span><br><span class="line">$ hexo s // Local development server</span><br></pre></td></tr></table></figure>
+
+<p>我使用了爆款 <a href="https://theme-next.org/" target="_blank" rel="noopener">NexT 主题</a>，因为这个主题的确简单好看。我随意增加了几个插件，用于改善博客的开发和访问体验</p>
+<ul>
+<li><a href="https://github.com/acwong00/hexo-addlink" target="_blank" rel="noopener">https://github.com/acwong00/hexo-addlink</a></li>
+<li><a href="https://github.com/hexojs/hexo-deployer-git" target="_blank" rel="noopener">https://github.com/hexojs/hexo-deployer-git</a></li>
+</ul>
+<h3 id="Automatically-Deploy"><a href="#Automatically-Deploy" class="headerlink" title="Automatically Deploy"></a>Automatically Deploy</h3><p>可以通过在 <em>Hexo</em> 增加插件的方式，快速将静态页面部署至 <em>Github Pages</em> 。我使用了 <em>hexo-deployer-git</em> 插件。首先 <code>yarn add hexo-deployer-git</code> ，其次进行配置，在 <code>_config.yml</code> 中添加如下设置字段。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:HoshinoTouko/wasteland.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">gh-pages</span></span><br></pre></td></tr></table></figure>
+
+<p>我把 <em>Github Pages</em> 的页面放在 <em>gh-pages branch</em> 下，<em>master branch</em> 用于存放网站的源代码。所以在上方配置文件中我这样写。但是要注意，使用插件进行更新，会触发 git 的 force push，尽量不要直接在生成的网页文件中进行修改。</p>
+<h4 id="Git-SSH-Key"><a href="#Git-SSH-Key" class="headerlink" title="Git SSH Key"></a>Git SSH Key</h4><p>因为我开了 Github 两步验证，每次部署都要收一下手机验证码，实在有点讨厌，所以我打算直接在本地创建一份 SSH Key 用于部署。我使用的是 Windows，Linux 和 Mac 的配置应该类似。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C <span class="string">"your_email@mail.com"</span></span><br><span class="line">$ <span class="built_in">eval</span> $(ssh-agent -s)</span><br><span class="line">$ ssh-add /c/Users/&#123;USERNAME&#125;/.ssh/id_rsa</span><br><span class="line">$ clip &lt; /c/Users/&#123;USERNAME&#125;/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<p>然后将剪贴板中的公钥上传至 <code>Github - Settings - SSH Keys</code> ，就可以直接通过 <code>hexo d</code> 部署网页了。</p>
+<h3 id="CNAME-of-Github-Pages"><a href="#CNAME-of-Github-Pages" class="headerlink" title="CNAME of Github Pages"></a>CNAME of Github Pages</h3><p>上文提到，<code>hexo d</code> 的更新会进行一次 force push，因此在 Github Setting 页面进行 CNAME 的设置会被下一次 force push 覆盖。为了解决这个问题，需要创建文件 <code>source/CNAME</code> 并设置为</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">wasteland</span><span class="selector-class">.touko</span><span class="selector-class">.moe</span></span><br></pre></td></tr></table></figure>
+
+<p>之后进行 <code>hexo g &amp;&amp; hexo d</code> 操作时，CNAME 记录就会被自动保存。</p>
+<h3 id="CloudFlare-面板访问问题"><a href="#CloudFlare-面板访问问题" class="headerlink" title="CloudFlare 面板访问问题"></a>CloudFlare 面板访问问题</h3><p>我将域名解析由 <em>DNSPod</em> 全部切换至 <em>CloudFlare</em> 。设置好 CF 的 HTTPS 访问后，我发现我的服务器面板（非 80 / 443 端口）无法访问了。经检查，是由于如下原因</p>
+<blockquote>
+<p>需要<strong>注意</strong>的是，<strong>中国境内</strong>的 HTTP/HTTPS 流量节点<strong>只支持 80 和 443 端口</strong>。</p>
+</blockquote>
+<p>倒也不用担心，只需要将其关闭，或者挂梯子访问就可以了。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://www.typechodev.com/case/Adapter-Typecho_Db_Adapter_Mysql-is-not-available.html" target="_blank" rel="noopener">https://www.typechodev.com/case/Adapter-Typecho_Db_Adapter_Mysql-is-not-available.html</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/26625249" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/26625249</a></li>
+<li><a href="https://www.jianshu.com/p/9317a927e844" target="_blank" rel="noopener">https://www.jianshu.com/p/9317a927e844</a></li>
+<li><a href="https://blog.csdn.net/JOYIST/article/details/90514991" target="_blank" rel="noopener">https://blog.csdn.net/JOYIST/article/details/90514991</a></li>
+<li><a href="https://www.jianshu.com/p/8b25564d3ff3" target="_blank" rel="noopener">https://www.jianshu.com/p/8b25564d3ff3</a></li>
+<li><a href="https://io-oi.me/tech/hexo-next-optimization/#%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2%E5%88%B0-github-pages" target="_blank" rel="noopener">https://io-oi.me/tech/hexo-next-optimization/#%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2%E5%88%B0-github-pages</a></li>
+<li><a href="https://isdaniel.github.io/hexo-blog-theme/" target="_blank" rel="noopener">https://isdaniel.github.io/hexo-blog-theme/</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/start-with-hexo/">https://wasteland.touko.moe//blog/2020/03/start-with-hexo/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Web</category>
+        <category>Frontend</category>
+        <category>Talk</category>
+        <category>Blog</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Github</tag>
+        <tag>Github Pages</tag>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>//blog/2020/03/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/hello-world/">https://wasteland.touko.moe//blog/2020/03/hello-world/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+  </entry>
+</search>

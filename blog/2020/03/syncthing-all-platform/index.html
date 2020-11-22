@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="baidu-site-verification" content="bbraDbqXFf">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-simple.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Syncthing Official Site: https:&#x2F;&#x2F;syncthing.net&#x2F; Syncthing Github: https:&#x2F;&#x2F;github.com&#x2F;syncthing&#x2F; KodExplorer Official Site: https:&#x2F;&#x2F;kodcloud.com&#x2F; KodExplorer Github: https:&#x2F;&#x2F;github.com&#x2F;kalcaddle&#x2F;KodExp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Syncthing 文件同步工具部署和 iOS 替代方案">
+<meta property="og:url" content="https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/index.html">
+<meta property="og:site_name" content="Wasteland">
+<meta property="og:description" content="Syncthing Official Site: https:&#x2F;&#x2F;syncthing.net&#x2F; Syncthing Github: https:&#x2F;&#x2F;github.com&#x2F;syncthing&#x2F; KodExplorer Official Site: https:&#x2F;&#x2F;kodcloud.com&#x2F; KodExplorer Github: https:&#x2F;&#x2F;github.com&#x2F;kalcaddle&#x2F;KodExp">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/403-Foibbden.png">
+<meta property="article:published_time" content="2020-03-14T14:45:40.000Z">
+<meta property="article:modified_time" content="2020-11-21T13:17:33.755Z">
+<meta property="article:author" content="Touko Hoshino">
+<meta property="article:tag" content="Syncthing">
+<meta property="article:tag" content="Sync">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/403-Foibbden.png">
+
+<link rel="canonical" href="https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Syncthing 文件同步工具部署和 iOS 替代方案 | Wasteland</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68278825-5"></script>
+    <script pjax>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-68278825-5');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Wasteland" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wasteland</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">being explored by Touko</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-posts">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-archive"></i>Posts</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/page/links/" rel="section"><i class="fa fa-fw fa-link"></i>Links</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/HoshinoTouko" class="github-corner" title="My GitHub" aria-label="My GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Syncthing 文件同步工具部署和 iOS 替代方案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-14 22:45:40" itemprop="dateCreated datePublished" datetime="2020-03-14T22:45:40+08:00">2020-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-21 21:17:33" itemprop="dateModified" datetime="2020-11-21T21:17:33+08:00">2020-11-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/Tool/" itemprop="url" rel="index"><span itemprop="name">Tool</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Syncthing Official Site: <a href="https://syncthing.net/" target="_blank" rel="noopener">https://syncthing.net/</a></p>
+<p>Syncthing Github: <a href="https://github.com/syncthing/" target="_blank" rel="noopener">https://github.com/syncthing/</a></p>
+<p>KodExplorer Official Site: <a href="https://kodcloud.com/" target="_blank" rel="noopener">https://kodcloud.com/</a></p>
+<p>KodExplorer Github: <a href="https://github.com/kalcaddle/KodExplorer" target="_blank" rel="noopener">https://github.com/kalcaddle/KodExplorer</a></p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><blockquote>
+<p>Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers in real time, safely protected from prying eyes. Your data is your data alone and you deserve to choose where it is stored, whether it is shared with some third party, and how it’s transmitted over the internet.</p>
+</blockquote>
+<p><em>Syncthing</em> 是一个实时的文件同步程序，可以在两台以上的设备之间进行实时、端对端的文件同步。在不同设备间同步的时候，还可以对每个设备分别设置文件版本控制，保留被删除的文件的副本或者更改前的旧版本，在办公、科研、文档共享和数据共享上都有很大用处。</p>
+<p>我将 <em>Syngthing</em> 安装在了学校电脑、 Surface 和远端服务器上，远端服务器有公网 IP ，方便进行快速同步。这样只要我本地的数据发生更新，远端服务器就会同步数据，并且保存文件的旧版本。</p>
+<h1 id="服务器安装"><a href="#服务器安装" class="headerlink" title="服务器安装"></a>服务器安装</h1><p>虽然是开源项目，但是我不建议使用源代码安装。源码安装不利于软件的升级和版本控制。</p>
+<p>官网对文件安装的文档说明已经非常详细了，这边简单摘抄一些，并分享在安装过程中发现的问题并提供解决方案。</p>
+<p>全平台（除了 iOS）的安装文件可以在这里找到 <a href="https://syncthing.net/downloads/" target="_blank" rel="noopener">https://syncthing.net/downloads/</a> 。</p>
+<h2 id="Deb-系"><a href="#Deb-系" class="headerlink" title="Deb 系"></a>Deb 系</h2><p>用户可以在两条 release 轨道中进行选择，分别是”stable” (latest release) 和 “candidate” (earlier release candidate) 。</p>
+<p>同时强烈建议通过 HTTPS 从 apt 源进行下载。</p>
+<p>Candidate Track 的版本升级会比 Stable Track <strong>早大约三个星期</strong>，追求刺激的用户可以使用 Candidate Track 。</p>
+<h3 id="Stable-Track"><a href="#Stable-Track" class="headerlink" title="Stable Track"></a>Stable Track</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line">sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the "stable" channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"deb https://apt.syncthing.net/ syncthing stable"</span> | sudo tee /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install syncthing</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="Candidate-Track"><a href="#Candidate-Track" class="headerlink" title="Candidate Track"></a>Candidate Track</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line">sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Candidate Version</span></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the "candidate" channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"deb https://apt.syncthing.net/ syncthing candidate"</span> | sudo tee /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install syncthing</span><br></pre></td></tr></table></figure>
+
+<h2 id="RedHat-系"><a href="#RedHat-系" class="headerlink" title="RedHat 系"></a>RedHat 系</h2><p>RedHat 系统可以直接在官网下载已经编译好的程序，并直接执行。为了方便执行，可以通过 <code>ln -s</code> 将程序可执行文件软连接到 <code>/usr/bin</code> 下。</p>
+<h2 id="Windows-amp-MacOS"><a href="#Windows-amp-MacOS" class="headerlink" title="Windows &amp; MacOS"></a>Windows &amp; MacOS</h2><p>可以直接在官网下载到可执行程序，执行后将会自动弹出 Web 页面。</p>
+<h1 id="打通-Syncthing-节点之间的第一条-P2P-连接"><a href="#打通-Syncthing-节点之间的第一条-P2P-连接" class="headerlink" title="打通 Syncthing 节点之间的第一条 P2P 连接"></a>打通 Syncthing 节点之间的第一条 P2P 连接</h1><p>让我们开始连接第一条端到端同步线路。这条线路将会在本地 PC 和远端服务器之间同步数据。</p>
+<p>我打算将我的服务器作为文件存放的主服务器，一大原因是服务器有公网地址，不需要通过 NAT 穿透来访问，这会大大提高同步速度。我的主服务器是 Debian buster。</p>
+<p>因为 <em>Syncthing</em> 并没有 iOS 客户端。为了在 iOS 上使用 <em>Syncthing</em> ，我采用了一个 Trick，用 <em>KodExplorer</em> 作为网页访问文件的工具，并将同步文件夹放置在 <em>KodExplorer</em> 的目录下。所以，如果想保持 <em>KodExplorer</em> 和 <em>Syncthing</em> 可以正常协同工作，需要单独创建一个用户来运行 <em>Syncthing</em> 和 <em>PHP</em> ，保证他们的 <strong>读写权限相同</strong> 。同时，官方也建议不要使用 root 账户运行 <em>Syncthing</em> 。</p>
+<p>我使用 <code>www</code> 用户运行 <em>PHP</em> ，所以现在默认我已经切换到 <code>www</code> 账户运行 <em>Syncthing</em> 了。</p>
+<p>我使用 <code>screen</code> 控制程序后台运行。在安装完程序后，执行命令 <code>syncthing</code> 让其在 <code>~/.config/syncthing</code> 下生成初始配置文件。程序默认监听 127.0.0.1:8384 作为其 Web GUI 页面。如果你有 <em>NginX</em> 或者 <em>Apache</em> ，可以设置一个反向代理到这个端口，就能直接进入网站页面。如果没有，需要 <code>Ctrl + C</code> 终止程序运行，并修改 <code>~/.config/syncthing/config.xml</code> 中的监听地址为 <code>0.0.0.0</code> ，然后通过公网 IP 访问该地址进行配置。如果这个页面是暴露在公网上的，请 <strong>务必设置管理员密码</strong> 。</p>
+<p>远端服务器节点配置完成后，我们开始配置本地 PC 节点。在 PC 中下载程序并运行，在 GUI 页面中点击右下角 <strong>添加远程设备</strong> ，输入从远端服务器的 ID（服务器 GUI 界面右上角操作-显示 ID），然后等待一段时间，远端服务器会收到本地 PC 发起的远程设备连接请求，同意即可。</p>
+<p>如果没有收到请求，可以检查一下远端服务器是否打开了端口 22000/TCP ，21027/UDP 防火墙。</p>
+<p>远端接受请求后，就可以添加本地同步文件夹，并和远端进行共享了。</p>
+<p>理论上说，如果两个设备都在 NAT 设备背后，也可以进行数据同步。但是在测试过程中发现数据同步速度相对缓慢，并且无法用本文的 Trick 让 iOS 设备访问。</p>
+<h1 id="Syncthing-和-KodExplorer-的协同工作"><a href="#Syncthing-和-KodExplorer-的协同工作" class="headerlink" title="Syncthing 和 KodExplorer 的协同工作"></a>Syncthing 和 KodExplorer 的协同工作</h1><p>为了让这两个程序协作，让 iOS 设备也能访问远端文件，我们需要把同步文件夹放在 <em>KodExplorer</em> 程序的 <code>data/对应用户/home</code> 文件夹下。这样，iOS 设备就可以通过浏览器访问远程文件了。</p>
+<p><em>KodExplorer</em> 的安装这里不赘述。</p>
+<p>当然，这也会有安全问题。将私人文件放在可以直接被访问到的服务器目录下是一件很危险的行为。这时候需要对 <code>data/</code> 文件夹进行访问权限控制，在 <em>NginX</em> 配置文件中增加一条即可。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /data/ &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2020/03/syncthing-all-platform/403-Foibbden.png" class="" title="NginX 403 Foibbden">
+
+<p>这样，在 iOS 设备上，可以直接通过访问 <em>KodExplorer</em> 页面来访问文件，并且能够在多端间进行同步。</p>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/">https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://weibo.com/OranL">
+            <span class="icon">
+              <i class="fa fa-weibo"></i>
+            </span>
+
+            <span class="label">Weibo</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://twitter.com/HoshinoTouko">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+
+            <span class="label">Twitter</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Syncthing/" rel="tag"># Syncthing</a>
+              <a href="/tags/Sync/" rel="tag"># Sync</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/03/start-with-hexo/" rel="prev" title="Start with Hexo">
+      <i class="fa fa-chevron-left"></i> Start with Hexo
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/03/customize-hexo/" rel="next" title="Customize Hexo and Theme NexT">
+      Customize Hexo and Theme NexT <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+        </div>
+      </div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器安装"><span class="nav-number">2.</span> <span class="nav-text">服务器安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deb-系"><span class="nav-number">2.1.</span> <span class="nav-text">Deb 系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stable-Track"><span class="nav-number">2.1.1.</span> <span class="nav-text">Stable Track</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Candidate-Track"><span class="nav-number">2.1.2.</span> <span class="nav-text">Candidate Track</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RedHat-系"><span class="nav-number">2.2.</span> <span class="nav-text">RedHat 系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-amp-MacOS"><span class="nav-number">2.3.</span> <span class="nav-text">Windows &amp; MacOS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#打通-Syncthing-节点之间的第一条-P2P-连接"><span class="nav-number">3.</span> <span class="nav-text">打通 Syncthing 节点之间的第一条 P2P 连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Syncthing-和-KodExplorer-的协同工作"><span class="nav-number">4.</span> <span class="nav-text">Syncthing 和 KodExplorer 的协同工作</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Touko Hoshino"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Touko Hoshino</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/HoshinoTouko" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/OranL" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;OranL" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/HoshinoTouko" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.popiask.cn/touko_h" title="Popi → https:&#x2F;&#x2F;www.popiask.cn&#x2F;touko_h" rel="noopener" target="_blank"><i class="fa fa-fw fa-question"></i>Popi</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/./atom.xml" title="RSS → .&#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://entry.touko.moe/" title="https:&#x2F;&#x2F;entry.touko.moe&#x2F;" rel="noopener" target="_blank">Homepage</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cv.touko.moe/" title="https:&#x2F;&#x2F;cv.touko.moe&#x2F;" rel="noopener" target="_blank">CV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://savepoint.touko.moe/" title="https:&#x2F;&#x2F;savepoint.touko.moe&#x2F;" rel="noopener" target="_blank">Legacy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script pjax>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/',]
+      });
+      });
+  </script>
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/";
+    this.page.identifier = "/blog/2020/03/syncthing-all-platform/";
+    this.page.title = "Syncthing 文件同步工具部署和 iOS 替代方案";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://wasteland-by-touko.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'df7e1d3931c45f71f34356dc6436f09d',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

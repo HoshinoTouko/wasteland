@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="baidu-site-verification" content="bbraDbqXFf">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-simple.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言近期，拼拼凑凑从各类垃圾中组装出了一台轻便的 ITX 主机。主板是真白丢给我的，在他那不能工作的 华擎 H110M-ITX ；CPU 是我之前测试 QL3X 时点亮用的 Pentium G4500T 6 代低压 U；电源是 tb 买的韩国牌子 全汉代工 450W SFX ；机箱是 酷鱼 T40 ；内存是 影驰 镭 RGB 灯条 3200MHz 8G×2；硬盘是以前捡的 昂达 480G SSD，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我的第一台黑苹果主机">
+<meta property="og:url" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/index.html">
+<meta property="og:site_name" content="Wasteland">
+<meta property="og:description" content="前言近期，拼拼凑凑从各类垃圾中组装出了一台轻便的 ITX 主机。主板是真白丢给我的，在他那不能工作的 华擎 H110M-ITX ；CPU 是我之前测试 QL3X 时点亮用的 Pentium G4500T 6 代低压 U；电源是 tb 买的韩国牌子 全汉代工 450W SFX ；机箱是 酷鱼 T40 ；内存是 影驰 镭 RGB 灯条 3200MHz 8G×2；硬盘是以前捡的 昂达 480G SSD，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/1.case_graphic_card.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/2.case_mb.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/3.case_view.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/4.nvme.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/6.etcher.png">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/5.macos_loading.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/7.macos_install_navi.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/8.macos_install_format.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/9.macos_install.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/10.rebuild_EFI.JPG">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/11.OS_info.jpg">
+<meta property="article:published_time" content="2020-11-21T13:25:54.000Z">
+<meta property="article:modified_time" content="2020-11-22T07:15:03.863Z">
+<meta property="article:author" content="Touko Hoshino">
+<meta property="article:tag" content="Hackintosh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/1.case_graphic_card.JPG">
+
+<link rel="canonical" href="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>我的第一台黑苹果主机 | Wasteland</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68278825-5"></script>
+    <script pjax>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-68278825-5');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Wasteland" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wasteland</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">being explored by Touko</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-posts">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-archive"></i>Posts</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/page/links/" rel="section"><i class="fa fa-fw fa-link"></i>Links</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/HoshinoTouko" class="github-corner" title="My GitHub" aria-label="My GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          我的第一台黑苹果主机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-11-21 21:25:54" itemprop="dateCreated datePublished" datetime="2020-11-21T21:25:54+08:00">2020-11-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-22 15:15:03" itemprop="dateModified" datetime="2020-11-22T15:15:03+08:00">2020-11-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hackintosh/" itemprop="url" rel="index"><span itemprop="name">Hackintosh</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>近期，拼拼凑凑从各类垃圾中组装出了一台轻便的 ITX 主机。主板是真白丢给我的，在他那不能工作的 <code>华擎 H110M-ITX</code> ；CPU 是我之前测试 QL3X 时点亮用的 <code>Pentium G4500T</code> 6 代低压 U；电源是 tb 买的韩国牌子 <code>全汉代工 450W SFX</code> ；机箱是 <code>酷鱼 T40</code> ；内存是 <code>影驰 镭 RGB 灯条 3200MHz 8G×2</code>；硬盘是以前捡的 <code>昂达 480G SSD</code>，显卡是亮机卡 <code>NVIDIA Quadro K600</code>。这么一套东西装起来，我就想，能不能搞个黑苹果玩玩。于是，查了一段时间的资料，准备动手。</p>
+<blockquote>
+<p>本文仅记录点亮黑苹果的过程。其他驱动的修改预计会在后续记录。</p>
+</blockquote>
+<h2 id="配置价格"><a href="#配置价格" class="headerlink" title="配置价格"></a>配置价格</h2><p>装机之前，大致估算一下目前这套机器的价格。散热我用的酷冷十几块的（AMD 原装）散热铝块，就不计入总价了。</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主板</td>
+<td align="center">ASRock H110M-ITX</td>
+<td align="center">150</td>
+</tr>
+<tr>
+<td align="center">CPU</td>
+<td align="center">Pentium G4500T</td>
+<td align="center">230</td>
+</tr>
+<tr>
+<td align="center">内存</td>
+<td align="center">影驰 镭 RGB 灯条 3200MHz 8G×2</td>
+<td align="center">400</td>
+</tr>
+<tr>
+<td align="center">电源</td>
+<td align="center">全汉代工 450W SFX</td>
+<td align="center">130</td>
+</tr>
+<tr>
+<td align="center">硬盘</td>
+<td align="center">昂达 480G SSD</td>
+<td align="center">240</td>
+</tr>
+<tr>
+<td align="center">机箱 &amp; 延长线</td>
+<td align="center">酷鱼 T40</td>
+<td align="center">140</td>
+</tr>
+<tr>
+<td align="center">显卡</td>
+<td align="center">NVIDIA Quadro K600</td>
+<td align="center">140</td>
+</tr>
+<tr>
+<td align="center">总价</td>
+<td align="center"></td>
+<td align="center">1430</td>
+</tr>
+</tbody></table>
+<p>其中内存可以不用这么好的，CPU 可以再上好一些的，显卡可以换矿卡（等矿难）。整机价格偏高，不过既然都是捡来的垃圾，那就无所谓性价比了。</p>
+<h2 id="上机图片"><a href="#上机图片" class="headerlink" title="上机图片"></a>上机图片</h2><p>酷鱼 T40 的设计十分紧凑，附带扶手，单手就能轻松提起。机器显卡为倒装，很有意思。由于是非模组电源，走线较为凌乱。</p>
+<a id="more"></a>
+
+<img src="/blog/2020/11/my-first-hackintosh/1.case_graphic_card.JPG" class="" title="机箱 显卡面">
+
+<img src="/blog/2020/11/my-first-hackintosh/2.case_mb.JPG" class="" title="机箱 主板面">
+
+<img src="/blog/2020/11/my-first-hackintosh/3.case_view.JPG" class="" title="机箱 全览">
+
+<h1 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h1><p>安装黑苹果首先需要准备一块大号U盘（至少32G）。我用了一块从 Surface 上拆下来的 <code>PM961</code> + <code>ACASIS NVMe 硬盘盒</code> 作为安装介质。不能使用 SD 卡。一开始我使用的是 SD 卡 + 读卡器，结果一直无法通过 Etcher 写入 dmg 文件后的镜像校验。</p>
+<img src="/blog/2020/11/my-first-hackintosh/4.nvme.JPG" class="" title="NVMe 和硬盘盒">
+
+<p>其次，需要准备 安装介质写入工具。我使用的是 <code>balenaEtcher</code> 作为写入工具。</p>
+<p>同时最重要的，带引导的黑苹果镜像。我主要从</p>
+<ul>
+<li>黑苹果星球 <a href="https://heipg.cn/" target="_blank" rel="noopener">https://heipg.cn/</a></li>
+<li>黑果小兵 <a href="https://blog.daliansky.net/" target="_blank" rel="noopener">https://blog.daliansky.net/</a></li>
+</ul>
+<p>上下载镜像。</p>
+<p>这类镜像一般由几个分区组成。OpenCore / Clover 引导分区，白苹果分区，WePE 分区（用于应急）。需要安装黑苹果的电脑由 OpenCore 引导启动（Clover 底层也是 OpenCore 了），模拟 Mac 相关硬件，最后启动白苹果系统。</p>
+<h2 id="镜像烧录"><a href="#镜像烧录" class="headerlink" title="镜像烧录"></a>镜像烧录</h2><p>此处以从 heipg.cn 上下载的最新版本的 <code>Catalina</code> 为例。下载镜像，并使用 <code>balenaEtcher</code> 烧录进 U 盘。</p>
+<img src="/blog/2020/11/my-first-hackintosh/6.etcher.png" class="" title="balenaEtcher 烧录">
+
+<p>确认 Etcher 烧录没有报错后，弹出 U 盘并重新插入，准备修改 EFI。</p>
+<h2 id="微调-EFI"><a href="#微调-EFI" class="headerlink" title="微调 EFI"></a>微调 EFI</h2><p>此类打包好的镜像文件一般集成了现有大多数常用驱动程序。我们首先要做的是点亮系统，再考虑其他硬件的运行情况。最开始安装黑苹果的过程中，我没有考虑 CPU 的影响，结果安装触发了 <code>PANIC</code>。经各种资料查阅，发现是由于我使用的奔腾 CPU 并不被苹果官方支持，需要微调 EFI，让 OC / Clover 欺骗苹果系统。</p>
+<p>EFI 分区在 Windows 下不默认挂载。我们需要使用 <code>diskpart</code> 工具将其挂载至硬盘驱动器目录中。打开<strong>带管理员权限的</strong> <code>PowerShell (Admin)</code>，执行</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">diskpart</span><br></pre></td></tr></table></figure>
+
+<p>进入 diskpart 后，</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; list disk</span><br><span class="line"></span><br><span class="line">  Disk <span class="comment">###  Status         Size     Free     Dyn  Gpt</span></span><br><span class="line">  --------  -------------  -------  -------  ---  ---</span><br><span class="line">  Disk <span class="number">0</span>    Online          <span class="number">447</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">1</span>    Online          <span class="number">931</span> GB  <span class="number">1024</span> KB        *</span><br><span class="line">  Disk <span class="number">2</span>    Online          <span class="number">953</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">4</span>    Online          <span class="number">238</span> GB   <span class="number">225</span> GB        *</span><br></pre></td></tr></table></figure>
+
+<p>选择 U 盘对应的 Disk</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; select disk <span class="number">4</span></span><br><span class="line"></span><br><span class="line">Disk <span class="number">4</span> is now the selected disk.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; list partition</span><br><span class="line"></span><br><span class="line">  Partition <span class="comment">###  Type              Size     Offset</span></span><br><span class="line">  -------------  ----------------  -------  -------</span><br><span class="line">  Partition <span class="number">1</span>    System             <span class="number">200</span> MB    <span class="number">20</span> KB</span><br><span class="line">  Partition <span class="number">2</span>    Primary             <span class="number">12</span> GB   <span class="number">200</span> MB</span><br><span class="line">  Partition <span class="number">3</span>    Primary            <span class="number">380</span> MB    <span class="number">12</span> GB</span><br></pre></td></tr></table></figure>
+
+<p>选择对应分区。EFI 分区一般为 <code>200MB</code>。最后进入分区并分配盘符</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; select partition <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Partition <span class="number">1</span> is now the selected partition.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; assign letter=H</span><br><span class="line"></span><br><span class="line">DiskPart successfully assigned the drive letter or mount point.</span><br></pre></td></tr></table></figure>
+
+<p>运行后，EFI 分区可以在电脑中看到。修改 <code>/EFI/OC/config.plist</code> </p>
+<p>对于 Clover，修改 <code>KernelCPU</code> 附近的代码为</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>KernelCpu<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">false</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>FakeCPUID<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>0x0306A0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于 OpenCore，修改 <code>Kernel - Emulate</code> 附近的代码为</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>Cpuid1Data<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span>oAYDAAAAAAAAAAAAAAAAAA==<span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>Cpuid1Mask<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span>/////wAAAAAAAAAAAAAAAA==<span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>以欺骗苹果系统，让其认为该 CPU 是 <code>Ivy Bridge 的 i5 CPU</code>。</p>
+<p>由于我使用的是 Windows 系统，需要手撸配置文件。由于 OpenCore 这项的表示方法是 id + mask，并且是 <strong>Little Endian</strong> 的。所以对于 Clover 中的 <code>0x0306A0</code> ，需要将其转换为 A0 06 03 00，掩码 11 11 11 11，补齐后面 12 个 <code>00</code> 后，使用工具 <a href="https://cryptii.com/pipes/base64-to-hex" target="_blank" rel="noopener">https://cryptii.com/pipes/base64-to-hex</a> 转换为对应的 Base 64 编码。</p>
+<p>太麻烦了，还是用 Clover 吧。</p>
+<p>设置结束后，不要忘了在 <code>diskpart</code> 中执行</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">remove letter=H</span><br></pre></td></tr></table></figure>
+
+<p>取消挂载，避免占用盘符。</p>
+<h2 id="BIOS-设置"><a href="#BIOS-设置" class="headerlink" title="BIOS 设置"></a>BIOS 设置</h2><p>BIOS 设置可以参考 <a href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html" target="_blank" rel="noopener">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a> 。基本思路是</p>
+<ul>
+<li>关闭 CFG Lock</li>
+<li>关闭 VT-d</li>
+<li>关闭核显，使用独显（在我这套硬件配置下）</li>
+<li>关闭 Fast Boot</li>
+<li>关闭 Secure Boot</li>
+<li>关闭 CSM</li>
+</ul>
+<h1 id="实机安装"><a href="#实机安装" class="headerlink" title="实机安装"></a>实机安装</h1><p>插电，开机。由于我原有一个 Windows 系统，所以先进入 PE 删除原有系统。开机连点对应按键进入 Boot 菜单（我是华擎所以是 F11），第一个分区是 OpenCore，第二个是 WePE。</p>
+<p>这一步总是报错然后卡住。最后我用 heipg.cn 双引导 Catalina 中 Clover 引导，终于进入了系统。</p>
+<h2 id="执行安装程序"><a href="#执行安装程序" class="headerlink" title="执行安装程序"></a>执行安装程序</h2><img src="/blog/2020/11/my-first-hackintosh/5.macos_loading.JPG" class="" title="MacOS loading">
+
+<img src="/blog/2020/11/my-first-hackintosh/7.macos_install_navi.JPG" class="" title="MacOS 安装初始界面">
+
+<p>如果顺利，等苹果 logo 读条完成后，就可以进入 MacOS 安装界面了。</p>
+<p>首先选择磁盘工具，抹除原有磁盘上的所有数据。</p>
+<img src="/blog/2020/11/my-first-hackintosh/8.macos_install_format.JPG" class="" title="磁盘格式化界面">
+
+<p>之后选择安装 MacOS，一路下一步即可。保持引导 U 盘插在电脑上，等待几次重启后就安装完毕了。</p>
+<img src="/blog/2020/11/my-first-hackintosh/9.macos_install.JPG" class="" title="MacOS 安装界面">
+
+<h2 id="建立本机引导"><a href="#建立本机引导" class="headerlink" title="建立本机引导"></a>建立本机引导</h2><p>安装完成，进入系统后，安装 <code>Clover Configuration</code>，然后通过 <code>Clover Configuration</code> 挂载隐藏的 EFI 分区，将 U 盘上的 EFI 分区下 EFI 文件夹复制到机器的 EFI 分区中。注意区分好哪个是机器的 EFI 分区，哪个是 U 盘的。</p>
+<p>至此，可以关机，拔掉 U 盘，重新启动等待机器自动进入 MacOS 系统了。</p>
+<img src="/blog/2020/11/my-first-hackintosh/10.rebuild_EFI.JPG" class="" title="EFI 分区拷贝">
+
+<img src="/blog/2020/11/my-first-hackintosh/11.OS_info.jpg" class="" title="系统信息">
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html" target="_blank" rel="noopener">https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html</a></li>
+<li><a href="https://www.mfpud.com/topics/1031/" target="_blank" rel="noopener">https://www.mfpud.com/topics/1031/</a></li>
+<li><a href="https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html" target="_blank" rel="noopener">https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html</a></li>
+<li><a href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html" target="_blank" rel="noopener">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a></li>
+<li><a href="https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/" target="_blank" rel="noopener">https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/</a></li>
+<li><a href="https://oc.skk.moe/7-kernel.html" target="_blank" rel="noopener">https://oc.skk.moe/7-kernel.html</a></li>
+<li><a href="https://cryptii.com/pipes/base64-to-hex" target="_blank" rel="noopener">https://cryptii.com/pipes/base64-to-hex</a></li>
+<li><a href="https://www.bilibili.com/read/cv7941995/" target="_blank" rel="noopener">https://www.bilibili.com/read/cv7941995/</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/">https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://weibo.com/OranL">
+            <span class="icon">
+              <i class="fa fa-weibo"></i>
+            </span>
+
+            <span class="label">Weibo</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://twitter.com/HoshinoTouko">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+
+            <span class="label">Twitter</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hackintosh/" rel="tag"># Hackintosh</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/07/raspi-as-router/" rel="prev" title="在树莓派上运行 OpenWrt 作为软路由">
+      <i class="fa fa-chevron-left"></i> 在树莓派上运行 OpenWrt 作为软路由
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+        </div>
+      </div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置价格"><span class="nav-number">1.1.</span> <span class="nav-text">配置价格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上机图片"><span class="nav-number">1.2.</span> <span class="nav-text">上机图片</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装准备"><span class="nav-number">2.</span> <span class="nav-text">安装准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像烧录"><span class="nav-number">2.1.</span> <span class="nav-text">镜像烧录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微调-EFI"><span class="nav-number">2.2.</span> <span class="nav-text">微调 EFI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIOS-设置"><span class="nav-number">2.3.</span> <span class="nav-text">BIOS 设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实机安装"><span class="nav-number">3.</span> <span class="nav-text">实机安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#执行安装程序"><span class="nav-number">3.1.</span> <span class="nav-text">执行安装程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立本机引导"><span class="nav-number">3.2.</span> <span class="nav-text">建立本机引导</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Touko Hoshino"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Touko Hoshino</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/HoshinoTouko" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/OranL" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;OranL" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/HoshinoTouko" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.popiask.cn/touko_h" title="Popi → https:&#x2F;&#x2F;www.popiask.cn&#x2F;touko_h" rel="noopener" target="_blank"><i class="fa fa-fw fa-question"></i>Popi</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/./atom.xml" title="RSS → .&#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://entry.touko.moe/" title="https:&#x2F;&#x2F;entry.touko.moe&#x2F;" rel="noopener" target="_blank">Homepage</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cv.touko.moe/" title="https:&#x2F;&#x2F;cv.touko.moe&#x2F;" rel="noopener" target="_blank">CV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://savepoint.touko.moe/" title="https:&#x2F;&#x2F;savepoint.touko.moe&#x2F;" rel="noopener" target="_blank">Legacy</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script pjax>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/',]
+      });
+      });
+  </script>
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/";
+    this.page.identifier = "/blog/2020/11/my-first-hackintosh/";
+    this.page.title = "我的第一台黑苹果主机";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://wasteland-by-touko.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'fbd9a513e0b8ac4bfc3e059de709de1a',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

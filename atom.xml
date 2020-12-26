@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2020-11-22T07:15:03.863Z</updated>
+  <updated>2020-12-26T06:39:43.021Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -15,6 +15,66 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>成为一名流量矿工</title>
+    <link href="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/"/>
+    <id>https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/</id>
+    <published>2020-12-23T11:29:05.000Z</published>
+    <updated>2020-12-26T06:39:43.021Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;简短地水一篇&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;闲置了一块主板&quot;&gt;&lt;a href=&quot;#闲置了一块主板&quot; class=&quot;headerlink&quot; title=&quot;闲置了一块主板&quot;&gt;&lt;/a&gt;闲置了一块主板&lt;/h1&gt;&lt;p&gt;前段时间给实验室配置了软路由，为了避免意外，多买了一块主板。最近，在实验室成功部署了异地组网后，才想起来自己多买了一台机器。这台机器的配置是 1037u，我之前买过三块，分别用于各种地方的软路由和小型机。这块u价格便宜，没有 J1900 那样的溢价，性能和 J1900 差不多，功耗不高，非常适合用来做 NAS 和软路由。对于手上这块 1037u，我准备拿来挖矿。&lt;/p&gt;
+&lt;h2 id=&quot;硬件&quot;&gt;&lt;a href=&quot;#硬件&quot; class=&quot;headerlink&quot; title=&quot;硬件&quot;&gt;&lt;/a&gt;硬件&lt;/h2&gt;&lt;p&gt;这次的硬件没有什么好介绍的，主要如下&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&quot;center&quot;&gt;&lt;/th&gt;
+&lt;th align=&quot;center&quot;&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td align=&quot;center&quot;&gt;主板 / CPU&lt;/td&gt;
+&lt;td align=&quot;center&quot;&gt;1037u 集成主板&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;center&quot;&gt;内存&lt;/td&gt;
+&lt;td align=&quot;center&quot;&gt;杂牌 DDR3 2G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;center&quot;&gt;电源&lt;/td&gt;
+&lt;td align=&quot;center&quot;&gt;12V DC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;center&quot;&gt;系统硬盘&lt;/td&gt;
+&lt;td align=&quot;center&quot;&gt;minisata&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;center&quot;&gt;数据硬盘&lt;/td&gt;
+&lt;td align=&quot;center&quot;&gt;WD 500G 黑盘&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;给主板来一张全貌图&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
+    
+      <category term="DIY" scheme="https://wasteland.touko.moe/categories/DIY/"/>
+    
+      <category term="Mining" scheme="https://wasteland.touko.moe/categories/Mining/"/>
+    
+    
+      <category term="DIY" scheme="https://wasteland.touko.moe/tags/DIY/"/>
+    
+      <category term="Mining" scheme="https://wasteland.touko.moe/tags/Mining/"/>
+    
+  </entry>
   
   <entry>
     <title>我的第一台黑苹果主机</title>

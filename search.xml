@@ -1,6 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>成为一名流量矿工</title>
+    <url>//blog/2020/12/become-a-traffic-miner/</url>
+    <content><![CDATA[<blockquote>
+<p>简短地水一篇</p>
+</blockquote>
+<h1 id="闲置了一块主板"><a href="#闲置了一块主板" class="headerlink" title="闲置了一块主板"></a>闲置了一块主板</h1><p>前段时间给实验室配置了软路由，为了避免意外，多买了一块主板。最近，在实验室成功部署了异地组网后，才想起来自己多买了一台机器。这台机器的配置是 1037u，我之前买过三块，分别用于各种地方的软路由和小型机。这块u价格便宜，没有 J1900 那样的溢价，性能和 J1900 差不多，功耗不高，非常适合用来做 NAS 和软路由。对于手上这块 1037u，我准备拿来挖矿。</p>
+<h2 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h2><p>这次的硬件没有什么好介绍的，主要如下</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主板 / CPU</td>
+<td align="center">1037u 集成主板</td>
+</tr>
+<tr>
+<td align="center">内存</td>
+<td align="center">杂牌 DDR3 2G</td>
+</tr>
+<tr>
+<td align="center">电源</td>
+<td align="center">12V DC</td>
+</tr>
+<tr>
+<td align="center">系统硬盘</td>
+<td align="center">minisata</td>
+</tr>
+<tr>
+<td align="center">数据硬盘</td>
+<td align="center">WD 500G 黑盘</td>
+</tr>
+</tbody></table>
+<p>给主板来一张全貌图</p>
+<a id="more"></a>
+
+<img src="/blog/2020/12/become-a-traffic-miner/1.motherboard-overview.jpg" class="" title="主板全貌">
+
+<h2 id="解决硬盘供电问题"><a href="#解决硬盘供电问题" class="headerlink" title="解决硬盘供电问题"></a>解决硬盘供电问题</h2><p>由于使用的是 DC 12V 供电的工控机主板，没有使用任何直插的电源板，为硬盘供电成了问题。经过仔细观察，我发现主板上存在一个 SATA_PWR 的接口，理论上可以用于硬盘的供电。</p>
+<img src="/blog/2020/12/become-a-traffic-miner/2.SATA_PWR.jpg" class="" title="SATA_PWR 接口">
+
+<p>我从万能的淘宝购入了一条转接线用于硬盘供电的转接。众所周知，硬盘主要由 5V 和 12V 供电。大多数 2.5 寸 HDD 硬盘和 SSD 硬盘只需要 5V 供电，3.5 寸 HDD 大多需要 12V 供电。这个接口提供了这两种电压，并且同时存在两种接口规格，需要测量最左侧和最右侧的两个针脚对应的电压，否则会烧坏硬盘。</p>
+<img src="/blog/2020/12/become-a-traffic-miner/3.SATA_PWR-pin-definition.jpg" class="" title="测量针脚">
+
+<p>测得电压后，由于我这块主板的电压定义和店家给的线正好相反，需要将针脚中的线扯出，归位</p>
+<img src="/blog/2020/12/become-a-traffic-miner/4.modify-adapter-pins.jpg" class="" title="替换电压线">
+
+<p>一定要进行上述步骤检查，否则就会像我第一次一样，烧坏了一块蓝盘（大短路，磁头烧毁）</p>
+<h2 id="挖矿程序选择"><a href="#挖矿程序选择" class="headerlink" title="挖矿程序选择"></a>挖矿程序选择</h2><p>我选择的是星际比特 PolarOS 所属的银河计划，原理大概是运行某些互联网厂商（如 271）的边缘 CDN 项目，共享上传带宽。安装方式很简单，从官网下载 img 镜像，用烧录工具烧录至 U 盘。我用的是老朋友 <code>balenaEtcher</code>。烧录完成后，通过 u 盘启动机器，选择安装到系统硬盘上。运行这个挖矿程序一定要两块以上的硬盘，其中一块用来安装系统，另一块用于存储分发的数据。</p>
+<p>系统安装完成后，等待重启。控制台中会出现一个二维码，从微信小程序<code>IPFS星际比特</code>或者安卓官方 app 扫码绑定设备，并运行 <code>银河计划</code>。我选择银河计划的原因是因为他是现金结算项目，且每次提现仅收取 2 元手续费。</p>
+<p>经过三四天的运行，单台机器的收益大约是 1.5 / 天（两台机器，30Mbps 上行）</p>
+<h2 id="提高挖矿效率的一些方案"><a href="#提高挖矿效率的一些方案" class="headerlink" title="提高挖矿效率的一些方案"></a>提高挖矿效率的一些方案</h2><p>由于刚开始挖矿，没有什么经验，仅根据个人猜测提供一些方案。首先一定要保持设备随时在线。前几天我调整路由器的时候进行了一次网络设备断电，直接导致了收益锐减。估计设备掉线惩罚很严重，不知道先手动停止再操作掉线会不会惩罚的少一些。其次是内存尽量保持 4G 以上，硬盘保持 500G 以上，以提供更好的挖矿能力。CPU 的选择比较随意，性能约等于 1037u，J1900 就行。建议一定要申请<code>公网 IP</code> ，打开光猫或者拨号设备上的 <code>uPnP</code>，减少外网到挖矿设备的 NAT 层数，最好直接挂在拨号设备下。</p>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/">https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>DIY</category>
+        <category>Mining</category>
+      </categories>
+      <tags>
+        <tag>DIY</tag>
+        <tag>Mining</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>我的第一台黑苹果主机</title>
     <url>//blog/2020/11/my-first-hackintosh/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>近期，拼拼凑凑从各类垃圾中组装出了一台轻便的 ITX 主机。主板是真白丢给我的，在他那不能工作的 <code>华擎 H110M-ITX</code> ；CPU 是我之前测试 QL3X 时点亮用的 <code>Pentium G4500T</code> 6 代低压 U；电源是 tb 买的韩国牌子 <code>全汉代工 450W SFX</code> ；机箱是 <code>酷鱼 T40</code> ；内存是 <code>影驰 镭 RGB 灯条 3200MHz 8G×2</code>；硬盘是以前捡的 <code>昂达 480G SSD</code>，显卡是亮机卡 <code>NVIDIA Quadro K600</code>。这么一套东西装起来，我就想，能不能搞个黑苹果玩玩。于是，查了一段时间的资料，准备动手。</p>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2020-12-26T06:39:43.021Z</updated>
+  <updated>2020-12-31T12:31:10.075Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -15,6 +15,55 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>在 Ubuntu 上安装 CUDA</title>
+    <link href="https://wasteland.touko.moe/blog/2020/12/install-cuda-on-ubuntu/"/>
+    <id>https://wasteland.touko.moe/blog/2020/12/install-cuda-on-ubuntu/</id>
+    <published>2020-12-31T11:59:48.000Z</published>
+    <updated>2020-12-31T12:31:10.075Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;老是忘记怎么在 Ubuntu 上安装 CUDA，每次有新机器都要在环境恶劣的互联网上寻找各种不靠谱又容易炸的教程。还是简单做个总结，关于如何安装炼丹人必备的依赖 &lt;code&gt;CUDA&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id=&quot;一些链接&quot;&gt;&lt;a href=&quot;#一些链接&quot; class=&quot;headerlink&quot; title=&quot;一些链接&quot;&gt;&lt;/a&gt;一些链接&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;CUDA GPU Capability &lt;a href=&quot;https://developer.nvidia.com/cuda-gpus&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://developer.nvidia.com/cuda-gpus&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;CUDA Zone &lt;a href=&quot;https://developer.nvidia.com/CUDA-zone&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://developer.nvidia.com/CUDA-zone&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;安装流程&quot;&gt;&lt;a href=&quot;#安装流程&quot; class=&quot;headerlink&quot; title=&quot;安装流程&quot;&gt;&lt;/a&gt;安装流程&lt;/h1&gt;&lt;h2 id=&quot;安装前准备&quot;&gt;&lt;a href=&quot;#安装前准备&quot; class=&quot;headerlink&quot; title=&quot;安装前准备&quot;&gt;&lt;/a&gt;安装前准备&lt;/h2&gt;&lt;p&gt;先看看机器的版本号啥的&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sudo lsb_release -a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;No LSB modules are available.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Distributor ID: Ubuntu&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Description:    Ubuntu 18.04.2 LTS&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Release:        18.04&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Codename:       bionic&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;再看看显卡在不在&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;lspci | grep NVIDIA&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18:00.0 3D controller: NVIDIA Corporation Device 1eb8 (rev a1)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;af:00.0 3D controller: NVIDIA Corporation Device 1eb8 (rev a1)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;再换个源。机器在深圳，用科大了&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sudo sed -i &lt;span class=&quot;string&quot;&gt;&#39;s/archive.ubuntu.com/mirrors.ustc.edu.cn/g&#39;&lt;/span&gt; /etc/apt/sources.list&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h2&gt;&lt;h3 id=&quot;Step-1：安装-ubuntu-drivers-并配置驱动&quot;&gt;&lt;a href=&quot;#Step-1：安装-ubuntu-drivers-并配置驱动&quot; class=&quot;headerlink&quot; title=&quot;Step 1：安装 ubuntu-drivers 并配置驱动&quot;&gt;&lt;/a&gt;Step 1：安装 &lt;code&gt;ubuntu-drivers&lt;/code&gt; 并配置驱动&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sudo apt update&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;sudo apt install ubuntu-drivers-common -y&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;运行&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;ubuntu-drivers devices&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;== /sys/devices/pci0000:17/0000:17:00.0/0000:18:00.0 ==&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;modalias : pci:balabalabala&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;vendor   : NVIDIA Corporation&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;driver   : nvidia-driver-440-server - distro non-free&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;driver   : nvidia-driver-450-server - distro non-free&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;driver   : nvidia-driver-455 - distro non-free recommended&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;driver   : nvidia-driver-450 - distro non-free&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;driver   : nvidia-driver-418-server - distro non-free&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;driver   : xserver-xorg-video-nouveau - distro free &lt;span class=&quot;built_in&quot;&gt;builtin&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;装那个 recommended 的&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sudo apt install nvidia-driver-455&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="https://wasteland.touko.moe/categories/Linux/"/>
+    
+      <category term="Docker" scheme="https://wasteland.touko.moe/categories/Docker/"/>
+    
+      <category term="ML" scheme="https://wasteland.touko.moe/categories/ML/"/>
+    
+    
+      <category term="NVIDIA" scheme="https://wasteland.touko.moe/tags/NVIDIA/"/>
+    
+      <category term="CUDA" scheme="https://wasteland.touko.moe/tags/CUDA/"/>
+    
+      <category term="Ubuntu" scheme="https://wasteland.touko.moe/tags/Ubuntu/"/>
+    
+  </entry>
   
   <entry>
     <title>成为一名流量矿工</title>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2020-12-31T12:31:10.075Z</updated>
+  <updated>2021-07-04T15:24:50.364Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://wasteland.touko.moe/blog/2020/12/install-cuda-on-ubuntu/"/>
     <id>https://wasteland.touko.moe/blog/2020/12/install-cuda-on-ubuntu/</id>
     <published>2020-12-31T11:59:48.000Z</published>
-    <updated>2020-12-31T12:31:10.075Z</updated>
+    <updated>2021-07-04T15:24:50.364Z</updated>
     
     <summary type="html">
     
@@ -674,9 +674,9 @@
     
       <category term="Web" scheme="https://wasteland.touko.moe/categories/Web/"/>
     
-      <category term="Frontend" scheme="https://wasteland.touko.moe/categories/Web/Frontend/"/>
-    
       <category term="Talk" scheme="https://wasteland.touko.moe/categories/Talk/"/>
+    
+      <category term="Frontend" scheme="https://wasteland.touko.moe/categories/Web/Frontend/"/>
     
       <category term="Blog" scheme="https://wasteland.touko.moe/categories/Blog/"/>
     

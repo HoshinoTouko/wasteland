@@ -210,6 +210,108 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/04/intranet-cluster-management/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2020/04/intranet-cluster-management/" class="post-title-link" itemprop="url">优雅地管理内网集群</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-02 00:32:57" itemprop="dateCreated datePublished" datetime="2020-04-02T00:32:57+08:00">2020-04-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-21 21:17:33" itemprop="dateModified" datetime="2020-11-21T21:17:33+08:00">2020-11-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文主要介绍了我在对内网集群进行管理的时候遇上的和解决的问题，包括统一控制，装机脚本，堡垒机，内网穿透等一系列问题。</p>
+<h1 id="突然有了内网集群"><a href="#突然有了内网集群" class="headerlink" title="突然有了内网集群"></a>突然有了内网集群</h1><p>由于科研需要，实验室购置和申请了大量服务器和显卡，并申请了从超算中虚拟出来的计算节点。如何将他们统一管理成了一个很大的问题。同时，由于机器都托管在数据中心，需要 VPN 进行访问。数据中心提供的 VPN 是上古的 <code>L2TP/IPsec with Pre-shared key</code>，还要在注册表写信息允许弱加密才能在 Windows 10 上使用， Mac / Linux 电脑完全无法连上这批机器。同时，VPN 还严格限制同时只能一个人使用，一旦使用的人数增加，需要多次申请不同的账号，管理起来十分麻烦。为了解决一系列的问题，我开始探索方案。</p>
+<h1 id="统一管理：堡垒机"><a href="#统一管理：堡垒机" class="headerlink" title="统一管理：堡垒机"></a>统一管理：堡垒机</h1><h2 id="选择-JumpServer"><a href="#选择-JumpServer" class="headerlink" title="选择 JumpServer"></a>选择 JumpServer</h2><p>俺找了有相关经验的好朋友<a href="https://www.milkfish.site/" target="_blank" rel="noopener">奶鱼</a> ，他推荐了一套堡垒机方案 <a href="https://jumpserver.org/" target="_blank" rel="noopener">JumpServer</a>。这是一套开源的堡垒机程序，支持身份认证，账号管理，资产授权，操作审计等管理功能，也支持批量部署，Web Terminal 等通过 Web 操作机器的功能。整体上看，非常符合我管理内网三十多台机器的需求。</p>
+<blockquote>
+<p>开源仓库一览</p>
+<ul>
+<li>JumpServer <a href="https://github.com/jumpserver/jumpserver" target="_blank" rel="noopener">https://github.com/jumpserver/jumpserver</a></li>
+<li>Koko (SSH, WS server) <a href="https://github.com/jumpserver/koko" target="_blank" rel="noopener">https://github.com/jumpserver/koko</a></li>
+<li>Luna (Web terminal) <a href="https://github.com/jumpserver/luna" target="_blank" rel="noopener">https://github.com/jumpserver/luna</a></li>
+</ul>
+</blockquote>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><p>要想部署一个能够管理所有服务器的堡垒机的平台，就需要给每个节点部署一个带 sudo 权限的用户。这个用户最好在不同机器上是统一的。现有的服务器用户虽然也有部分统一，但使用一个独立的用户管理所有服务器更符合直觉。我先创建一个统一的用户 <code>touko</code> ，并赋予其 <code>sudo NOPASSWD</code> 权限。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"SUDO_PASSWORD"</span> | sudo -S useradd -m touko -s /bin/bash</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"touko ALL=(ALL:ALL) NOPASSWD: ALL"</span> | sudo tee /etc/sudoers.d/touko</span><br></pre></td></tr></table></figure>
+
+<p>为了安全，我创建了一组 <code>ECDSA</code> 算法的密钥对，然后将它的公钥导入 <code>authorized_keys</code> 作为登陆密钥。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t ecdsa -C <span class="string">'jumpserver'</span></span><br><span class="line"><span class="built_in">cd</span> ~/.ssh</span><br><span class="line">cat id_ecdsa.pub &gt;&gt; authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后，将创建的 ECDSA 私钥 <code>~/.ssh/id_ecdsa</code> 备份并删除。在其他的机器上，编写脚本，拷贝私钥至脚本中，就能一键完成部署（顺便退出命令行）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/blog/2020/04/intranet-cluster-management/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/03/write-thesis-with-latex/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -881,7 +983,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/blog">
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -892,7 +994,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

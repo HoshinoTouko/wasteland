@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2021-07-04T15:24:50.364Z</updated>
+  <updated>2021-10-23T18:10:55.757Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -15,6 +15,43 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>更换软路由：T620 Plus</title>
+    <link href="https://wasteland.touko.moe/blog/2021/10/t620-plus-openwrt/"/>
+    <id>https://wasteland.touko.moe/blog/2021/10/t620-plus-openwrt/</id>
+    <published>2021-10-23T15:28:10.000Z</published>
+    <updated>2021-10-23T18:10:55.757Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;拖延症是这样的，从抽屉里翻出了半年前买的、打算做软路由的 T620 Plus。这一拖就是半年，这次准备给它部署 Openwrt，替代目前使用的单口软路由。&lt;/p&gt;
+&lt;p&gt;T620 Plus 应该被不少人推荐过，包括 B 站 UP 主司波图 &lt;a href=&quot;https://www.bilibili.com/video/BV1J54y1m7ar。这台机器的&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://www.bilibili.com/video/BV1J54y1m7ar。这台机器的&lt;/a&gt; CPU 性能超过 J1900，且带 AES 指令集，从性能上看绰绰有余，甚至可以安装一些虚拟化应用。&lt;/p&gt;
+&lt;h2 id=&quot;老家伙&quot;&gt;&lt;a href=&quot;#老家伙&quot; class=&quot;headerlink&quot; title=&quot;老家伙&quot;&gt;&lt;/a&gt;老家伙&lt;/h2&gt;&lt;p&gt;之前我使用的软路由是 1037U + 定制亚克力外壳。1037U 作为软路由来说，性能已经足够，就算用来科学上网也能够跑到 500Mbps 左右。但我使用的定制外壳防尘性能较差，处理器散热器已经有一定的积灰，且有时候会莫名卡死。且当前软路由只有一个网口，我将其以单臂路由的形式下挂在连接到光猫的交换机上，链路重复利用，可能也会导致某些不可知的问题。因此，我将其更换为 T620 Plus。&lt;/p&gt;
+&lt;img src=&quot;/blog/2021/10/t620-plus-openwrt/old_1037u.jpg&quot; class=&quot;&quot; title=&quot;老路由：1037U&quot;&gt;
+
+&lt;h1 id=&quot;T620-Plus&quot;&gt;&lt;a href=&quot;#T620-Plus&quot; class=&quot;headerlink&quot; title=&quot;T620 Plus&quot;&gt;&lt;/a&gt;T620 Plus&lt;/h1&gt;&lt;p&gt;我于半年前从闲鱼购入这台 T620 Plus，当时的价格为 RMB328。机器是普通小型桌面机器的大小，加装硬件部分全部采用免螺丝设计，非常好评。机器内部结构如下。&lt;/p&gt;
+&lt;img src=&quot;/blog/2021/10/t620-plus-openwrt/T620Plus%E5%86%85%E9%83%A81.jpg&quot; class=&quot;&quot;&gt;
+
+&lt;p&gt;翻开盖板后，可以看到内部结构，非常整洁。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
+    
+      <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
+    
+      <category term="DIY" scheme="https://wasteland.touko.moe/categories/DIY/"/>
+    
+    
+      <category term="Router" scheme="https://wasteland.touko.moe/tags/Router/"/>
+    
+      <category term="Openwrt" scheme="https://wasteland.touko.moe/tags/Openwrt/"/>
+    
+      <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
+    
+  </entry>
   
   <entry>
     <title>在 Ubuntu 上安装 CUDA</title>

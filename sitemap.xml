@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wasteland.touko.moe/page/links/index.html</loc>
+    
+    <lastmod>2022-03-15T07:32:54.389Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wasteland.touko.moe/blog/2021/10/t620-plus-openwrt/</loc>
     
     <lastmod>2021-10-23T18:10:55.757Z</lastmod>
@@ -75,13 +82,6 @@
     <loc>https://wasteland.touko.moe/tags/index.html</loc>
     
     <lastmod>2020-11-21T13:17:34.800Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wasteland.touko.moe/page/links/index.html</loc>
-    
-    <lastmod>2020-11-21T13:17:34.799Z</lastmod>
     
   </url>
   

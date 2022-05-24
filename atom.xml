@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2021-10-23T18:10:55.757Z</updated>
+  <updated>2022-05-24T06:33:44.091Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -15,6 +15,39 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>卸载腾讯云安全组件</title>
+    <link href="https://wasteland.touko.moe/blog/2022/05/uninst-txagent/"/>
+    <id>https://wasteland.touko.moe/blog/2022/05/uninst-txagent/</id>
+    <published>2022-05-24T06:24:38.000Z</published>
+    <updated>2022-05-24T06:33:44.091Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
+    
+      <category term="VPS" scheme="https://wasteland.touko.moe/categories/Network/VPS/"/>
+    
+      <category term="Website" scheme="https://wasteland.touko.moe/categories/Website/"/>
+    
+    
+      <category term="VPS" scheme="https://wasteland.touko.moe/tags/VPS/"/>
+    
+      <category term="Website" scheme="https://wasteland.touko.moe/tags/Website/"/>
+    
+  </entry>
   
   <entry>
     <title>更换软路由：T620 Plus</title>
@@ -267,9 +300,9 @@
       <category term="Raspi" scheme="https://wasteland.touko.moe/categories/Raspi/"/>
     
     
-      <category term="Router" scheme="https://wasteland.touko.moe/tags/Router/"/>
-    
       <category term="Raspi" scheme="https://wasteland.touko.moe/tags/Raspi/"/>
+    
+      <category term="Router" scheme="https://wasteland.touko.moe/tags/Router/"/>
     
   </entry>
   
@@ -711,9 +744,9 @@
     
       <category term="Web" scheme="https://wasteland.touko.moe/categories/Web/"/>
     
-      <category term="Talk" scheme="https://wasteland.touko.moe/categories/Talk/"/>
-    
       <category term="Frontend" scheme="https://wasteland.touko.moe/categories/Web/Frontend/"/>
+    
+      <category term="Talk" scheme="https://wasteland.touko.moe/categories/Talk/"/>
     
       <category term="Blog" scheme="https://wasteland.touko.moe/categories/Blog/"/>
     

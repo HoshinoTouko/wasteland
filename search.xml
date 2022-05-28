@@ -21,6 +21,7 @@
 
 <h2 id="扩展部署"><a href="#扩展部署" class="headerlink" title="扩展部署"></a>扩展部署</h2><p>官方提供的扩展介绍在 <a href="https://docs.standardnotes.com/extensions/intro" target="_blank" rel="noopener">https://docs.standardnotes.com/extensions/intro</a>，部署文档在 <a href="https://docs.standardnotes.com/extensions/local-setup" target="_blank" rel="noopener">Extensions Local Setup</a> 。为了应对 self-hosted 的部署，我构建了一个 gh-page 用于存储扩展所属的静态网页 <a href="https://snexts.github.io/" target="_blank" rel="noopener">SNExts</a>。这些扩展有的能够统计字数，有的能够支持更好的 Markdown + 富文本 编辑体验，取舍主要看个人喜好。</p>
 <h2 id="软件架构"><a href="#软件架构" class="headerlink" title="软件架构"></a>软件架构</h2><p>经过部署和使用，我对该软件的整体架构做一个简单总结。在服务端，Standard Notes 的开发团队将软件拆分为多个微服务，以多个 Docker 部署，包括同步服务器、验证（Auth）服务器、数据库等。每个 Standard Notes 的 Client 连接到服务端时，都可以注册属于自己的用户信息（账号，密码）。账号和密码留存在服务端，客户端并不做任何账号密码的存储，因此，抛去笔记撰写客户端的外壳，本质上 Standard Notes 是一个一对多的、带加密的中心化文件同步工具。</p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p>Standard Notes 提供了跨平台的客户端，其中 Web 端和各桌面端均使用 Web 构建，甚至可以直接访问 <a href="https://app.standardnotes.com/" target="_blank" rel="noopener">https://app.standardnotes.com/</a> 以使用网页编辑器，这是非常方便的。移动端的编辑器目前较为简陋，但也在官方市场都有上架（Google Play &amp; App Store）。</p>
 <h1 id="体验"><a href="#体验" class="headerlink" title="体验"></a>体验</h1><h2 id="使用体验"><a href="#使用体验" class="headerlink" title="使用体验"></a>使用体验</h2><p>我试用了大约半天的时间，该软件的 UI 简洁且扁平，比较能够满足我的需求。现在的大多数流行的文本编辑软件都能做到这一点。 Standard Notes 将原本 “Folders” 插件整合至编辑器，支持以多级 Tag 形式给 Notes 打标签，对于 Note 管理来说较为方便。</p>
 <p>Standard Notes 使用 Workspace 的概念，在每个不同的 Workspace 中，用户能够登陆不同站点的不同账号，也能在同一个 Workspace 中使用二次密钥以使用更私有的笔记存储空间。用户的笔记是以加密后的纯文本 JSON 文件存储的，在本地存储空间中，Standard Notes 贴心地提供了一个用于离线解密的网页。用户可以通过输入密码恢复加密的、打包好的备份笔记文件。<strong>安全性有待商榷。</strong>当然，他们还提供了二次加密的 <code>Private Workspace</code> 功能 <a href="https://standardnotes.com/help/80" target="_blank" rel="noopener">What are private workspaces?
 </a>，但跨客户端支持存在一定问题。</p>
@@ -1577,8 +1578,8 @@
 ]]></content>
       <categories>
         <category>Web</category>
-        <category>Talk</category>
         <category>Frontend</category>
+        <category>Talk</category>
         <category>Blog</category>
       </categories>
       <tags>

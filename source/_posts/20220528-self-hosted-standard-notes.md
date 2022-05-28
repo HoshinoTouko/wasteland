@@ -56,6 +56,10 @@ insert into user_subscriptions set uuid = UUID() , plan_name="PRO_PLAN" , ends_a
 
 经过部署和使用，我对该软件的整体架构做一个简单总结。在服务端，Standard Notes 的开发团队将软件拆分为多个微服务，以多个 Docker 部署，包括同步服务器、验证（Auth）服务器、数据库等。每个 Standard Notes 的 Client 连接到服务端时，都可以注册属于自己的用户信息（账号，密码）。账号和密码留存在服务端，客户端并不做任何账号密码的存储，因此，抛去笔记撰写客户端的外壳，本质上 Standard Notes 是一个一对多的、带加密的中心化文件同步工具。
 
+## 客户端
+
+Standard Notes 提供了跨平台的客户端，其中 Web 端和各桌面端均使用 Web 构建，甚至可以直接访问 https://app.standardnotes.com/ 以使用网页编辑器，这是非常方便的。移动端的编辑器目前较为简陋，但也在官方市场都有上架（Google Play & App Store）。
+
 # 体验
 
 ## 使用体验

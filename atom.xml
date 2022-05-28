@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2022-05-24T06:33:44.091Z</updated>
+  <updated>2022-05-28T02:05:22.233Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -17,11 +17,37 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Standard Notes 部署小结和使用体验</title>
+    <link href="https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/"/>
+    <id>https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/</id>
+    <published>2022-05-27T17:14:36.000Z</published>
+    <updated>2022-05-28T02:05:22.233Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 &lt;a href=&quot;https://standardnotes.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Standard Notes&lt;/a&gt; 和 &lt;a href=&quot;https://www.getoutline.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Outline&lt;/a&gt; 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。&lt;/p&gt;
+&lt;p&gt;近年来各类文档编辑工具类目繁多且各有特色。我最初接触的在线文档是石墨，后来随着需求和环境的变化，以及在线办公的普及，还曾使用了钉钉、企业微信等以中国大陆互联网企业为开发主体的文档工具，和 Notion 等更加国际化的文档。从使用的便捷程度和完善程度上说，我个人倾向于使用国际化的文档工具。&lt;/p&gt;
+&lt;p&gt;但是，我使用在线文档在大多数情况下是为了和协作者进行信息共享。因此在更多的时间里，我会使用例如 Typora 这类的本地 Markdown 编辑工具，加上 Syncthing 进行多端同步以保证数据可靠。随着 Typora 的收费和 Beta 版本的完全禁用，我决定寻找一个更安全、方便的文档编辑和同步方式。&lt;/p&gt;
+&lt;h1 id=&quot;部署&quot;&gt;&lt;a href=&quot;#部署&quot; class=&quot;headerlink&quot; title=&quot;部署&quot;&gt;&lt;/a&gt;部署&lt;/h1&gt;&lt;p&gt;在部署部分，我着重记录官网文档中提及甚少的部分，如一些功能的不可用、插件的部署。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="WebApp" scheme="https://wasteland.touko.moe/categories/WebApp/"/>
+    
+    
+      <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
+    
+      <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+  </entry>
+  
+  <entry>
     <title>卸载腾讯云安全组件</title>
     <link href="https://wasteland.touko.moe/blog/2022/05/uninst-txagent/"/>
     <id>https://wasteland.touko.moe/blog/2022/05/uninst-txagent/</id>
     <published>2022-05-24T06:24:38.000Z</published>
-    <updated>2022-05-24T06:33:44.091Z</updated>
+    <updated>2022-05-27T17:14:20.676Z</updated>
     
     <summary type="html">
     
@@ -300,9 +326,9 @@
       <category term="Raspi" scheme="https://wasteland.touko.moe/categories/Raspi/"/>
     
     
-      <category term="Raspi" scheme="https://wasteland.touko.moe/tags/Raspi/"/>
-    
       <category term="Router" scheme="https://wasteland.touko.moe/tags/Router/"/>
+    
+      <category term="Raspi" scheme="https://wasteland.touko.moe/tags/Raspi/"/>
     
   </entry>
   
@@ -744,9 +770,9 @@
     
       <category term="Web" scheme="https://wasteland.touko.moe/categories/Web/"/>
     
-      <category term="Frontend" scheme="https://wasteland.touko.moe/categories/Web/Frontend/"/>
-    
       <category term="Talk" scheme="https://wasteland.touko.moe/categories/Talk/"/>
+    
+      <category term="Frontend" scheme="https://wasteland.touko.moe/categories/Web/Frontend/"/>
     
       <category term="Blog" scheme="https://wasteland.touko.moe/categories/Blog/"/>
     

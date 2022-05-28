@@ -25,15 +25,15 @@
     var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="前言今天早上收到一条提醒，用来做梯子的腾讯云机器被提示封禁了。  尊敬的腾讯云用户，您好！您的腾讯云账号（账号ID: *****， 昵称: **）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！违规类型：存在通过技术手段使其成为跨境访问节点等行为违规URL：N&#x2F;A违规域名：N&#x2F;A违规标识：101.32.26.12  这让">
+  <meta name="description" content="前言今天早上收到一条提醒，用来做梯子的腾讯云机器被提示封禁了。  尊敬的腾讯云用户，您好！您的腾讯云账号（账号ID: *****， 昵称: **）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！违规类型：存在通过技术手段使其成为跨境访问节点等行为违规URL：N&#x2F;A违规域名：N&#x2F;A违规标识：101.32.26.12  遂怀">
 <meta property="og:type" content="article">
 <meta property="og:title" content="卸载腾讯云安全组件">
 <meta property="og:url" content="https://wasteland.touko.moe/blog/2022/05/uninst-txagent/index.html">
 <meta property="og:site_name" content="Wasteland">
-<meta property="og:description" content="前言今天早上收到一条提醒，用来做梯子的腾讯云机器被提示封禁了。  尊敬的腾讯云用户，您好！您的腾讯云账号（账号ID: *****， 昵称: **）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！违规类型：存在通过技术手段使其成为跨境访问节点等行为违规URL：N&#x2F;A违规域名：N&#x2F;A违规标识：101.32.26.12  这让">
+<meta property="og:description" content="前言今天早上收到一条提醒，用来做梯子的腾讯云机器被提示封禁了。  尊敬的腾讯云用户，您好！您的腾讯云账号（账号ID: *****， 昵称: **）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！违规类型：存在通过技术手段使其成为跨境访问节点等行为违规URL：N&#x2F;A违规域名：N&#x2F;A违规标识：101.32.26.12  遂怀">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-05-24T06:24:38.000Z">
-<meta property="article:modified_time" content="2022-05-24T06:33:44.091Z">
+<meta property="article:modified_time" content="2022-05-27T17:14:20.676Z">
 <meta property="article:author" content="Touko Hoshino">
 <meta property="article:tag" content="VPS">
 <meta property="article:tag" content="Website">
@@ -238,10 +238,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2022-05-24 14:24:38 / Modified: 14:33:44" itemprop="dateCreated datePublished" datetime="2022-05-24T14:24:38+08:00">2022-05-24</time>
+              <time title="Created: 2022-05-24 14:24:38" itemprop="dateCreated datePublished" datetime="2022-05-24T14:24:38+08:00">2022-05-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-28 01:14:20" itemprop="dateModified" datetime="2022-05-28T01:14:20+08:00">2022-05-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -282,7 +288,7 @@
 <blockquote>
 <p>尊敬的腾讯云用户，您好！<br>您的腾讯云账号（账号ID: <strong>*****</strong>， 昵称: <strong>**</strong>）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！<br>违规类型：存在通过技术手段使其成为跨境访问节点等行为<br>违规URL：N/A<br>违规域名：N/A<br>违规标识：101.32.26.12</p>
 </blockquote>
-<p>这让我感觉很好奇：到底是什么神秘力量探测到我的梯子了。遂怀疑是腾讯云可能存在和阿里云类似的监控用户隐私的类云盾功能，结果真检索到了相关信息。</p>
+<p>遂怀疑是腾讯云可能存在和阿里云类似的监控用户隐私的类云盾功能，结果确实检索到了相关信息。</p>
 <h1 id="处理腾讯云安全（审查）组件"><a href="#处理腾讯云安全（审查）组件" class="headerlink" title="处理腾讯云安全（审查）组件"></a>处理腾讯云安全（审查）组件</h1><p>理论上，现在新创建的所有服务器，包括轻量都预装了这个组件。通过以下命令检查是否被插了后门。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -A | grep agent</span><br></pre></td></tr></table></figure>
 
@@ -359,7 +365,10 @@
     <a href="/blog/2021/10/t620-plus-openwrt/" rel="prev" title="更换软路由：T620 Plus">
       <i class="fa fa-chevron-left"></i> 更换软路由：T620 Plus
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/blog/2022/05/self-hosted-standard-notes/" rel="next" title="Standard Notes 部署小结和使用体验">
+      Standard Notes 部署小结和使用体验 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -454,18 +463,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/blog">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

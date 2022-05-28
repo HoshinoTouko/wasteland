@@ -1,13 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Standard Notes 部署小结和使用体验</title>
+    <url>//blog/2022/05/self-hosted-standard-notes/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 <a href="https://standardnotes.com/" target="_blank" rel="noopener">Standard Notes</a> 和 <a href="https://www.getoutline.com/" target="_blank" rel="noopener">Outline</a> 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。</p>
+<p>近年来各类文档编辑工具类目繁多且各有特色。我最初接触的在线文档是石墨，后来随着需求和环境的变化，以及在线办公的普及，还曾使用了钉钉、企业微信等以中国大陆互联网企业为开发主体的文档工具，和 Notion 等更加国际化的文档。从使用的便捷程度和完善程度上说，我个人倾向于使用国际化的文档工具。</p>
+<p>但是，我使用在线文档在大多数情况下是为了和协作者进行信息共享。因此在更多的时间里，我会使用例如 Typora 这类的本地 Markdown 编辑工具，加上 Syncthing 进行多端同步以保证数据可靠。随着 Typora 的收费和 Beta 版本的完全禁用，我决定寻找一个更安全、方便的文档编辑和同步方式。</p>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>在部署部分，我着重记录官网文档中提及甚少的部分，如一些功能的不可用、插件的部署。</p>
+<a id="more"></a>
+
+<h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><p>大致的部署流程都可以从<a href="https://standardnotes.com/" target="_blank" rel="noopener">官网</a>或<a href="https://docs.standardnotes.com/self-hosting/getting-started" target="_blank" rel="noopener">官方文档</a>处找到。一般来说，直接 clone 官方的 <code>main</code> 分支仓库 <code>git clone --single-branch --branch main https://github.com/standardnotes/standalone.git</code> 并做好配置，即可直接通过 <code>docker compose</code> 启动所需的所有容器。</p>
+<p>在 clone 完后，执行 <code>./server.sh setup</code>，程序会自动生成所需的 <code>.env</code>、<code>docker/auth.env</code> 和 <code>docker/api-gateway.env</code>，需要进入 <code>.env</code> 修改 <code>AUTH_JWT_SECRET</code>，同时进入 <code>docker/auth.env</code> 修改 <code>JWT_SECRET</code>、<code>LEGACY_JWT_SECRET``PSEUDO_KEY_PARAMS_KEY</code> 和 <code>ENCRYPTION_SERVER_KEY</code>。以上这些参数都可以通过 <code>openssl rand -hex 32</code> 生成。</p>
+<p>需要执行程序时，直接执行 <code>docker compose up -d</code> 或者使用 <code>./server.sh start</code>。之后在 host 上做好反向代理，客户端就能直接连接。</p>
+<p>整体的部署流程是平滑且容易上手的。Standard Notes 的开发团队对开源的支持非常友好，且不断在提升 self-hosted 的部署体验。</p>
+<h2 id="开启订阅"><a href="#开启订阅" class="headerlink" title="开启订阅"></a>开启订阅</h2><p>部署完成后的服务端是允许任意用户注册的，但是注册完成后，用户无法使用所有的高级功能，需要我们手动将对应用户升级为订阅账户以支持更多功能。官网的文档参考 <a href="https://docs.standardnotes.com/self-hosting/subscriptions" target="_blank" rel="noopener">Subscriptions on your Standard Notes Standalone Server</a> 。总结来说，需要在先前 clone 的 git 文件夹下执行以下命令。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker compose <span class="built_in">exec</span> db sh -c <span class="string">'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysql $MYSQL_DATABASE'</span></span><br></pre></td></tr></table></figure>
+
+<p>然后在 MySQL Container 的 Shell 中执行，</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> user_roles (role_uuid , user_uuid) <span class="keyword">VALUES</span> ( ( <span class="keyword">select</span> <span class="keyword">uuid</span> <span class="keyword">from</span> <span class="keyword">roles</span> <span class="keyword">where</span> <span class="keyword">name</span>=<span class="string">"PRO_USER"</span> <span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">version</span> <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">1</span> ) ,( <span class="keyword">select</span> <span class="keyword">uuid</span> <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">where</span> email=<span class="string">"&lt;EMAIL@ADDR&gt;"</span> )  ) <span class="keyword">ON</span> <span class="keyword">DUPLICATE</span> <span class="keyword">KEY</span> <span class="keyword">UPDATE</span> role_uuid = <span class="keyword">VALUES</span>(<span class="string">`role_uuid`</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_subscriptions <span class="keyword">set</span> <span class="keyword">uuid</span> = <span class="keyword">UUID</span>() , plan_name=<span class="string">"PRO_PLAN"</span> , ends_at = <span class="number">8640000000000000</span>, created_at = <span class="number">0</span> , updated_at = <span class="number">0</span>,user_uuid= (<span class="keyword">select</span> <span class="keyword">uuid</span> <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">where</span> email=<span class="string">"&lt;EMAIL@ADDR&gt;"</span>) , subscription_id=<span class="number">1</span> , subscription_type=<span class="string">'regular'</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展部署"><a href="#扩展部署" class="headerlink" title="扩展部署"></a>扩展部署</h2><p>官方提供的扩展介绍在 <a href="https://docs.standardnotes.com/extensions/intro" target="_blank" rel="noopener">https://docs.standardnotes.com/extensions/intro</a>，部署文档在 <a href="https://docs.standardnotes.com/extensions/local-setup" target="_blank" rel="noopener">Extensions Local Setup</a> 。为了应对 self-hosted 的部署，我构建了一个 gh-page 用于存储扩展所属的静态网页 <a href="https://snexts.github.io/" target="_blank" rel="noopener">SNExts</a>。这些扩展有的能够统计字数，有的能够支持更好的 Markdown + 富文本 编辑体验，取舍主要看个人喜好。</p>
+<h2 id="软件架构"><a href="#软件架构" class="headerlink" title="软件架构"></a>软件架构</h2><p>经过部署和使用，我对该软件的整体架构做一个简单总结。在服务端，Standard Notes 的开发团队将软件拆分为多个微服务，以多个 Docker 部署，包括同步服务器、验证（Auth）服务器、数据库等。每个 Standard Notes 的 Client 连接到服务端时，都可以注册属于自己的用户信息（账号，密码）。账号和密码留存在服务端，客户端并不做任何账号密码的存储，因此，抛去笔记撰写客户端的外壳，本质上 Standard Notes 是一个一对多的、带加密的中心化文件同步工具。</p>
+<h1 id="体验"><a href="#体验" class="headerlink" title="体验"></a>体验</h1><h2 id="使用体验"><a href="#使用体验" class="headerlink" title="使用体验"></a>使用体验</h2><p>我试用了大约半天的时间，该软件的 UI 简洁且扁平，比较能够满足我的需求。现在的大多数流行的文本编辑软件都能做到这一点。 Standard Notes 将原本 “Folders” 插件整合至编辑器，支持以多级 Tag 形式给 Notes 打标签，对于 Note 管理来说较为方便。</p>
+<p>Standard Notes 使用 Workspace 的概念，在每个不同的 Workspace 中，用户能够登陆不同站点的不同账号，也能在同一个 Workspace 中使用二次密钥以使用更私有的笔记存储空间。用户的笔记是以加密后的纯文本 JSON 文件存储的，在本地存储空间中，Standard Notes 贴心地提供了一个用于离线解密的网页。用户可以通过输入密码恢复加密的、打包好的备份笔记文件。<strong>安全性有待商榷。</strong>当然，他们还提供了二次加密的 <code>Private Workspace</code> 功能 <a href="https://standardnotes.com/help/80" target="_blank" rel="noopener">What are private workspaces?
+</a>，但跨客户端支持存在一定问题。</p>
+<h2 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h2><p>软件仍存在一定问题，特别是在 self-hosted 的场景下。Standard Notes 在 <code>Feb.10 2022</code> 前使用 <a href="https://github.com/standardnotes/filesafe-relay" target="_blank" rel="noopener">FileSafe</a> 插件用于图片和文件的插入，但是后续取消了该支持 <a href="https://blog.standardnotes.com/32429/deprecation-notice-filesafe" target="_blank" rel="noopener">Deprecation Notice: FileSafe</a>，转而使用 <a href="https://github.com/standardnotes/files" target="_blank" rel="noopener">Standard Notes Files Service</a>。但是该修改暂时还没有同步到 self-hosted 的开源项目中 [Cite Github issue: <a href="https://github.com/standardnotes/standalone/issues/69" target="_blank" rel="noopener">Unable to start Upload Session</a>]，但会尽快推进。这意味着目前，Standard Notes 的图片插入只能通过图床完成。</p>
+<p>另外，扩展（Extension）的导入并不友好，这导致我需要使用一个额外的 Web 服务器以支持更多的扩展功能。虽然目前 gh-pages 可以解决大部分的插件导入问题，但仍比直接存入用户账户来的更为繁琐。希望能够优化。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://www.blackvoid.club/standard-notes-docker-self-hosted-alternative/" target="_blank" rel="noopener">https://www.blackvoid.club/standard-notes-docker-self-hosted-alternative/</a></li>
+<li><a href="https://bitsly.org/posts/standard-notes/" target="_blank" rel="noopener">https://bitsly.org/posts/standard-notes/</a></li>
+</ul>
+<h1 id="Acknowledgements"><a href="#Acknowledgements" class="headerlink" title="Acknowledgements"></a>Acknowledgements</h1><ul>
+<li>Thank Icemic &amp; Peter for assistance.</li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/self-hosted-standard-notes/">https://wasteland.touko.moe//blog/2022/05/self-hosted-standard-notes/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>WebApp</category>
+      </categories>
+      <tags>
+        <tag>Note</tag>
+        <tag>WebApp</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>卸载腾讯云安全组件</title>
     <url>//blog/2022/05/uninst-txagent/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天早上收到一条提醒，用来做梯子的腾讯云机器被提示封禁了。</p>
 <blockquote>
 <p>尊敬的腾讯云用户，您好！<br>您的腾讯云账号（账号ID: <strong>*****</strong>， 昵称: <strong>**</strong>）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！<br>违规类型：存在通过技术手段使其成为跨境访问节点等行为<br>违规URL：N/A<br>违规域名：N/A<br>违规标识：101.32.26.12</p>
 </blockquote>
-<p>这让我感觉很好奇：到底是什么神秘力量探测到我的梯子了。遂怀疑是腾讯云可能存在和阿里云类似的监控用户隐私的类云盾功能，结果真检索到了相关信息。</p>
+<p>遂怀疑是腾讯云可能存在和阿里云类似的监控用户隐私的类云盾功能，结果确实检索到了相关信息。</p>
 <h1 id="处理腾讯云安全（审查）组件"><a href="#处理腾讯云安全（审查）组件" class="headerlink" title="处理腾讯云安全（审查）组件"></a>处理腾讯云安全（审查）组件</h1><p>理论上，现在新创建的所有服务器，包括轻量都预装了这个组件。通过以下命令检查是否被插了后门。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ps -A | grep agent</span><br></pre></td></tr></table></figure>
 
@@ -454,8 +497,8 @@
         <category>Raspi</category>
       </categories>
       <tags>
-        <tag>Raspi</tag>
         <tag>Router</tag>
+        <tag>Raspi</tag>
       </tags>
   </entry>
   <entry>
@@ -1534,8 +1577,8 @@
 ]]></content>
       <categories>
         <category>Web</category>
-        <category>Frontend</category>
         <category>Talk</category>
+        <category>Frontend</category>
         <category>Blog</category>
       </categories>
       <tags>

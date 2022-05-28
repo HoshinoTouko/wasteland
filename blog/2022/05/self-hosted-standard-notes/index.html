@@ -25,26 +25,21 @@
     var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="简短地水一篇  闲置了一块主板前段时间给实验室配置了软路由，为了避免意外，多买了一块主板。最近，在实验室成功部署了异地组网后，才想起来自己多买了一台机器。这台机器的配置是 1037u，我之前买过三块，分别用于各种地方的软路由和小型机。这块u价格便宜，没有 J1900 那样的溢价，性能和 J1900 差不多，功耗不高，非常适合用来做 NAS 和软路由。对于手上这块 1037u，我准备拿来挖矿。 硬">
+  <meta name="description" content="前言因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 Standard Notes 和 Outline 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。 近年来各类文档编辑工具类目繁多且各有特色。我最初接触的在线文档是石墨，后来随着需求和环境的变化，以及在线办公的普及，还曾使用了钉钉、企业微信等以">
 <meta property="og:type" content="article">
-<meta property="og:title" content="成为一名流量矿工">
-<meta property="og:url" content="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/index.html">
+<meta property="og:title" content="Standard Notes 部署小结和使用体验">
+<meta property="og:url" content="https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/index.html">
 <meta property="og:site_name" content="Wasteland">
-<meta property="og:description" content="简短地水一篇  闲置了一块主板前段时间给实验室配置了软路由，为了避免意外，多买了一块主板。最近，在实验室成功部署了异地组网后，才想起来自己多买了一台机器。这台机器的配置是 1037u，我之前买过三块，分别用于各种地方的软路由和小型机。这块u价格便宜，没有 J1900 那样的溢价，性能和 J1900 差不多，功耗不高，非常适合用来做 NAS 和软路由。对于手上这块 1037u，我准备拿来挖矿。 硬">
+<meta property="og:description" content="前言因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 Standard Notes 和 Outline 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。 近年来各类文档编辑工具类目繁多且各有特色。我最初接触的在线文档是石墨，后来随着需求和环境的变化，以及在线办公的普及，还曾使用了钉钉、企业微信等以">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/1.motherboard-overview.jpg">
-<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/2.SATA_PWR.jpg">
-<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/3.SATA_PWR-pin-definition.jpg">
-<meta property="og:image" content="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/4.modify-adapter-pins.jpg">
-<meta property="article:published_time" content="2020-12-23T11:29:05.000Z">
-<meta property="article:modified_time" content="2020-12-26T06:39:43.021Z">
+<meta property="article:published_time" content="2022-05-27T17:14:36.000Z">
+<meta property="article:modified_time" content="2022-05-28T02:05:22.233Z">
 <meta property="article:author" content="Touko Hoshino">
-<meta property="article:tag" content="DIY">
-<meta property="article:tag" content="Mining">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="WebApp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/1.motherboard-overview.jpg">
 
-<link rel="canonical" href="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/">
+<link rel="canonical" href="https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/">
 
 
 <script id="page-configurations">
@@ -56,7 +51,7 @@
   };
 </script>
 
-  <title>成为一名流量矿工 | Wasteland</title>
+  <title>Standard Notes 部署小结和使用体验 | Wasteland</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68278825-5"></script>
     <script pjax>
@@ -221,7 +216,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -234,7 +229,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          成为一名流量矿工
+          Standard Notes 部署小结和使用体验
         </h1>
 
         <div class="post-meta">
@@ -243,31 +238,17 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-12-23 19:29:05" itemprop="dateCreated datePublished" datetime="2020-12-23T19:29:05+08:00">2020-12-23</time>
+              <time title="Created: 2022-05-28 01:14:36 / Modified: 10:05:22" itemprop="dateCreated datePublished" datetime="2022-05-28T01:14:36+08:00">2022-05-28</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-26 14:39:43" itemprop="dateModified" datetime="2020-12-26T14:39:43+08:00">2020-12-26</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DIY/" itemprop="url" rel="index"><span itemprop="name">DIY</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mining/" itemprop="url" rel="index"><span itemprop="name">Mining</span></a>
+                  <a href="/categories/WebApp/" itemprop="url" rel="index"><span itemprop="name">WebApp</span></a>
                 </span>
             </span>
 
@@ -289,59 +270,37 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <blockquote>
-<p>简短地水一篇</p>
-</blockquote>
-<h1 id="闲置了一块主板"><a href="#闲置了一块主板" class="headerlink" title="闲置了一块主板"></a>闲置了一块主板</h1><p>前段时间给实验室配置了软路由，为了避免意外，多买了一块主板。最近，在实验室成功部署了异地组网后，才想起来自己多买了一台机器。这台机器的配置是 1037u，我之前买过三块，分别用于各种地方的软路由和小型机。这块u价格便宜，没有 J1900 那样的溢价，性能和 J1900 差不多，功耗不高，非常适合用来做 NAS 和软路由。对于手上这块 1037u，我准备拿来挖矿。</p>
-<h2 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h2><p>这次的硬件没有什么好介绍的，主要如下</p>
-<table>
-<thead>
-<tr>
-<th align="center"></th>
-<th align="center"></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">主板 / CPU</td>
-<td align="center">1037u 集成主板</td>
-</tr>
-<tr>
-<td align="center">内存</td>
-<td align="center">杂牌 DDR3 2G</td>
-</tr>
-<tr>
-<td align="center">电源</td>
-<td align="center">12V DC</td>
-</tr>
-<tr>
-<td align="center">系统硬盘</td>
-<td align="center">minisata</td>
-</tr>
-<tr>
-<td align="center">数据硬盘</td>
-<td align="center">WD 500G 黑盘</td>
-</tr>
-</tbody></table>
-<p>给主板来一张全貌图</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 <a href="https://standardnotes.com/" target="_blank" rel="noopener">Standard Notes</a> 和 <a href="https://www.getoutline.com/" target="_blank" rel="noopener">Outline</a> 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。</p>
+<p>近年来各类文档编辑工具类目繁多且各有特色。我最初接触的在线文档是石墨，后来随着需求和环境的变化，以及在线办公的普及，还曾使用了钉钉、企业微信等以中国大陆互联网企业为开发主体的文档工具，和 Notion 等更加国际化的文档。从使用的便捷程度和完善程度上说，我个人倾向于使用国际化的文档工具。</p>
+<p>但是，我使用在线文档在大多数情况下是为了和协作者进行信息共享。因此在更多的时间里，我会使用例如 Typora 这类的本地 Markdown 编辑工具，加上 Syncthing 进行多端同步以保证数据可靠。随着 Typora 的收费和 Beta 版本的完全禁用，我决定寻找一个更安全、方便的文档编辑和同步方式。</p>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>在部署部分，我着重记录官网文档中提及甚少的部分，如一些功能的不可用、插件的部署。</p>
 <a id="more"></a>
 
-<img src="/blog/2020/12/become-a-traffic-miner/1.motherboard-overview.jpg" class="" title="主板全貌">
+<h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><p>大致的部署流程都可以从<a href="https://standardnotes.com/" target="_blank" rel="noopener">官网</a>或<a href="https://docs.standardnotes.com/self-hosting/getting-started" target="_blank" rel="noopener">官方文档</a>处找到。一般来说，直接 clone 官方的 <code>main</code> 分支仓库 <code>git clone --single-branch --branch main https://github.com/standardnotes/standalone.git</code> 并做好配置，即可直接通过 <code>docker compose</code> 启动所需的所有容器。</p>
+<p>在 clone 完后，执行 <code>./server.sh setup</code>，程序会自动生成所需的 <code>.env</code>、<code>docker/auth.env</code> 和 <code>docker/api-gateway.env</code>，需要进入 <code>.env</code> 修改 <code>AUTH_JWT_SECRET</code>，同时进入 <code>docker/auth.env</code> 修改 <code>JWT_SECRET</code>、<code>LEGACY_JWT_SECRET``PSEUDO_KEY_PARAMS_KEY</code> 和 <code>ENCRYPTION_SERVER_KEY</code>。以上这些参数都可以通过 <code>openssl rand -hex 32</code> 生成。</p>
+<p>需要执行程序时，直接执行 <code>docker compose up -d</code> 或者使用 <code>./server.sh start</code>。之后在 host 上做好反向代理，客户端就能直接连接。</p>
+<p>整体的部署流程是平滑且容易上手的。Standard Notes 的开发团队对开源的支持非常友好，且不断在提升 self-hosted 的部署体验。</p>
+<h2 id="开启订阅"><a href="#开启订阅" class="headerlink" title="开启订阅"></a>开启订阅</h2><p>部署完成后的服务端是允许任意用户注册的，但是注册完成后，用户无法使用所有的高级功能，需要我们手动将对应用户升级为订阅账户以支持更多功能。官网的文档参考 <a href="https://docs.standardnotes.com/self-hosting/subscriptions" target="_blank" rel="noopener">Subscriptions on your Standard Notes Standalone Server</a> 。总结来说，需要在先前 clone 的 git 文件夹下执行以下命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose <span class="built_in">exec</span> db sh -c <span class="string">'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysql $MYSQL_DATABASE'</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="解决硬盘供电问题"><a href="#解决硬盘供电问题" class="headerlink" title="解决硬盘供电问题"></a>解决硬盘供电问题</h2><p>由于使用的是 DC 12V 供电的工控机主板，没有使用任何直插的电源板，为硬盘供电成了问题。经过仔细观察，我发现主板上存在一个 SATA_PWR 的接口，理论上可以用于硬盘的供电。</p>
-<img src="/blog/2020/12/become-a-traffic-miner/2.SATA_PWR.jpg" class="" title="SATA_PWR 接口">
+<p>然后在 MySQL Container 的 Shell 中执行，</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> user_roles (role_uuid , user_uuid) <span class="keyword">VALUES</span> ( ( <span class="keyword">select</span> <span class="keyword">uuid</span> <span class="keyword">from</span> <span class="keyword">roles</span> <span class="keyword">where</span> <span class="keyword">name</span>=<span class="string">"PRO_USER"</span> <span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">version</span> <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">1</span> ) ,( <span class="keyword">select</span> <span class="keyword">uuid</span> <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">where</span> email=<span class="string">"&lt;EMAIL@ADDR&gt;"</span> )  ) <span class="keyword">ON</span> <span class="keyword">DUPLICATE</span> <span class="keyword">KEY</span> <span class="keyword">UPDATE</span> role_uuid = <span class="keyword">VALUES</span>(<span class="string">`role_uuid`</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_subscriptions <span class="keyword">set</span> <span class="keyword">uuid</span> = <span class="keyword">UUID</span>() , plan_name=<span class="string">"PRO_PLAN"</span> , ends_at = <span class="number">8640000000000000</span>, created_at = <span class="number">0</span> , updated_at = <span class="number">0</span>,user_uuid= (<span class="keyword">select</span> <span class="keyword">uuid</span> <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">where</span> email=<span class="string">"&lt;EMAIL@ADDR&gt;"</span>) , subscription_id=<span class="number">1</span> , subscription_type=<span class="string">'regular'</span>;</span><br></pre></td></tr></table></figure>
 
-<p>我从万能的淘宝购入了一条转接线用于硬盘供电的转接。众所周知，硬盘主要由 5V 和 12V 供电。大多数 2.5 寸 HDD 硬盘和 SSD 硬盘只需要 5V 供电，3.5 寸 HDD 大多需要 12V 供电。这个接口提供了这两种电压，并且同时存在两种接口规格，需要测量最左侧和最右侧的两个针脚对应的电压，否则会烧坏硬盘。</p>
-<img src="/blog/2020/12/become-a-traffic-miner/3.SATA_PWR-pin-definition.jpg" class="" title="测量针脚">
-
-<p>测得电压后，由于我这块主板的电压定义和店家给的线正好相反，需要将针脚中的线扯出，归位</p>
-<img src="/blog/2020/12/become-a-traffic-miner/4.modify-adapter-pins.jpg" class="" title="替换电压线">
-
-<p>一定要进行上述步骤检查，否则就会像我第一次一样，烧坏了一块蓝盘（大短路，磁头烧毁）</p>
-<h2 id="挖矿程序选择"><a href="#挖矿程序选择" class="headerlink" title="挖矿程序选择"></a>挖矿程序选择</h2><p>我选择的是星际比特 PolarOS 所属的银河计划，原理大概是运行某些互联网厂商（如 271）的边缘 CDN 项目，共享上传带宽。安装方式很简单，从官网下载 img 镜像，用烧录工具烧录至 U 盘。我用的是老朋友 <code>balenaEtcher</code>。烧录完成后，通过 u 盘启动机器，选择安装到系统硬盘上。运行这个挖矿程序一定要两块以上的硬盘，其中一块用来安装系统，另一块用于存储分发的数据。</p>
-<p>系统安装完成后，等待重启。控制台中会出现一个二维码，从微信小程序<code>IPFS星际比特</code>或者安卓官方 app 扫码绑定设备，并运行 <code>银河计划</code>。我选择银河计划的原因是因为他是现金结算项目，且每次提现仅收取 2 元手续费。</p>
-<p>经过三四天的运行，单台机器的收益大约是 1.5 / 天（两台机器，30Mbps 上行）</p>
-<h2 id="提高挖矿效率的一些方案"><a href="#提高挖矿效率的一些方案" class="headerlink" title="提高挖矿效率的一些方案"></a>提高挖矿效率的一些方案</h2><p>由于刚开始挖矿，没有什么经验，仅根据个人猜测提供一些方案。首先一定要保持设备随时在线。前几天我调整路由器的时候进行了一次网络设备断电，直接导致了收益锐减。估计设备掉线惩罚很严重，不知道先手动停止再操作掉线会不会惩罚的少一些。其次是内存尽量保持 4G 以上，硬盘保持 500G 以上，以提供更好的挖矿能力。CPU 的选择比较随意，性能约等于 1037u，J1900 就行。建议一定要申请<code>公网 IP</code> ，打开光猫或者拨号设备上的 <code>uPnP</code>，减少外网到挖矿设备的 NAT 层数，最好直接挂在拨号设备下。</p>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/">https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<h2 id="扩展部署"><a href="#扩展部署" class="headerlink" title="扩展部署"></a>扩展部署</h2><p>官方提供的扩展介绍在 <a href="https://docs.standardnotes.com/extensions/intro" target="_blank" rel="noopener">https://docs.standardnotes.com/extensions/intro</a>，部署文档在 <a href="https://docs.standardnotes.com/extensions/local-setup" target="_blank" rel="noopener">Extensions Local Setup</a> 。为了应对 self-hosted 的部署，我构建了一个 gh-page 用于存储扩展所属的静态网页 <a href="https://snexts.github.io/" target="_blank" rel="noopener">SNExts</a>。这些扩展有的能够统计字数，有的能够支持更好的 Markdown + 富文本 编辑体验，取舍主要看个人喜好。</p>
+<h2 id="软件架构"><a href="#软件架构" class="headerlink" title="软件架构"></a>软件架构</h2><p>经过部署和使用，我对该软件的整体架构做一个简单总结。在服务端，Standard Notes 的开发团队将软件拆分为多个微服务，以多个 Docker 部署，包括同步服务器、验证（Auth）服务器、数据库等。每个 Standard Notes 的 Client 连接到服务端时，都可以注册属于自己的用户信息（账号，密码）。账号和密码留存在服务端，客户端并不做任何账号密码的存储，因此，抛去笔记撰写客户端的外壳，本质上 Standard Notes 是一个一对多的、带加密的中心化文件同步工具。</p>
+<h1 id="体验"><a href="#体验" class="headerlink" title="体验"></a>体验</h1><h2 id="使用体验"><a href="#使用体验" class="headerlink" title="使用体验"></a>使用体验</h2><p>我试用了大约半天的时间，该软件的 UI 简洁且扁平，比较能够满足我的需求。现在的大多数流行的文本编辑软件都能做到这一点。 Standard Notes 将原本 “Folders” 插件整合至编辑器，支持以多级 Tag 形式给 Notes 打标签，对于 Note 管理来说较为方便。</p>
+<p>Standard Notes 使用 Workspace 的概念，在每个不同的 Workspace 中，用户能够登陆不同站点的不同账号，也能在同一个 Workspace 中使用二次密钥以使用更私有的笔记存储空间。用户的笔记是以加密后的纯文本 JSON 文件存储的，在本地存储空间中，Standard Notes 贴心地提供了一个用于离线解密的网页。用户可以通过输入密码恢复加密的、打包好的备份笔记文件。<strong>安全性有待商榷。</strong>当然，他们还提供了二次加密的 <code>Private Workspace</code> 功能 <a href="https://standardnotes.com/help/80" target="_blank" rel="noopener">What are private workspaces?
+</a>，但跨客户端支持存在一定问题。</p>
+<h2 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h2><p>软件仍存在一定问题，特别是在 self-hosted 的场景下。Standard Notes 在 <code>Feb.10 2022</code> 前使用 <a href="https://github.com/standardnotes/filesafe-relay" target="_blank" rel="noopener">FileSafe</a> 插件用于图片和文件的插入，但是后续取消了该支持 <a href="https://blog.standardnotes.com/32429/deprecation-notice-filesafe" target="_blank" rel="noopener">Deprecation Notice: FileSafe</a>，转而使用 <a href="https://github.com/standardnotes/files" target="_blank" rel="noopener">Standard Notes Files Service</a>。但是该修改暂时还没有同步到 self-hosted 的开源项目中 [Cite Github issue: <a href="https://github.com/standardnotes/standalone/issues/69" target="_blank" rel="noopener">Unable to start Upload Session</a>]，但会尽快推进。这意味着目前，Standard Notes 的图片插入只能通过图床完成。</p>
+<p>另外，扩展（Extension）的导入并不友好，这导致我需要使用一个额外的 Web 服务器以支持更多的扩展功能。虽然目前 gh-pages 可以解决大部分的插件导入问题，但仍比直接存入用户账户来的更为繁琐。希望能够优化。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://www.blackvoid.club/standard-notes-docker-self-hosted-alternative/" target="_blank" rel="noopener">https://www.blackvoid.club/standard-notes-docker-self-hosted-alternative/</a></li>
+<li><a href="https://bitsly.org/posts/standard-notes/" target="_blank" rel="noopener">https://bitsly.org/posts/standard-notes/</a></li>
+</ul>
+<h1 id="Acknowledgements"><a href="#Acknowledgements" class="headerlink" title="Acknowledgements"></a>Acknowledgements</h1><ul>
+<li>Thank Icemic &amp; Peter for assistance.</li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/self-hosted-standard-notes/">https://wasteland.touko.moe//blog/2022/05/self-hosted-standard-notes/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -390,8 +349,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/DIY/" rel="tag"># DIY</a>
-              <a href="/tags/Mining/" rel="tag"># Mining</a>
+              <a href="/tags/Note/" rel="tag"># Note</a>
+              <a href="/tags/WebApp/" rel="tag"># WebApp</a>
           </div>
 
         
@@ -400,13 +359,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/11/my-first-hackintosh/" rel="prev" title="我的第一台黑苹果主机">
-      <i class="fa fa-chevron-left"></i> 我的第一台黑苹果主机
+    <a href="/blog/2022/05/uninst-txagent/" rel="prev" title="卸载腾讯云安全组件">
+      <i class="fa fa-chevron-left"></i> 卸载腾讯云安全组件
     </a></div>
-      <div class="post-nav-item">
-    <a href="/blog/2020/12/install-cuda-on-ubuntu/" rel="next" title="在 Ubuntu 上安装 CUDA">
-      在 Ubuntu 上安装 CUDA <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -486,7 +442,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#闲置了一块主板"><span class="nav-number">1.</span> <span class="nav-text">闲置了一块主板</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件"><span class="nav-number">1.1.</span> <span class="nav-text">硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决硬盘供电问题"><span class="nav-number">1.2.</span> <span class="nav-text">解决硬盘供电问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挖矿程序选择"><span class="nav-number">1.3.</span> <span class="nav-text">挖矿程序选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高挖矿效率的一些方案"><span class="nav-number">1.4.</span> <span class="nav-text">提高挖矿效率的一些方案</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署"><span class="nav-number">2.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本流程"><span class="nav-number">2.1.</span> <span class="nav-text">基本流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启订阅"><span class="nav-number">2.2.</span> <span class="nav-text">开启订阅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展部署"><span class="nav-number">2.3.</span> <span class="nav-text">扩展部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件架构"><span class="nav-number">2.4.</span> <span class="nav-text">软件架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#体验"><span class="nav-number">3.</span> <span class="nav-text">体验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用体验"><span class="nav-number">3.1.</span> <span class="nav-text">使用体验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺陷"><span class="nav-number">3.2.</span> <span class="nav-text">缺陷</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Acknowledgements"><span class="nav-number">5.</span> <span class="nav-text">Acknowledgements</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -738,16 +694,16 @@ window.addEventListener('pjax:success', () => {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/',]
       });
       });
   </script>
 
 <script>
   var disqus_config = function() {
-    this.page.url = "https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/";
-    this.page.identifier = "/blog/2020/12/become-a-traffic-miner/";
-    this.page.title = "成为一名流量矿工";
+    this.page.url = "https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/";
+    this.page.identifier = "/blog/2022/05/self-hosted-standard-notes/";
+    this.page.title = "Standard Notes 部署小结和使用体验";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
@@ -775,7 +731,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'gitalk-wasteland',
       owner       : 'HoshinoTouko',
       admin       : ['HoshinoTouko'],
-      id          : '9e7ee4da808596781c114d6604f57483',
+      id          : '0d53f1fb1ec6a08aa1a03662572abba2',
         language: '',
       distractionFreeMode: true
     });

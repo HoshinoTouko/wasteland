@@ -210,6 +210,107 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/06/home-network-3-hack-synology-and-more/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2020/06/home-network-3-hack-synology-and-more/" class="post-title-link" itemprop="url">家庭网络管理(3): UNRAID 安装黑群晖和其他常用软件</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-10 09:28:27" itemprop="dateCreated datePublished" datetime="2020-06-10T09:28:27+08:00">2020-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-21 21:17:34" itemprop="dateModified" datetime="2020-11-21T21:17:34+08:00">2020-11-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NAS/" itemprop="url" rel="index"><span itemprop="name">NAS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="NAS-该用来做什么"><a href="#NAS-该用来做什么" class="headerlink" title="NAS 该用来做什么"></a>NAS 该用来做什么</h1><p>我打算将 NAS 定位为一个家庭用的小型多媒体平台，并作为软路由处理流量。因此， NAS 应该要能满足我挂 BT 下载的需求，并且还要能够直接读取 BT 下载的内容，以家庭影院的形式展现。经过筛选，我选择安装以下 Docker 软件</p>
+<ul>
+<li>Transmission （BT 下载，Web UI 控制）</li>
+<li>Plex Media Server （家庭影院）</li>
+<li>Pi-Hole （DNS 广告过滤和自定义 Host）</li>
+<li>V2Ray （公网访问内网，等于 VPN）</li>
+<li>NginX （统一反代 Web UI，管理端口暴露规则）</li>
+</ul>
+<p>以及，感谢 UNRAID 对 kvm 的良好支持，我还安装了</p>
+<ul>
+<li>黑群晖</li>
+</ul>
+<h1 id="黑群晖"><a href="#黑群晖" class="headerlink" title="黑群晖"></a>黑群晖</h1><p>群晖是一个卖软件的 NAS 硬件商，其软件十分好用，新手友好。自然，我先选择安装破解的群晖系统。实际上，装完群晖后，我几乎没有使用里面的功能，因为我还是比较倾向于用 UNRAID 自带的 Docker 完成我需要的服务。不过我在研究黑群晖安装的过程中，学习了一些经验，这里做一下记录。</p>
+<h2 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h2><img src="/blog/2020/06/home-network-3-hack-synology-and-more/xpenology-download.png" class="" title="XPENOLOGY 黑群晖引导">
+
+<p>安装黑群晖的原理是安装一个第三方的、破解后的引导，来欺骗群晖系统镜像正常工作。因此我们需要下载破解的引导作为启动盘，然后去官方网站上下载安装镜像就可以了。破解的引导我推荐在 <a href="https://xpenology.club/downloads/" target="_blank" rel="noopener">https://xpenology.club/downloads/</a> 下载。网站中 DSM 6.2指的是支持 <code>DSM 6.2</code> 的系统，引导的文件名最后一串为群晖的机型。在安装时注意下载对应系统和机型的镜像。可以在 <a href="https://archive.synology.com/download/DSM/" target="_blank" rel="noopener">https://archive.synology.com/download/DSM/</a> 下载。</p>
+<p>由于我的虚拟机无法正常启动 <code>Jun’s Loader v1.04b DS918+</code> ，这里以 <code>Jun’s Loaders DSM 6.2</code> - <code>Jun’s Loader v1.03b DS3617xs</code> 为例。下载对应引导并解压，将引导拷贝至 NAS。我创建了一个共享文件夹 HackSynology 用于放置群晖相关文件。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/blog/2020/06/home-network-3-hack-synology-and-more/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/06/home-network-2-enjoy-with-UNRAID/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1177,7 +1278,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/blog">
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1188,7 +1289,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

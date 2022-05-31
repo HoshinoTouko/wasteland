@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/</loc>
+    
+    <lastmod>2022-05-31T17:30:20.881Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wasteland.touko.moe/blog/2022/05/self-hosted-standard-notes/</loc>
     
     <lastmod>2022-05-28T02:10:09.294Z</lastmod>

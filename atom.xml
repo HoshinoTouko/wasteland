@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2022-05-28T02:10:09.294Z</updated>
+  <updated>2022-05-31T17:30:20.881Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>在 Homelab 中部署运行 Mastodon 并接入广域网</title>
+    <link href="https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/"/>
+    <id>https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/</id>
+    <published>2022-05-31T13:57:40.000Z</published>
+    <updated>2022-05-31T17:30:20.881Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
+    
+      <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
+    
+      <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+  </entry>
   
   <entry>
     <title>Standard Notes 部署小结和使用体验</title>
@@ -36,9 +65,9 @@
       <category term="WebApp" scheme="https://wasteland.touko.moe/categories/WebApp/"/>
     
     
-      <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
-    
       <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+      <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
     
   </entry>
   

@@ -3,12 +3,14 @@
   <entry>
     <title>在 Homelab 中部署运行 Mastodon 并接入广域网</title>
     <url>//blog/2022/05/mastodon-at-homelab/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>心心念念 <a href="https://docs.joinmastodon.org/" target="_blank" rel="noopener">Mastodon</a> 将近两年了，昨天终于打起精神，尝试自己部署一个。作为一名十年微博用户，我对社交网络的需求已经逐渐减少，但仍希望有一个干净的、能够自由交流的工具。因此，我决定部署属于自己的 Mastodon 实例。</p>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>心心念念 <a href="https://github.com/mastodon/mastodon" target="_blank" rel="noopener">Mastodon</a> 将近两年了，昨天终于打起精神，尝试自己部署一个。作为一名十年微博用户，我对社交网络的需求已经逐渐减少，但仍希望有一个干净的、能够自由交流的工具。因此，我决定部署属于自己的 Mastodon 实例。</p>
 <h2 id="部署前准备"><a href="#部署前准备" class="headerlink" title="部署前准备"></a>部署前准备</h2><p>据我所知，Mastodon 实例对机器性能的要求较高，特别是对内存的需求。考虑这些，决定在 Homelab 部署 Mastodon 实例。但问题依然存在，为了维护双向关系，Mastodon 要求在互联网公开，因此我使用 <a href="https://www.cloudflare.com/products/zero-trust/zero-trust-network-access/" target="_blank" rel="noopener">CloudFlare ZeroTrust Tunnel</a> 将其公开至互联网。</p>
 <p>机器我选用了长期吃灰的 昂达 H310SD3-ITX 作为平台，CPU 选用 Intel Pentium G4500T 2c/4t，内存为两条 8G DDR3 AMD 专用条。即使该平台比较老旧，但仍足够胜任一般的 Web 服务器需求。</p>
 <h2 id="关于这篇文章"><a href="#关于这篇文章" class="headerlink" title="关于这篇文章"></a>关于这篇文章</h2><p>Mastodon 的官方文档对使用纯 Docker 环境部署并不友好。因此，这篇文章主要对 Mastodon 使用 Docker Compose 部署做记录。当然也包括如何安全地将内网服务器暴露至公网。</p>
 <h1 id="Mastodon-部署流程"><a href="#Mastodon-部署流程" class="headerlink" title="Mastodon 部署流程"></a>Mastodon 部署流程</h1><p>经过摸索后，在集群内使用 Docker compose 起一个 Mastodon 实例仅需两个配置文件+少量部署操作。<code>docker-compose.yml</code> 如下，由官方 Github 仓库中获取并微调。</p>
 <p>由于该配置文件直接上了 <code>production</code> 环境，会强制 301 到 HTTPS。在测试环境中需要 Web 服务器反代并做好 SSL 配置。我在本地使用 <code>traefik</code> 作为 Web 服务器。</p>
+<a id="more"></a>
+
 <h2 id="env-production-准备"><a href="#env-production-准备" class="headerlink" title=".env.production 准备"></a>.env.production 准备</h2><p>使用官方提供的 <code>.env.production</code> 文件作为模板修改。其中，<code>LOCAL_DOMAIN</code> 作为用户名后半段显示的域名，<code>WEB_DOMAIN</code> 作为 Mastodon 实例实际运行的域名。在测试部署时，可以使用 <code>ALTERNATE_DOMAINS</code> 允许其他临时域名。</p>
 <p>举例说明，假设我希望用户名显示为 <code>@user@example.com</code>，而站点部署在 <code>mast.example.com</code> ，那我就设置 <code>LOCAL_DOMAIN=example.com</code>，<code>WEB_DOMAIN=example.com</code> 即可。如有该需求，需要在 example.com 所属的 Web 服务器中部署对应跳转规则。此处样例为 Nginx。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location &#x2F;.well-known&#x2F;webfinger &#123;</span><br><span class="line">  return 301 https:&#x2F;&#x2F;mast.example.com$request_uri;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -79,13 +81,15 @@
 <li>CLI 控制命令 <a href="https://docs.joinmastodon.org/admin/tootctl/#cache" target="_blank" rel="noopener">https://docs.joinmastodon.org/admin/tootctl/#cache</a></li>
 <li><a href="https://github.com/mastodon/mastodon/issues/3676" target="_blank" rel="noopener">https://github.com/mastodon/mastodon/issues/3676</a></li>
 <li><a href="https://stackoverflow.com/questions/55279515/elasticsearchexception-failed-to-bind-service-error" target="_blank" rel="noopener">https://stackoverflow.com/questions/55279515/elasticsearchexception-failed-to-bind-service-error</a></li>
+<li><a href="https://pullopen.github.io/%E5%9F%BA%E7%A1%80%E6%90%AD%E5%BB%BA/2020/10/19/Mastodon-on-Docker.html" target="_blank" rel="noopener">https://pullopen.github.io/%E5%9F%BA%E7%A1%80%E6%90%AD%E5%BB%BA/2020/10/19/Mastodon-on-Docker.html</a></li>
+<li><a href="https://docs.joinmastodon.org/" target="_blank" rel="noopener">https://docs.joinmastodon.org/</a></li>
 </ul>
 <p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/mastodon-at-homelab/">https://wasteland.touko.moe//blog/2022/05/mastodon-at-homelab/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 ]]></content>
       <tags>
         <tag>Homelab</tag>
-        <tag>Mastodon</tag>
         <tag>WebApp</tag>
+        <tag>Mastodon</tag>
       </tags>
   </entry>
   <entry>
@@ -128,8 +132,8 @@
         <category>WebApp</category>
       </categories>
       <tags>
-        <tag>WebApp</tag>
         <tag>Note</tag>
+        <tag>WebApp</tag>
       </tags>
   </entry>
   <entry>
@@ -769,8 +773,8 @@
 ]]></content>
       <categories>
         <category>Network</category>
-        <category>NAS</category>
         <category>Router</category>
+        <category>NAS</category>
       </categories>
       <tags>
         <tag>NAS</tag>

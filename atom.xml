@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2022-05-31T17:30:20.881Z</updated>
+  <updated>2022-05-31T17:33:54.664Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -21,17 +21,16 @@
     <link href="https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/"/>
     <id>https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/</id>
     <published>2022-05-31T13:57:40.000Z</published>
-    <updated>2022-05-31T17:30:20.881Z</updated>
+    <updated>2022-05-31T17:33:54.664Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          
-        
-      
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;心心念念 &lt;a href=&quot;https://github.com/mastodon/mastodon&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Mastodon&lt;/a&gt; 将近两年了，昨天终于打起精神，尝试自己部署一个。作为一名十年微博用户，我对社交网络的需求已经逐渐减少，但仍希望有一个干净的、能够自由交流的工具。因此，我决定部署属于自己的 Mastodon 实例。&lt;/p&gt;
+&lt;h2 id=&quot;部署前准备&quot;&gt;&lt;a href=&quot;#部署前准备&quot; class=&quot;headerlink&quot; title=&quot;部署前准备&quot;&gt;&lt;/a&gt;部署前准备&lt;/h2&gt;&lt;p&gt;据我所知，Mastodon 实例对机器性能的要求较高，特别是对内存的需求。考虑这些，决定在 Homelab 部署 Mastodon 实例。但问题依然存在，为了维护双向关系，Mastodon 要求在互联网公开，因此我使用 &lt;a href=&quot;https://www.cloudflare.com/products/zero-trust/zero-trust-network-access/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;CloudFlare ZeroTrust Tunnel&lt;/a&gt; 将其公开至互联网。&lt;/p&gt;
+&lt;p&gt;机器我选用了长期吃灰的 昂达 H310SD3-ITX 作为平台，CPU 选用 Intel Pentium G4500T 2c/4t，内存为两条 8G DDR3 AMD 专用条。即使该平台比较老旧，但仍足够胜任一般的 Web 服务器需求。&lt;/p&gt;
+&lt;h2 id=&quot;关于这篇文章&quot;&gt;&lt;a href=&quot;#关于这篇文章&quot; class=&quot;headerlink&quot; title=&quot;关于这篇文章&quot;&gt;&lt;/a&gt;关于这篇文章&lt;/h2&gt;&lt;p&gt;Mastodon 的官方文档对使用纯 Docker 环境部署并不友好。因此，这篇文章主要对 Mastodon 使用 Docker Compose 部署做记录。当然也包括如何安全地将内网服务器暴露至公网。&lt;/p&gt;
+&lt;h1 id=&quot;Mastodon-部署流程&quot;&gt;&lt;a href=&quot;#Mastodon-部署流程&quot; class=&quot;headerlink&quot; title=&quot;Mastodon 部署流程&quot;&gt;&lt;/a&gt;Mastodon 部署流程&lt;/h1&gt;&lt;p&gt;经过摸索后，在集群内使用 Docker compose 起一个 Mastodon 实例仅需两个配置文件+少量部署操作。&lt;code&gt;docker-compose.yml&lt;/code&gt; 如下，由官方 Github 仓库中获取并微调。&lt;/p&gt;
+&lt;p&gt;由于该配置文件直接上了 &lt;code&gt;production&lt;/code&gt; 环境，会强制 301 到 HTTPS。在测试环境中需要 Web 服务器反代并做好 SSL 配置。我在本地使用 &lt;code&gt;traefik&lt;/code&gt; 作为 Web 服务器。&lt;/p&gt;
     
     </summary>
     
@@ -39,9 +38,9 @@
     
       <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
     
-      <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
-    
       <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+      <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
     
   </entry>
   
@@ -65,9 +64,9 @@
       <category term="WebApp" scheme="https://wasteland.touko.moe/categories/WebApp/"/>
     
     
-      <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
-    
       <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
+    
+      <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
     
   </entry>
   
@@ -424,9 +423,9 @@
     
       <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
     
-      <category term="NAS" scheme="https://wasteland.touko.moe/categories/NAS/"/>
-    
       <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
+    
+      <category term="NAS" scheme="https://wasteland.touko.moe/categories/NAS/"/>
     
     
       <category term="NAS" scheme="https://wasteland.touko.moe/tags/NAS/"/>

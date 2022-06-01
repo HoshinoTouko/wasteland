@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2022-05-31T17:33:54.664Z</updated>
+  <updated>2022-06-01T04:11:14.144Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/"/>
     <id>https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/</id>
     <published>2022-05-31T13:57:40.000Z</published>
-    <updated>2022-05-31T17:33:54.664Z</updated>
+    <updated>2022-06-01T04:11:14.144Z</updated>
     
     <summary type="html">
     
@@ -38,9 +38,9 @@
     
       <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
     
-      <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
-    
       <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
+    
+      <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
     
   </entry>
   
@@ -64,9 +64,9 @@
       <category term="WebApp" scheme="https://wasteland.touko.moe/categories/WebApp/"/>
     
     
-      <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
-    
       <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+      <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
     
   </entry>
   
@@ -423,9 +423,9 @@
     
       <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
     
-      <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
-    
       <category term="NAS" scheme="https://wasteland.touko.moe/categories/NAS/"/>
+    
+      <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
     
     
       <category term="NAS" scheme="https://wasteland.touko.moe/tags/NAS/"/>

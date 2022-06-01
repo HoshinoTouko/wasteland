@@ -32,7 +32,7 @@ Mastodon 的官方文档对使用纯 Docker 环境部署并不友好。因此，
 
 ## .env.production 准备
 
-使用官方提供的 `.env.production` 文件作为模板修改。其中，`LOCAL_DOMAIN` 作为用户名后半段显示的域名，`WEB_DOMAIN` 作为 Mastodon 实例实际运行的域名。在测试部署时，可以使用 `ALTERNATE_DOMAINS` 允许其他临时域名。
+使用官方提供的 `.env.production` （[https://github.com/mastodon/mastodon/blob/main/.env.production.sample](https://github.com/mastodon/mastodon/blob/main/.env.production.sample)） 文件作为模板修改。其中，`LOCAL_DOMAIN` 作为用户名后半段显示的域名，`WEB_DOMAIN` 作为 Mastodon 实例实际运行的域名。在测试部署时，可以使用 `ALTERNATE_DOMAINS` 允许其他临时域名。
 
 举例说明，假设我希望用户名显示为 `@user@example.com`，而站点部署在 `mast.example.com` ，那我就设置 `LOCAL_DOMAIN=example.com`，`WEB_DOMAIN=example.com` 即可。如有该需求，需要在 example.com 所属的 Web 服务器中部署对应跳转规则。此处样例为 Nginx。
 
@@ -52,7 +52,7 @@ ES_HOST=es
 
 然后，默认的配置文件是将 s3 开启，es 功能关闭。其中 s3 用于存放静态文件，包括图片、头像、emoji、视频文件等，es 功能则用于全文搜索。由于我并不希望有额外的 s3 开销，寄希望于 CloudFlare CDN，因此我将 s3 关闭，并开启了 es 功能。这些功能的开关都在 .env.production 文件中显式标明。
 
-在配置 `SECRET_KEY_BASE`、`OTP_SECRET`、`VAPID_PRIVATE_KEY` 和 `VAPID_PUBLIC_KEY` 时，需要启动一个临时容器用于密文生成。如 `docker run --rm -it tootsuite/mastodon:v3.5.3 bash` 后执行 `rake secret` 或 `rake mastodon:webpush:generate_vapid_key` 。
+在配置 `SECRET_KEY_BASE`、`OTP_SECRET`、`VAPID_PRIVATE_KEY` 和 `VAPID_PUBLIC_KEY` 时，需要启动一个临时容器用于密文生成。如 `docker run --rm -it tootsuite/mastodon:v3.5.3 bash` 后执行 `./bin/rails secret` 或 `./bin/rails mastodon:webpush:generate_vapid_key` 。注：此处如果使用 .end.production 内的 `rake` 命令会报错。
 
 ## Docker Compose 准备
 
@@ -254,3 +254,4 @@ streaming 容器在 `api/v1/streaming` 提供了一个 websocket 服务，一定
 - https://stackoverflow.com/questions/55279515/elasticsearchexception-failed-to-bind-service-error
 - https://pullopen.github.io/%E5%9F%BA%E7%A1%80%E6%90%AD%E5%BB%BA/2020/10/19/Mastodon-on-Docker.html
 - https://docs.joinmastodon.org/
+- https://github.com/mastodon/mastodon/issues/7612

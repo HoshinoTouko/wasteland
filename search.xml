@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>保持云相册和 NAS 同步（iCloud &amp; Google Photos）</title>
+    <url>//blog/2022/06/photo-sync-from-cloud-to-nas/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相册这种东西，堆着堆着就几万张了。粗略看了一下统计，我存放在 iCloud 上的相册中包含了 45k 张照片，在 Google Photos 上的相册有 30k 左右的照片。这些照片的成分也很复杂，包括日常拍照、屏幕截图和一堆纸片人图。因此，我需要一种方式管理这些照片。</p>
+<p>我的初步想法是，将照片同步至本地 NAS，使用自建工具进行管理。我本地使用的是群晖。即使是群晖这种较为成熟的 NAS 系统，也只有和 Google Drive 进行同步的工具，无法和 iCloud 进行同步。甚至在 Google Drive 同步工具中，也无法和相册进行同步。好消息是很多个人开发者开发了用于同步相册的工具。本文将记录这些工具的部署流程和使用方法。</p>
+<h1 id="相册同步工具"><a href="#相册同步工具" class="headerlink" title="相册同步工具"></a>相册同步工具</h1><h2 id="Google-Photos"><a href="#Google-Photos" class="headerlink" title="Google Photos"></a>Google Photos</h2><p>我搜索到两个主流的、已经封装好 Docker 镜像的 Google Photos 同步工具，分别是 <a href="https://github.com/JakeWharton/docker-gphotos-sync" target="_blank" rel="noopener">https://github.com/JakeWharton/docker-gphotos-sync</a> 和 <a href="https://github.com/gilesknap/gphotos-sync" target="_blank" rel="noopener">https://github.com/gilesknap/gphotos-sync</a>。其中，前者需要使用 <code>chromium-browser</code> 登陆谷歌账号进行验证，后者需要通过 GCP 创建 OAuth API 进行账户验证。我本人更喜欢后者的方式，因此选择后者作为本地使用的同步工具。</p>
+<h3 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h3><p>后者的配置方式在 <a href="https://gilesknap.github.io/gphotos-sync/main/index.html" target="_blank" rel="noopener">文档</a> 中有详细介绍，此处做个总结。</p>
+<a id="more"></a>
+
+<ol>
+<li>在 GCP 中创建项目：<a href="https://console.cloud.google.com/cloud-resource-manager" target="_blank" rel="noopener">https://console.cloud.google.com/cloud-resource-manager</a>。</li>
+<li>给项目 Enable Photo Library API：<a href="https://console.cloud.google.com/apis/library/photoslibrary.googleapis.com" target="_blank" rel="noopener">https://console.cloud.google.com/apis/library/photoslibrary.googleapis.com</a>。</li>
+<li>前往 <code>汉堡菜单-API-Credentials</code> 创建OAuth 2.0 Client IDs，Type 为 Desktop：<a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">https://console.cloud.google.com/apis/credentials</a>。中途会要求创建 <code>OAuth consent screen</code>，随便写，创建完成后将其 <code>Publish</code>。</li>
+<li>创建完成后，页面会允许下载一个包含了验证信息的 json 文件，修改文件名为 <code>client_secret.json</code>，放置在宿主机对应的 <code>/path/to/config/</code> 文件夹下。</li>
+<li>[Docker 命令方法] 确认照片文件夹和 config 文件夹路径，编写初次运行的 Docker 命令，用于验证 Google App。<code>docker run --rm -v /path/to/config:/config -v /path/to/storage:/storage -p 18080:18080 -it ghcr.io/gilesknap/gphotos-sync /storage --port 18080 --skip-files --skip-albums --skip-index</code>。考虑到 8080 端口常被占用，更换了不常用端口。</li>
+<li>[Docker compose 方法] 准备 <code>docker-compose.yml</code> 文件，参考下图。执行 <code>docker compose up</code> 。</li>
+<li>将控制台输出的 <code>https://accounts.google.com/o/oauth2/auth?xxxxx</code> 复制到浏览器，进行登录操作。回调会默认回调至 <a href="http://localhost:18080/" target="_blank" rel="noopener">http://localhost:18080/</a> ，此时需要将 localhost 修改为 NAS 的 IP 或者域名，手动触发验证回调。浏览器显示 <code>The authentication flow has completed. You may close this window.</code> 时，说明验证完成。此时在对应 <code>/storage</code> 的文件夹下会生成 <code>.gphotos.token</code> 文件，用于保存用户验证信息。</li>
+<li>修改 <code>docker-compose.yml</code> 或 docker 执行脚本，然后定时执行命令即可。</li>
+</ol>
+<h3 id="参考-Docker-Compose-文件"><a href="#参考-Docker-Compose-文件" class="headerlink" title="参考 Docker Compose 文件"></a>参考 Docker Compose 文件</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3.3'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">gphotos-sync:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">gphotos-sync</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PYTHONUNBUFFERED=1</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./config/:/config:rw</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/storage:/storage:rw</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">ghcr.io/gilesknap/gphotos-sync</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">gphotos</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">18080</span><span class="string">:18080</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/storage</span></span><br><span class="line">    <span class="comment"># For OAuth authentication.</span></span><br><span class="line">    <span class="comment"># command: /storage --port 18080 --skip-files --skip-albums --skip-index</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">gphotos:</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="iCloud-Photos"><a href="#iCloud-Photos" class="headerlink" title="iCloud Photos"></a>iCloud Photos</h2><p>iCloud 照片的下载我选择了 <a href="https://github.com/icloud-photos-downloader/icloud_photos_downloader" target="_blank" rel="noopener">iCloud Photos Downloader</a>。实际场景下我选择了第三方打包的 Docker：<a href="https://github.com/boredazfcuk/docker-icloudpd" target="_blank" rel="noopener">https://github.com/boredazfcuk/docker-icloudpd</a>。相比于 Google Photos，iCloud Photos Downloader 的配置更为简单。直接编写 <code>docker-compose.yml</code> 后执行 <code>docker compose up</code>，配置密码和 2FA。之后执行 <code>docker compose up -d</code>，程序会以 <code>synchronisation_interval</code> 设定的间隔定期更新照片库。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3.3'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">icloudpd:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">iCloudPD-boredazfcuk</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">icloudpd</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">user=USER_NAME</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">user_id=USER_ID</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">group=USER_GROUP</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">group_id=GROUP_ID</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">apple_id=APPLE_ID</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">authentication_type=2FA</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">notification_type=Telegram</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">telegram_token=TELEGRAM_TOKEN</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">telegram_chat_id=CHAT_ID</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">folder_structure=&#123;:%Y&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">auto_delete=True</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">notification_days=14</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">synchronisation_interval=43200</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Hong_Kong</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/path/to/config:/config</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/path/to/photos:/home/USERNAME/iCloud</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">boredazfcuk/icloudpd</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">icloudpd:</span></span><br></pre></td></tr></table></figure>
+
+<p>配置完这些自动下载工具后，下一步就是管理照片。我使用了 <code>PhotoPrism</code>，一个 <code>self-hosted</code> 的、带 AI 分类功能的图片管理工具。相关配置就是后话了。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://github.com/gilesknap/gphotos-sync" target="_blank" rel="noopener">https://github.com/gilesknap/gphotos-sync</a></li>
+<li><a href="https://gilesknap.github.io/gphotos-sync/main/index.html" target="_blank" rel="noopener">https://gilesknap.github.io/gphotos-sync/main/index.html</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/06/photo-sync-from-cloud-to-nas/">https://wasteland.touko.moe//blog/2022/06/photo-sync-from-cloud-to-nas/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <tags>
+        <tag>NAS</tag>
+        <tag>iCloud</tag>
+        <tag>Google Photo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>在 Homelab 中部署运行 Mastodon 并接入广域网</title>
     <url>//blog/2022/05/mastodon-at-homelab/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>心心念念 <a href="https://github.com/mastodon/mastodon" target="_blank" rel="noopener">Mastodon</a> 将近两年了，昨天终于打起精神，尝试自己部署一个。作为一名十年微博用户，我对社交网络的需求已经逐渐减少，但仍希望有一个干净的、能够自由交流的工具。因此，我决定部署属于自己的 Mastodon 实例。</p>
@@ -88,9 +125,9 @@
 <p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/mastodon-at-homelab/">https://wasteland.touko.moe//blog/2022/05/mastodon-at-homelab/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 ]]></content>
       <tags>
-        <tag>Homelab</tag>
         <tag>Mastodon</tag>
         <tag>WebApp</tag>
+        <tag>Homelab</tag>
       </tags>
   </entry>
   <entry>
@@ -222,8 +259,8 @@
       </categories>
       <tags>
         <tag>Router</tag>
-        <tag>Openwrt</tag>
         <tag>Homelab</tag>
+        <tag>Openwrt</tag>
       </tags>
   </entry>
   <entry>

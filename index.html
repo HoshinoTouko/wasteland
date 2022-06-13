@@ -210,6 +210,75 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2022/06/photo-sync-from-cloud-to-nas/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2022/06/photo-sync-from-cloud-to-nas/" class="post-title-link" itemprop="url">保持云相册和 NAS 同步（iCloud & Google Photos）</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-13 11:53:39 / Modified: 20:20:47" itemprop="dateCreated datePublished" datetime="2022-06-13T11:53:39+08:00">2022-06-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相册这种东西，堆着堆着就几万张了。粗略看了一下统计，我存放在 iCloud 上的相册中包含了 45k 张照片，在 Google Photos 上的相册有 30k 左右的照片。这些照片的成分也很复杂，包括日常拍照、屏幕截图和一堆纸片人图。因此，我需要一种方式管理这些照片。</p>
+<p>我的初步想法是，将照片同步至本地 NAS，使用自建工具进行管理。我本地使用的是群晖。即使是群晖这种较为成熟的 NAS 系统，也只有和 Google Drive 进行同步的工具，无法和 iCloud 进行同步。甚至在 Google Drive 同步工具中，也无法和相册进行同步。好消息是很多个人开发者开发了用于同步相册的工具。本文将记录这些工具的部署流程和使用方法。</p>
+<h1 id="相册同步工具"><a href="#相册同步工具" class="headerlink" title="相册同步工具"></a>相册同步工具</h1><h2 id="Google-Photos"><a href="#Google-Photos" class="headerlink" title="Google Photos"></a>Google Photos</h2><p>我搜索到两个主流的、已经封装好 Docker 镜像的 Google Photos 同步工具，分别是 <a href="https://github.com/JakeWharton/docker-gphotos-sync" target="_blank" rel="noopener">https://github.com/JakeWharton/docker-gphotos-sync</a> 和 <a href="https://github.com/gilesknap/gphotos-sync" target="_blank" rel="noopener">https://github.com/gilesknap/gphotos-sync</a>。其中，前者需要使用 <code>chromium-browser</code> 登陆谷歌账号进行验证，后者需要通过 GCP 创建 OAuth API 进行账户验证。我本人更喜欢后者的方式，因此选择后者作为本地使用的同步工具。</p>
+<h3 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h3><p>后者的配置方式在 <a href="https://gilesknap.github.io/gphotos-sync/main/index.html" target="_blank" rel="noopener">文档</a> 中有详细介绍，此处做个总结。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/blog/2022/06/photo-sync-from-cloud-to-nas/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1100,125 +1169,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/06/home-network-4-soft-router-at-unraid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="Touko Hoshino">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wasteland">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/blog/2020/06/home-network-4-soft-router-at-unraid/" class="post-title-link" itemprop="url">家庭网络管理(4): 单网口安装 OpenWRT 实现单臂软路由</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-06-13 16:52:38" itemprop="dateCreated datePublished" datetime="2020-06-13T16:52:38+08:00">2020-06-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-11-21 21:17:34" itemprop="dateModified" datetime="2020-11-21T21:17:34+08:00">2020-11-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/NAS/" itemprop="url" rel="index"><span itemprop="name">NAS</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/Router/" itemprop="url" rel="index"><span itemprop="name">Router</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="软路由"><a href="#软路由" class="headerlink" title="软路由"></a>软路由</h1><p>为了进一步发挥 NAS 的作用，我决定在它上面部署一个软路由。因为软路由可以更好地管理流量，部署科学上网，特别是在主路由小米 AC2100 <code>MT7621</code> 方案性能有限的情况下，x86 架构的软路由能够进行的加解密运算能力远远超过主路由。我的 NAS 只有板载千兆单网口，实现起来没有多网口路由器那么优雅，好在还是能够用单臂路由的方法实现软路由。</p>
-<h1 id="网络拓扑规划"><a href="#网络拓扑规划" class="headerlink" title="网络拓扑规划"></a>网络拓扑规划</h1><h2 id="设备一览"><a href="#设备一览" class="headerlink" title="设备一览"></a>设备一览</h2><p>在规划网络之前，需要先清点一下我有哪些设备，这些设备分别有哪些上网的需求。</p>
-<p>路由器，我有</p>
-<ul>
-<li>一台联通的光猫</li>
-<li>一台小米 AC2100</li>
-<li>一台小米 R3</li>
-<li>一台老旧的小米 3C（大概就不用了）</li>
-</ul>
-<p>终端设备我有</p>
-<ul>
-<li>若干 PC</li>
-<li>若干手机</li>
-</ul>
-<p>IoT 设备我有</p>
-<ul>
-<li>遍布房间的传感器</li>
-<li>智能插座</li>
-<li>开关</li>
-</ul>
-<p>因此，我打算将光猫作为拨号终端；小米 AC2100 作为主路由，保留小米原有系统（后来我把它刷成 OpenWRT 了）；小米 R3 无线桥接 AC2100，作为 IoT 的接入点（因为位置的原因，AC 2100 摆放在光猫边上，2.4G 没有办法很好地覆盖整个屋子，所以要用 R3 中继）。光猫的无线功能关闭，避免影响其他网络的速度。</p>
-<h2 id="拓扑规划"><a href="#拓扑规划" class="headerlink" title="拓扑规划"></a>拓扑规划</h2><p>NAS 使用网线连接小米 AC2100。UNRAID 系统通过网桥（一般为 br0）让虚拟机和 Docker 上网，可以理解为一个二层交换机。我简单做个一个拓扑图，解释我打算规划的拓扑结构。</p>
-<img src="/blog/2020/06/home-network-4-soft-router-at-unraid/%E5%8D%95%E8%87%82%E8%B7%AF%E7%94%B1%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png" class="" title="单臂路由网络拓扑图">
-
-<p>我的规划如图，光猫负责拨号，小米 AC2100 作为主路由处理流量，R3 通过无线中继服务 IoT 设备，NAS 虚拟化各种服务和软路由提供功能。其中，主路由的 IP 地址为 192.168.31.1，软路由的 IP 地址为 192.168.31.2。为了让所有流量在转发至公网时经过软路由处理，由 AC2100、R3 所有通过 AP 接入的设备和有线接入的设备都要以 192.168.31.2（软路由） 作为网关，而软路由要以 192.168.31.1（主路由） 作为网关。为了实现这个功能，整个 LAN 中只能由软路由一个 DHCP 服务端。即，让新加入的设备自动以软路由作为网关。</p>
-<h1 id="单臂软路由配置"><a href="#单臂软路由配置" class="headerlink" title="单臂软路由配置"></a>单臂软路由配置</h1><h2 id="选择系统"><a href="#选择系统" class="headerlink" title="选择系统"></a>选择系统</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/blog/2020/06/home-network-4-soft-router-at-unraid/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1285,7 +1240,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/blog">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1296,7 +1251,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">33</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

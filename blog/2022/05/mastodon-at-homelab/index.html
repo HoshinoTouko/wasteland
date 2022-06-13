@@ -35,9 +35,9 @@
 <meta property="article:published_time" content="2022-05-31T13:57:40.000Z">
 <meta property="article:modified_time" content="2022-06-01T04:11:14.144Z">
 <meta property="article:author" content="Touko Hoshino">
-<meta property="article:tag" content="Homelab">
 <meta property="article:tag" content="Mastodon">
 <meta property="article:tag" content="WebApp">
+<meta property="article:tag" content="Homelab">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/">
@@ -399,9 +399,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Homelab/" rel="tag"># Homelab</a>
               <a href="/tags/Mastodon/" rel="tag"># Mastodon</a>
               <a href="/tags/WebApp/" rel="tag"># WebApp</a>
+              <a href="/tags/Homelab/" rel="tag"># Homelab</a>
           </div>
 
         
@@ -413,7 +413,10 @@
     <a href="/blog/2022/05/self-hosted-standard-notes/" rel="prev" title="Standard Notes 部署小结和使用体验">
       <i class="fa fa-chevron-left"></i> Standard Notes 部署小结和使用体验
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/blog/2022/06/photo-sync-from-cloud-to-nas/" rel="next" title="保持云相册和 NAS 同步（iCloud & Google Photos）">
+      保持云相册和 NAS 同步（iCloud & Google Photos） <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -429,13 +432,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -444,6 +444,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -508,7 +511,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/blog">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -519,7 +522,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">33</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -750,26 +753,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : 'f8f2e6c2a9112022edd41e4b1389e772',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2022/05/mastodon-at-homelab/";
@@ -789,6 +772,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'f8f2e6c2a9112022edd41e4b1389e772',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2022-06-01T04:11:14.144Z</updated>
+  <updated>2022-06-13T12:20:47.533Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>保持云相册和 NAS 同步（iCloud &amp; Google Photos）</title>
+    <link href="https://wasteland.touko.moe/blog/2022/06/photo-sync-from-cloud-to-nas/"/>
+    <id>https://wasteland.touko.moe/blog/2022/06/photo-sync-from-cloud-to-nas/</id>
+    <published>2022-06-13T03:53:39.000Z</published>
+    <updated>2022-06-13T12:20:47.533Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;相册这种东西，堆着堆着就几万张了。粗略看了一下统计，我存放在 iCloud 上的相册中包含了 45k 张照片，在 Google Photos 上的相册有 30k 左右的照片。这些照片的成分也很复杂，包括日常拍照、屏幕截图和一堆纸片人图。因此，我需要一种方式管理这些照片。&lt;/p&gt;
+&lt;p&gt;我的初步想法是，将照片同步至本地 NAS，使用自建工具进行管理。我本地使用的是群晖。即使是群晖这种较为成熟的 NAS 系统，也只有和 Google Drive 进行同步的工具，无法和 iCloud 进行同步。甚至在 Google Drive 同步工具中，也无法和相册进行同步。好消息是很多个人开发者开发了用于同步相册的工具。本文将记录这些工具的部署流程和使用方法。&lt;/p&gt;
+&lt;h1 id=&quot;相册同步工具&quot;&gt;&lt;a href=&quot;#相册同步工具&quot; class=&quot;headerlink&quot; title=&quot;相册同步工具&quot;&gt;&lt;/a&gt;相册同步工具&lt;/h1&gt;&lt;h2 id=&quot;Google-Photos&quot;&gt;&lt;a href=&quot;#Google-Photos&quot; class=&quot;headerlink&quot; title=&quot;Google Photos&quot;&gt;&lt;/a&gt;Google Photos&lt;/h2&gt;&lt;p&gt;我搜索到两个主流的、已经封装好 Docker 镜像的 Google Photos 同步工具，分别是 &lt;a href=&quot;https://github.com/JakeWharton/docker-gphotos-sync&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://github.com/JakeWharton/docker-gphotos-sync&lt;/a&gt; 和 &lt;a href=&quot;https://github.com/gilesknap/gphotos-sync&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://github.com/gilesknap/gphotos-sync&lt;/a&gt;。其中，前者需要使用 &lt;code&gt;chromium-browser&lt;/code&gt; 登陆谷歌账号进行验证，后者需要通过 GCP 创建 OAuth API 进行账户验证。我本人更喜欢后者的方式，因此选择后者作为本地使用的同步工具。&lt;/p&gt;
+&lt;h3 id=&quot;部署步骤&quot;&gt;&lt;a href=&quot;#部署步骤&quot; class=&quot;headerlink&quot; title=&quot;部署步骤&quot;&gt;&lt;/a&gt;部署步骤&lt;/h3&gt;&lt;p&gt;后者的配置方式在 &lt;a href=&quot;https://gilesknap.github.io/gphotos-sync/main/index.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;文档&lt;/a&gt; 中有详细介绍，此处做个总结。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="NAS" scheme="https://wasteland.touko.moe/tags/NAS/"/>
+    
+      <category term="iCloud" scheme="https://wasteland.touko.moe/tags/iCloud/"/>
+    
+      <category term="Google Photo" scheme="https://wasteland.touko.moe/tags/Google-Photo/"/>
+    
+  </entry>
   
   <entry>
     <title>在 Homelab 中部署运行 Mastodon 并接入广域网</title>
@@ -36,11 +62,11 @@
     
     
     
-      <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
-    
       <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
     
       <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+      <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
     
   </entry>
   
@@ -134,9 +160,9 @@
     
       <category term="Router" scheme="https://wasteland.touko.moe/tags/Router/"/>
     
-      <category term="Openwrt" scheme="https://wasteland.touko.moe/tags/Openwrt/"/>
-    
       <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
+    
+      <category term="Openwrt" scheme="https://wasteland.touko.moe/tags/Openwrt/"/>
     
   </entry>
   

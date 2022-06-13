@@ -125,9 +125,9 @@
 <p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/mastodon-at-homelab/">https://wasteland.touko.moe//blog/2022/05/mastodon-at-homelab/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 ]]></content>
       <tags>
-        <tag>Mastodon</tag>
-        <tag>WebApp</tag>
         <tag>Homelab</tag>
+        <tag>WebApp</tag>
+        <tag>Mastodon</tag>
       </tags>
   </entry>
   <entry>
@@ -170,8 +170,8 @@
         <category>WebApp</category>
       </categories>
       <tags>
-        <tag>WebApp</tag>
         <tag>Note</tag>
+        <tag>WebApp</tag>
       </tags>
   </entry>
   <entry>
@@ -259,8 +259,8 @@
       </categories>
       <tags>
         <tag>Router</tag>
-        <tag>Homelab</tag>
         <tag>Openwrt</tag>
+        <tag>Homelab</tag>
       </tags>
   </entry>
   <entry>

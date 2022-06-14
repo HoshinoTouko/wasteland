@@ -17,6 +17,7 @@ date: 2020-03-15 13:38:08
 - Peter - https://typeblog.net/
 - Cee - http://cee.moe/
 - 447f.Misaka - http://447f.misaka.org/
+- ecl - http://ecl.me/
 - cc - http://ccloli.com/
 - Makito - http://www.keep.moe/
 - qwe7002 - https://qwe7002.com/
@@ -30,7 +31,6 @@ date: 2020-03-15 13:38:08
 - 快刀切草莓君 - http://zrawberry.com/
 - MinaMiGo - http://blog.minamigo.moe/
 - Ryan Yin - https://thiscute.world/
-- ecl - http://ecl.me/
 
 # Previous Links
 

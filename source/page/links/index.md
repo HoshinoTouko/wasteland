@@ -32,10 +32,6 @@ date: 2020-03-15 13:38:08
 - MinaMiGo - http://blog.minamigo.moe/
 - Ryan Yin - https://thiscute.world/
 
-# Previous Links
-
-以下链接为旧网站曾经交换过链接的朋友们。征求同意后，我会将链接移至上方。我也擅自移动了一些我认为无需询问的朋友们。
-
 - 论野生技术＆二次元 - https://yooooo.us/
 - Tsez's Blog - https://blog.tse.moe/
 - YOMTAAA - http://yomtaaa.github.io/

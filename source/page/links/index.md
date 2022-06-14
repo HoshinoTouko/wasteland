@@ -30,6 +30,7 @@ date: 2020-03-15 13:38:08
 - 快刀切草莓君 - http://zrawberry.com/
 - MinaMiGo - http://blog.minamigo.moe/
 - Ryan Yin - https://thiscute.world/
+- ecl - http://ecl.me/
 
 # Previous Links
 
@@ -50,7 +51,6 @@ date: 2020-03-15 13:38:08
 - MiraiKuna - https://mos.moe/
 - Skylark Workshop - https://skylark-workshop.xyz/
 - Netrvin - https://blog.yuzu.im/
-- ecl - http://ecl.me/
 
 其他网址失效的、近三年没有更新的、没有反向链接的站点，可以在这里找到
 

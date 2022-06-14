@@ -27,11 +27,9 @@ date: 2020-03-15 13:38:08
 - DongSky - https://m1saka.moe/
 - 锅 - https://nabe.moe/
 - 鸡腿 - https://jitui.moe/
-- \_勤\_ - [https://博客.胡鼎原.中国/](https://博客.胡鼎原.中国/)
 - 快刀切草莓君 - http://zrawberry.com/
 - MinaMiGo - http://blog.minamigo.moe/
 - Ryan Yin - https://thiscute.world/
-
 - 论野生技术＆二次元 - https://yooooo.us/
 - Tsez's Blog - https://blog.tse.moe/
 - YOMTAAA - http://yomtaaa.github.io/
@@ -47,6 +45,10 @@ date: 2020-03-15 13:38:08
 - MiraiKuna - https://mos.moe/
 - Skylark Workshop - https://skylark-workshop.xyz/
 - Netrvin - https://blog.yuzu.im/
+
+# 网址失效
+
+- \_勤\_ - [https://博客.胡鼎原.中国/](https://博客.胡鼎原.中国/)
 
 其他网址失效的、近三年没有更新的、没有反向链接的站点，可以在这里找到
 

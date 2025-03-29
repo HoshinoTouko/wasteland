@@ -458,9 +458,9 @@
     
     <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
     
-    <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
-    
     <category term="NAS" scheme="https://wasteland.touko.moe/categories/NAS/"/>
+    
+    <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
     
     
     <category term="NAS" scheme="https://wasteland.touko.moe/tags/NAS/"/>
@@ -815,9 +815,9 @@
     
     <category term="Web" scheme="https://wasteland.touko.moe/categories/Web/"/>
     
-    <category term="Talk" scheme="https://wasteland.touko.moe/categories/Talk/"/>
-    
     <category term="Frontend" scheme="https://wasteland.touko.moe/categories/Web/Frontend/"/>
+    
+    <category term="Talk" scheme="https://wasteland.touko.moe/categories/Talk/"/>
     
     <category term="Blog" scheme="https://wasteland.touko.moe/categories/Blog/"/>
     

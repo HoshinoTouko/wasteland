@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="选择 UNRAID在组装完 NAS 之后，下一步就是考虑如何将 NAS 的硬件性能高效利用。经过对群晖、UNRAID、FreeNAS 等 NAS 操作系统的调研后，我决定使用 UNRAID 作为我的 NAS OS。一是因为 UNRAID 对 Docker 和 VM 的支持较好，有庞大的社区支持；二是因为 UNRAID 的阵列功能很好用，自带的软 RAID 功能可以只用一张 Parity Check">
@@ -293,14 +293,14 @@
 
       
         <h1 id="选择-UNRAID"><a href="#选择-UNRAID" class="headerlink" title="选择 UNRAID"></a>选择 UNRAID</h1><p>在组装完 NAS 之后，下一步就是考虑如何将 NAS 的硬件性能高效利用。经过对群晖、UNRAID、FreeNAS 等 NAS 操作系统的调研后，我决定使用 UNRAID 作为我的 NAS OS。一是因为 UNRAID 对 Docker 和 VM 的支持较好，有庞大的社区支持；二是因为 UNRAID 的阵列功能很好用，自带的软 RAID 功能可以只用一张 Parity Check 盘完成其他所有盘的校验；三是因为 UNRAID 的 Web UI （相对）比较符合我的审美。话不多说，立刻开始破解版 UNRAID 安装。</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>UNRAID 的官网是 <a href="https://unraid.net/" target="_blank" rel="noopener">https://unraid.net/</a> ，价格表在 <a href="https://unraid.net/pricing" target="_blank" rel="noopener">https://unraid.net/pricing</a> 。从价格上看，Basic 订阅只要 60 刀，还是比较合适的。由于我第一次使用这个操作系统，所以先从破解版入手。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>UNRAID 的官网是 <a target="_blank" rel="noopener" href="https://unraid.net/">https://unraid.net/</a> ，价格表在 <a target="_blank" rel="noopener" href="https://unraid.net/pricing">https://unraid.net/pricing</a> 。从价格上看，Basic 订阅只要 60 刀，还是比较合适的。由于我第一次使用这个操作系统，所以先从破解版入手。</p>
 <img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/unraid-pricing.png" class="" title="UNRAID 价格表">
 
-<p>安装 UNRAID 需要准备一个 U 盘作为启动盘和系统盘，并且之后整个系统就安装在这块 U 盘中。这个 U 盘在以后使用 UNRAID 时，需要一直插在 USB 口上。不能使用 SD 卡 + 读卡器，因为可能获取不到正确的设备 ID。 UNRAID 系统根据闪存的设备 ID 分发密钥。在安装之前，需要将闪存格式化成 FAT32 格式。如果 Windows 不支持格式化为 FAT32 ，可以使用 <a href="http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm" target="_blank" rel="noopener">Windows GUI version of <em>fat32format</em></a> 将闪存格式化为 FAT32 格式。<strong>切记，在进行格式化操作之前，务必做好数据备份。</strong></p>
-<p>截至目前，最新的破解版是 <code>UNRAID 6.8.2</code> ，下载地址在 <a href="http://www.hopol.cn/2020/06/1675/" target="_blank" rel="noopener">http://www.hopol.cn/2020/06/1675/</a> 。这个安装包自带密钥计算工具，可以使用 <a href="https://koolshare.cn/thread-181253-1-1.html" target="_blank" rel="noopener">https://koolshare.cn/thread-181253-1-1.html</a> 提供的一键安装工具进行安装；或者按照破解版下载页面的安装方法设置 UNRAID U 盘 启动，然后再回到 Windows 进行破解密钥生成。</p>
+<p>安装 UNRAID 需要准备一个 U 盘作为启动盘和系统盘，并且之后整个系统就安装在这块 U 盘中。这个 U 盘在以后使用 UNRAID 时，需要一直插在 USB 口上。不能使用 SD 卡 + 读卡器，因为可能获取不到正确的设备 ID。 UNRAID 系统根据闪存的设备 ID 分发密钥。在安装之前，需要将闪存格式化成 FAT32 格式。如果 Windows 不支持格式化为 FAT32 ，可以使用 <a target="_blank" rel="noopener" href="http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm">Windows GUI version of <em>fat32format</em></a> 将闪存格式化为 FAT32 格式。<strong>切记，在进行格式化操作之前，务必做好数据备份。</strong></p>
+<p>截至目前，最新的破解版是 <code>UNRAID 6.8.2</code> ，下载地址在 <a target="_blank" rel="noopener" href="http://www.hopol.cn/2020/06/1675/">http://www.hopol.cn/2020/06/1675/</a> 。这个安装包自带密钥计算工具，可以使用 <a target="_blank" rel="noopener" href="https://koolshare.cn/thread-181253-1-1.html">https://koolshare.cn/thread-181253-1-1.html</a> 提供的一键安装工具进行安装；或者按照破解版下载页面的安装方法设置 UNRAID U 盘 启动，然后再回到 Windows 进行破解密钥生成。</p>
 <h1 id="初期配置"><a href="#初期配置" class="headerlink" title="初期配置"></a>初期配置</h1><h2 id="点亮"><a href="#点亮" class="headerlink" title="点亮"></a>点亮</h2><p>先将显示器接上运行 UNRAID 的机器。在开机启动时，狂按 Del 进入 BIOS 配置页面，修改默认主板设置。我先修改默认启动引导至装有 UNRAID 系统的 U 盘上，然后打开了 CPU 的虚拟化功能（VT-d），F10 保存重启。</p>
 <p>启动选项选择 <code>Unraid OS (Headless)</code> 。如果正常启动，在命令行可以看到 UNRAID 被分配到的 IP 地址。通过 Web 访问即可。默认账户为 root ，无密码。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="配置网络"><a href="#配置网络" class="headerlink" title="配置网络"></a>配置网络</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/unraid-network-settings.png" class="" title="UNRAID 静态 IP 配置">
 
@@ -316,7 +316,7 @@
 <li><strong>Yes</strong> 只要缓存上的可用空间大于设置的最小可用空间，总是将新文件写入缓存，反之就直接把文件写入数据盘。<br><strong>mover*</strong> 运行时，如果文件没有被占用，它就会尝试回写。哪个阵列驱动器将得到文件是由分配方法和共享的Split级别设置的组合控制的。这是一种传统的、缓存工作的方式。</li>
 <li><strong>No</strong> 直接将数据写入数据盘。<br><strong>mover*</strong> 运行时，即使缓存中有理论上属于对应共享文件夹的数据，也不会写回。这种共享方式不使用缓存。</li>
 <li><strong>Only</strong> 直接向缓存中写入新文件。如果缓存上的空闲空间低于设置的最小剩余空间，将抛出空间不足错误并写入失败。<br><strong>mover*</strong> 运行时，即使数据盘中有逻辑上属于这个共享的文件，它也不会对这个共享的文件采取任何行动。这意味着这个共享文件夹只存放于缓存，并不存放于数据盘。</li>
-<li><strong>Prefer</strong> 只要缓存上的可用空间大于设置的最小可用空间，总是将新文件写入缓存，反之就直接把文件写入数据盘。<br><strong>mover*</strong> 运行时，只要缓存上的可用空间大于设置的缓存最小可用空间，它就会尝试将数据盘上对应的共享文件夹移回缓存。<br>这样做的好处是让 VM / Docker 和存放于 appdata 中的配置文件能够更快地被读取和修改，这将大大加速配置文件的读写速度。特别是在需要校验盘进行奇偶校验计算时。即使暂时没有缓存，这个设置也适用。<br>这种策略比较特殊。它意味着 UNRAID 在这个文件共享下更<strong>“倾向于”</strong>使用缓存，但是没有缓存也不会影响实际使用。</li>
+<li><strong>Prefer</strong> 只要缓存上的可用空间大于设置的最小可用空间，总是将新文件写入缓存，反之就直接把文件写入数据盘。<br><strong>mover*</strong> 运行时，只要缓存上的可用空间大于设置的缓存最小可用空间，它就会尝试将数据盘上对应的共享文件夹移回缓存。<br>这样做的好处是让 VM &#x2F; Docker 和存放于 appdata 中的配置文件能够更快地被读取和修改，这将大大加速配置文件的读写速度。特别是在需要校验盘进行奇偶校验计算时。即使暂时没有缓存，这个设置也适用。<br>这种策略比较特殊。它意味着 UNRAID 在这个文件共享下更__“倾向于”__使用缓存，但是没有缓存也不会影响实际使用。</li>
 </ul>
 <p>* 此处的 Mover 指的是根据缓存设置，在数据盘和缓存盘之间同步数据的工具，由 UNRAID 默认提供。</p>
 <h3 id="缓存性能测试"><a href="#缓存性能测试" class="headerlink" title="缓存性能测试"></a>缓存性能测试</h3><p>在并不算太好的 HDD 和 SSD 组成的阵列下，我进行了一系列缓存性能的测试。由于电脑和路由器只有千兆网口，速度并不能达到原有 SSD 的读写水平。</p>
@@ -330,7 +330,7 @@
 <p>在机器上直接对硬盘做读写速度测试，可以得到以下结果。从理论上说，如果能够升级万兆内网，读写性能应该可以到达理论速度。下图的测试中，sdb，sdc 是机械硬盘，sdd 是固态硬盘。</p>
 <img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/all-disk-test.png" class="" title="所有硬盘设备读写测试">
 
-<h1 id="常用插件安装"><a href="#常用插件安装" class="headerlink" title="常用插件安装"></a>常用插件安装</h1><h2 id="官方-Community-Apps-支持"><a href="#官方-Community-Apps-支持" class="headerlink" title="官方 Community Apps 支持"></a>官方 Community Apps 支持</h2><p>UNRAID 社区已经发展到一定的规模了，社区中不少人会制作长期适用于 UNRAID 的官方 Apps。他们有的是封装好 UNRAID 模板的 Docker 容器，有的可以给 UNRAID 增加功能。进入 Plugins - Install Plugin，输入 <a href="https://raw.githubusercontent.com/Squidly271/community.applications/master/plugins/community.applications.plg" target="_blank" rel="noopener">https://raw.githubusercontent.com/Squidly271/community.applications/master/plugins/community.applications.plg</a> 安装。安装完成后刷新 Web 页面，就可以看到上方菜单多出了一个 Apps 栏。在 Apps 中，就能安装很多 NAS 常用的工具了。</p>
+<h1 id="常用插件安装"><a href="#常用插件安装" class="headerlink" title="常用插件安装"></a>常用插件安装</h1><h2 id="官方-Community-Apps-支持"><a href="#官方-Community-Apps-支持" class="headerlink" title="官方 Community Apps 支持"></a>官方 Community Apps 支持</h2><p>UNRAID 社区已经发展到一定的规模了，社区中不少人会制作长期适用于 UNRAID 的官方 Apps。他们有的是封装好 UNRAID 模板的 Docker 容器，有的可以给 UNRAID 增加功能。进入 Plugins - Install Plugin，输入 <a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/Squidly271/community.applications/master/plugins/community.applications.plg">https://raw.githubusercontent.com/Squidly271/community.applications/master/plugins/community.applications.plg</a> 安装。安装完成后刷新 Web 页面，就可以看到上方菜单多出了一个 Apps 栏。在 Apps 中，就能安装很多 NAS 常用的工具了。</p>
 <h2 id="Nerd-Tools"><a href="#Nerd-Tools" class="headerlink" title="Nerd Tools"></a>Nerd Tools</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/NerdPack_GUI.png" class="" title="NerdPack GUI">
 
 <p>可以使用官方 Apps 后，首先我会考虑安装的是 <strong>NerdPack GUI</strong> 。这是一个可以安装额外软件（大多是 CLI 软件）的工具箱，可以理解为一个简化了的 <em>apt 源</em> ，源里的大部分程序包是 Linux 控制台操作中常用的那部分。点击 <code>Plugins</code> - <code>Nerd Tools</code> ，点击左下角 Check Update ，就可以选择安装对应软件包。这对日常使用，特别是习惯于操作常见 Linux 发行版的用户来说非常方便。</p>
@@ -338,13 +338,13 @@
 
 <h2 id="Unassigned-Devices"><a href="#Unassigned-Devices" class="headerlink" title="Unassigned Devices"></a>Unassigned Devices</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/Unassigned_Devices.png" class="" title="Unassigned Devices">
 
-<p>这是一个支持挂载其他 NFS / SMB 虚拟盘作为数据盘的工具，在 <code>APPS</code> 里可以安装。具体使用场景虽然我还没用上，但是可以考虑一个虚拟场景：</p>
-<p>我有一块群晖数据盘，不想搬迁数据。我可以通过直通将数据盘挂载在 UNRAID 虚拟出来的黑群晖上，然后黑群晖开 SMB / NFS 给 UNRAID 使用。或者局域网中的其他 BT 下载机的下载盘，挂载在 UNRAID 下，用于 PLEX 或者 Jellyfin 播放。</p>
+<p>这是一个支持挂载其他 NFS &#x2F; SMB 虚拟盘作为数据盘的工具，在 <code>APPS</code> 里可以安装。具体使用场景虽然我还没用上，但是可以考虑一个虚拟场景：</p>
+<p>我有一块群晖数据盘，不想搬迁数据。我可以通过直通将数据盘挂载在 UNRAID 虚拟出来的黑群晖上，然后黑群晖开 SMB &#x2F; NFS 给 UNRAID 使用。或者局域网中的其他 BT 下载机的下载盘，挂载在 UNRAID 下，用于 PLEX 或者 Jellyfin 播放。</p>
 <h2 id="Dynamix-S3-Sleep"><a href="#Dynamix-S3-Sleep" class="headerlink" title="Dynamix S3 Sleep"></a>Dynamix S3 Sleep</h2><img src="/blog/2020/06/home-network-2-enjoy-with-UNRAID/dynamix-s3-sleep.png" class="" title="Dynamix S3 Sleep">
 
 <p>这是一个可以自动判断硬盘是否在工作，在特定时间让 UNRAID 服务器休眠的工具，在 <code>APPS</code> 里可以安装。但是由于后来我安装了软路由，所以就没有继续开启睡眠功能。有需要的时候这个工具还是很方便的，可以定时关机，降低功耗和噪音。</p>
-<h1 id="其他调整"><a href="#其他调整" class="headerlink" title="其他调整"></a>其他调整</h1><h2 id="更换-Docker-镜像"><a href="#更换-Docker-镜像" class="headerlink" title="更换 Docker 镜像"></a>更换 Docker 镜像</h2><p>由于 UNRAID 对 Docker 生态有较大的依赖，很多 Docker 应用都可以和 UNRAID 协同工作。需要更换 Docker 国内镜像，以达到较好的使用体验。这里推荐阿里云的 Docker 镜像加速器，访问 <a href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors" target="_blank" rel="noopener">https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors</a> 就可以申请。拿到自己的 Docker 镜像加速器地址后，在 Web Terminal 中执行以下命令对 Docker 源进行更换。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-<span class="string">'EOF'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"registry-mirrors"</span>: [<span class="string">"https://&#123;YOUR_DOCKER_MIRROR_ID&#125;.mirror.aliyuncs.com"</span>]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h1 id="其他调整"><a href="#其他调整" class="headerlink" title="其他调整"></a>其他调整</h1><h2 id="更换-Docker-镜像"><a href="#更换-Docker-镜像" class="headerlink" title="更换 Docker 镜像"></a>更换 Docker 镜像</h2><p>由于 UNRAID 对 Docker 生态有较大的依赖，很多 Docker 应用都可以和 UNRAID 协同工作。需要更换 Docker 国内镜像，以达到较好的使用体验。这里推荐阿里云的 Docker 镜像加速器，访问 <a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors">https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors</a> 就可以申请。拿到自己的 Docker 镜像加速器地址后，在 Web Terminal 中执行以下命令对 Docker 源进行更换。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /etc/docker</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/docker/daemon.json &lt;&lt;-<span class="string">&#x27;EOF&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://&#123;YOUR_DOCKER_MIRROR_ID&#125;.mirror.aliyuncs.com&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 
 <p>为了在每次重启时自动应用配置，建议将其写入 <code>\flash\config\go</code> 中。其中 <code>\flash</code> 指装有 UNRAID 的 U 盘根目录。</p>
 <h2 id="允许-Docker-虚拟机访问宿主机"><a href="#允许-Docker-虚拟机访问宿主机" class="headerlink" title="允许 Docker 虚拟机访问宿主机"></a>允许 Docker 虚拟机访问宿主机</h2><p>由于 Docker 的网络隔离，有时候我想进行一些特殊的操作就比较困难。比如我将所有的服务用一个 NginX 反代，但是使用 <code>Host</code> 或者 <code>Bridge</code> 方式暴露端口在宿主机上的服务就无法被反代。因此，我需要手工修改 UNRAID 的 Docker 设置。进入 <code>Settings</code> - <code>Docker</code> ，点击右上方的 <code>Basic View</code> ，切换成 <code>Advanced View</code> ，然后修改对应选项即可。这么做存在一定风险。我认真检查防火墙，保证外网的访问能够安全地被处理后，才进行这个操作。</p>
@@ -354,16 +354,16 @@
 <hr>
 <p>以上，我的 UNRAID 就做好作为一台 NAS 进行工作的准备了。下一章我会继续介绍我安装的应用程序和配置，合理发挥 NAS 的功能。</p>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a href="https://unraid.net/" target="_blank" rel="noopener">https://unraid.net/</a></li>
-<li><a href="https://forums.unraid.net/topic/38582-plug-in-community-applications/" target="_blank" rel="noopener">https://forums.unraid.net/topic/38582-plug-in-community-applications/</a></li>
-<li><a href="https://wiki.unraid.net/UnRAID_6/Getting_Started" target="_blank" rel="noopener">https://wiki.unraid.net/UnRAID_6/Getting_Started</a></li>
-<li><a href="https://wiki.unraid.net/UnRAID_6/Storage_Management" target="_blank" rel="noopener">https://wiki.unraid.net/UnRAID_6/Storage_Management</a></li>
-<li><a href="https://wiki.unraid.net/Check_Harddrive_Speed" target="_blank" rel="noopener">https://wiki.unraid.net/Check_Harddrive_Speed</a></li>
-<li><a href="https://forums.unraid.net/topic/38582-plug-in-community-applications/" target="_blank" rel="noopener">https://forums.unraid.net/topic/38582-plug-in-community-applications/</a></li>
-<li><a href="https://forums.unraid.net/topic/35866-unraid-6-nerdpack-cli-tools-iftop-iotop-screen-kbd-etc/" target="_blank" rel="noopener">https://forums.unraid.net/topic/35866-unraid-6-nerdpack-cli-tools-iftop-iotop-screen-kbd-etc/</a></li>
-<li><a href="https://forums.unraid.net/topic/77390-cannot-access-dockers-using-custombr0/" target="_blank" rel="noopener">https://forums.unraid.net/topic/77390-cannot-access-dockers-using-custombr0/</a></li>
+<li><a target="_blank" rel="noopener" href="https://unraid.net/">https://unraid.net/</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.unraid.net/topic/38582-plug-in-community-applications/">https://forums.unraid.net/topic/38582-plug-in-community-applications/</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.unraid.net/UnRAID_6/Getting_Started">https://wiki.unraid.net/UnRAID_6/Getting_Started</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.unraid.net/UnRAID_6/Storage_Management">https://wiki.unraid.net/UnRAID_6/Storage_Management</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.unraid.net/Check_Harddrive_Speed">https://wiki.unraid.net/Check_Harddrive_Speed</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.unraid.net/topic/38582-plug-in-community-applications/">https://forums.unraid.net/topic/38582-plug-in-community-applications/</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.unraid.net/topic/35866-unraid-6-nerdpack-cli-tools-iftop-iotop-screen-kbd-etc/">https://forums.unraid.net/topic/35866-unraid-6-nerdpack-cli-tools-iftop-iotop-screen-kbd-etc/</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.unraid.net/topic/77390-cannot-access-dockers-using-custombr0/">https://forums.unraid.net/topic/77390-cannot-access-dockers-using-custombr0/</a></li>
 </ul>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-2-enjoy-with-UNRAID/">https://wasteland.touko.moe//blog/2020/06/home-network-2-enjoy-with-UNRAID/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-2-enjoy-with-UNRAID/">https://wasteland.touko.moe//blog/2020/06/home-network-2-enjoy-with-UNRAID/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -443,13 +443,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -458,6 +455,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -507,7 +507,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#选择-UNRAID"><span class="nav-number">1.</span> <span class="nav-text">选择 UNRAID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初期配置"><span class="nav-number">3.</span> <span class="nav-text">初期配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#点亮"><span class="nav-number">3.1.</span> <span class="nav-text">点亮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置网络"><span class="nav-number">3.2.</span> <span class="nav-text">配置网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置阵列"><span class="nav-number">3.3.</span> <span class="nav-text">配置阵列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享文件夹的缓存方式"><span class="nav-number">3.3.1.</span> <span class="nav-text">共享文件夹的缓存方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存性能测试"><span class="nav-number">3.3.2.</span> <span class="nav-text">缓存性能测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用插件安装"><span class="nav-number">4.</span> <span class="nav-text">常用插件安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#官方-Community-Apps-支持"><span class="nav-number">4.1.</span> <span class="nav-text">官方 Community Apps 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nerd-Tools"><span class="nav-number">4.2.</span> <span class="nav-text">Nerd Tools</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unassigned-Devices"><span class="nav-number">4.3.</span> <span class="nav-text">Unassigned Devices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamix-S3-Sleep"><span class="nav-number">4.4.</span> <span class="nav-text">Dynamix S3 Sleep</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他调整"><span class="nav-number">5.</span> <span class="nav-text">其他调整</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#更换-Docker-镜像"><span class="nav-number">5.1.</span> <span class="nav-text">更换 Docker 镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#允许-Docker-虚拟机访问宿主机"><span class="nav-number">5.2.</span> <span class="nav-text">允许 Docker 虚拟机访问宿主机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9-UNRAID"><span class="nav-number">1.</span> <span class="nav-text">选择 UNRAID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9D%E6%9C%9F%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">初期配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%B9%E4%BA%AE"><span class="nav-number">3.1.</span> <span class="nav-text">点亮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%BD%91%E7%BB%9C"><span class="nav-number">3.2.</span> <span class="nav-text">配置网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%98%B5%E5%88%97"><span class="nav-number">3.3.</span> <span class="nav-text">配置阵列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%A4%B9%E7%9A%84%E7%BC%93%E5%AD%98%E6%96%B9%E5%BC%8F"><span class="nav-number">3.3.1.</span> <span class="nav-text">共享文件夹的缓存方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">3.3.2.</span> <span class="nav-text">缓存性能测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">常用插件安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%98%E6%96%B9-Community-Apps-%E6%94%AF%E6%8C%81"><span class="nav-number">4.1.</span> <span class="nav-text">官方 Community Apps 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nerd-Tools"><span class="nav-number">4.2.</span> <span class="nav-text">Nerd Tools</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unassigned-Devices"><span class="nav-number">4.3.</span> <span class="nav-text">Unassigned Devices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamix-S3-Sleep"><span class="nav-number">4.4.</span> <span class="nav-text">Dynamix S3 Sleep</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%B0%83%E6%95%B4"><span class="nav-number">5.</span> <span class="nav-text">其他调整</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2-Docker-%E9%95%9C%E5%83%8F"><span class="nav-number">5.1.</span> <span class="nav-text">更换 Docker 镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%81%E8%AE%B8-Docker-%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BF%E9%97%AE%E5%AE%BF%E4%B8%BB%E6%9C%BA"><span class="nav-number">5.2.</span> <span class="nav-text">允许 Docker 虚拟机访问宿主机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -601,7 +601,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -764,26 +764,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : 'd2fc4d513f8d815928b04d397feb8de9',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/06/home-network-2-enjoy-with-UNRAID/";
@@ -803,6 +783,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'd2fc4d513f8d815928b04d397feb8de9',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

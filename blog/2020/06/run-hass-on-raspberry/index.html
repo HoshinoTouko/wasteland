@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="前言捡了块树莓派临时被叫回学校办毕业手续，想起当年（五年前）我在淘宝买了块树莓派 2B，给家里做了个通过 HTTP 代理自动分流国内外流量的工具。那块树莓派被我带到了学校，放着吃灰三年多了。这次回学校，就顺手把这块树莓派带了回来。 最近优化了家里的网络，大学四年也断断续续买了不少米家的 IoT 设备。米家设备能够原生支持 HomeKit 也应该只是最近的事，我手上只有一个台灯、三个智能插座能够加入">
@@ -279,36 +279,36 @@
 <h2 id="桥接平台的选择"><a href="#桥接平台的选择" class="headerlink" title="桥接平台的选择"></a>桥接平台的选择</h2><p>通过资料调查和实际测试，我最终选择了 Home Assistant 作为接入智能家居设备的平台。同类解决方案还有很多，比如同样提供智能家居接入方案的 Home Bridge，ioBroker 等。我同时尝试了 Home Bridge，但是由于米家相关插件文档模糊，接入后无法正常连接挂载在网关的设备，最终作罢。</p>
 <p>其实 Home Assistant 的安装也并不容易。安装过程存在各种各样的问题和 bug，我尝试了非常多种方案才成功运行。</p>
 <h1 id="树莓派的初步配置"><a href="#树莓派的初步配置" class="headerlink" title="树莓派的初步配置"></a>树莓派的初步配置</h1><h2 id="SD-卡安装树莓派系统"><a href="#SD-卡安装树莓派系统" class="headerlink" title="SD 卡安装树莓派系统"></a>SD 卡安装树莓派系统</h2><p>我掏出了之前留在机器上的传家宝 TF 卡 三星 EVO+ 32G，不料卡在经过几次刷写后，自动写保护了。于是我又从 NS 里掏出了从 tb 20 RMB 买的朗科 32G TF 卡。现在 TF 卡的价格真的越来越便宜了，我打算屯一堆，免得弄坏了没有替换卡。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <img src="/blog/2020/06/run-hass-on-raspberry/1.disk-management-on-windows.png" class="" title="Windows Disk Management">
 
-<p>打开 Windows 自带的 Disk Management，将原有 SD 卡分区删除，创建一个大的 FAT32 分区。这一步也可以用树莓派官方自带的 <code>Raspberry Pi Imager</code> 格盘。这个软件可以在 <a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/</a> 下载到，推荐用这个软件烧写系统盘。</p>
+<p>打开 Windows 自带的 Disk Management，将原有 SD 卡分区删除，创建一个大的 FAT32 分区。这一步也可以用树莓派官方自带的 <code>Raspberry Pi Imager</code> 格盘。这个软件可以在 <a target="_blank" rel="noopener" href="https://www.raspberrypi.org/downloads/">https://www.raspberrypi.org/downloads/</a> 下载到，推荐用这个软件烧写系统盘。</p>
 <img src="/blog/2020/06/run-hass-on-raspberry/2.raspi-imager.png" class="" title="Raspberry Pi Imager">
 
-<p>由于是树莓派 2B，性能一般，所以需要尽可能地压榨硬件资源。在系统选择页面 <a href="https://www.raspberrypi.org/downloads/raspberry-pi-os/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/raspberry-pi-os/</a> 中，我选择了不带图形界面的 <code>Raspberry Pi OS (32-bit) Lite</code>。下载并解压，然后用官方烧写工具烧写系统镜像。这张 TF 卡的速度意外的很快，在 USB 3.0 读卡器下，大约有80-90MB/S 的写入速度。</p>
+<p>由于是树莓派 2B，性能一般，所以需要尽可能地压榨硬件资源。在系统选择页面 <a target="_blank" rel="noopener" href="https://www.raspberrypi.org/downloads/raspberry-pi-os/">https://www.raspberrypi.org/downloads/raspberry-pi-os/</a> 中，我选择了不带图形界面的 <code>Raspberry Pi OS (32-bit) Lite</code>。下载并解压，然后用官方烧写工具烧写系统镜像。这张 TF 卡的速度意外的很快，在 USB 3.0 读卡器下，大约有80-90MB&#x2F;S 的写入速度。</p>
 <img src="/blog/2020/06/run-hass-on-raspberry/3.raspi-imager-write.png" class="" title="Raspberry Pi Imager Write OS">
 
 <img src="/blog/2020/06/run-hass-on-raspberry/4.raspi-imager-write-successful.png" class="" title="Raspberry Pi Imager Write Successful">
 
 <p>现在的树莓派官方系统是默认不开启 SSH 功能的。开启 SSH 功能的方法除了通过外接显示器在命令行输入 <code>sudo raspi-config</code> 外，也可以直接在烧写后的 TF 卡根目录下创建命名为 <code>SSH</code> 的空文件，以激活 SSH 功能。烧写完成后，由于软件会自动弹出对应设备，需要重新插拔一下读卡器，并创建对应空文件。</p>
 <p>我预先在 DHCP 服务器上设置了分配的静态 IP。如果不清楚树莓派被分配到的 IP，可以在路由器中 DHCP 租约下找到被分配的 IP 地址。建议要在路由器上做好 IP 分配。</p>
-<h2 id="镜像源"><a href="#镜像源" class="headerlink" title="镜像源"></a>镜像源</h2><p>官方系统默认的账户和密码是 pi / raspberry。登入 SSH 后，更换清华的镜像以提高 apt 更新速度。以 Debian 10（buster）为例</p>
+<h2 id="镜像源"><a href="#镜像源" class="headerlink" title="镜像源"></a>镜像源</h2><p>官方系统默认的账户和密码是 pi &#x2F; raspberry。登入 SSH 后，更换清华的镜像以提高 apt 更新速度。以 Debian 10（buster）为例</p>
 <blockquote>
-<h1 id="编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代："><a href="#编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代：" class="headerlink" title="编辑 /etc/apt/sources.list 文件，删除原文件所有内容，用以下内容取代："></a>编辑 <code>/etc/apt/sources.list</code> 文件，删除原文件所有内容，用以下内容取代：</h1><p>deb <a href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a> buster main non-free contrib rpi<br>deb-src <a href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a> buster main non-free contrib rpi</p>
-<h1 id="编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代："><a href="#编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代：" class="headerlink" title="编辑 /etc/apt/sources.list.d/raspi.list 文件，删除原文件所有内容，用以下内容取代："></a>编辑 <code>/etc/apt/sources.list.d/raspi.list</code> 文件，删除原文件所有内容，用以下内容取代：</h1><p>deb <a href="http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/</a> buster main ui</p>
+<h1 id="编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代："><a href="#编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代：" class="headerlink" title="编辑 /etc/apt/sources.list 文件，删除原文件所有内容，用以下内容取代："></a>编辑 <code>/etc/apt/sources.list</code> 文件，删除原文件所有内容，用以下内容取代：</h1><p>deb <a target="_blank" rel="noopener" href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a> buster main non-free contrib rpi<br>deb-src <a target="_blank" rel="noopener" href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a> buster main non-free contrib rpi</p>
+<h1 id="编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代："><a href="#编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代：" class="headerlink" title="编辑 /etc/apt/sources.list.d/raspi.list 文件，删除原文件所有内容，用以下内容取代："></a>编辑 <code>/etc/apt/sources.list.d/raspi.list</code> 文件，删除原文件所有内容，用以下内容取代：</h1><p>deb <a target="_blank" rel="noopener" href="http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/">http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/</a> buster main ui</p>
 </blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt upgrade</span><br></pre></td></tr></table></figure>
 
 <h1 id="安装-Home-Assistant"><a href="#安装-Home-Assistant" class="headerlink" title="安装 Home Assistant"></a>安装 Home Assistant</h1><h2 id="Home-Assistant，Hass-和-Hassbian-的关系"><a href="#Home-Assistant，Hass-和-Hassbian-的关系" class="headerlink" title="Home Assistant，Hass 和 Hassbian 的关系"></a>Home Assistant，Hass 和 Hassbian 的关系</h2><p>这三者之间的关系把我绕进去了，我也是在经过大量搜索才明白了他们到底是什么。这个统一管理的程序叫 <strong>Home Assistant</strong>，它曾经叫 <strong>Hass.io</strong>。 <strong>Hassbian</strong> 是一个由官方封装好的，可以开箱即用运行 Home Assistant 的系统，且仅能运行 Home Assistant 系统，命名应该是参考了 Raspbian ，并且是基于其构建的。</p>
 <h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>因为我们使用的是基于 Python3 运行的 Home Assistant，所以要安装 Py3 相关的依赖。同时，为了避免对运行的其他程序的影响，更方便维护，使用 python venv 作为虚拟环境运行程序。由于我在上海，所以我更换了交大的 pypi 镜像。也可以考虑清华镜像或科大镜像。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -y python3 python3-dev python3-venv python3-pip libffi-dev libssl-dev autoconf</span><br><span class="line">sudo apt install -y libavahi-compat-libdnssd-dev</span><br><span class="line">sudo pip3 install -i https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple pip -U</span><br><span class="line">sudo pip3 config <span class="built_in">set</span> global.index-url https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple</span><br><span class="line"></span><br><span class="line"><span class="comment"># Tsinghua tuna pypi</span></span><br><span class="line"><span class="comment"># sudo pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U</span></span><br><span class="line"><span class="comment"># sudo pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y python3 python3-dev python3-venv python3-pip libffi-dev libssl-dev autoconf</span><br><span class="line"><span class="built_in">sudo</span> apt install -y libavahi-compat-libdnssd-dev</span><br><span class="line"><span class="built_in">sudo</span> pip3 install -i https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple pip -U</span><br><span class="line"><span class="built_in">sudo</span> pip3 config <span class="built_in">set</span> global.index-url https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple</span><br><span class="line"></span><br><span class="line"><span class="comment"># Tsinghua tuna pypi</span></span><br><span class="line"><span class="comment"># sudo pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U</span></span><br><span class="line"><span class="comment"># sudo pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="启动虚拟环境"><a href="#启动虚拟环境" class="headerlink" title="启动虚拟环境"></a>启动虚拟环境</h2><p>创建 homeassistant 用户并配置 python 虚拟环境用于运行程序</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd -rm homeassistant</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /srv</span><br><span class="line">sudo mkdir homeassistant</span><br><span class="line">sudo chown homeassistant:homeassistant homeassistant</span><br><span class="line"></span><br><span class="line">sudo su -s /bin/bash homeassistant</span><br><span class="line"><span class="built_in">cd</span> /srv/homeassistant</span><br><span class="line">python3 -m venv .</span><br><span class="line"><span class="built_in">source</span> bin/activate</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> useradd -<span class="built_in">rm</span> homeassistant</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /srv</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> homeassistant</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chown</span> homeassistant:homeassistant homeassistant</span><br><span class="line"></span><br><span class="line"><span class="built_in">sudo</span> su -s /bin/bash homeassistant</span><br><span class="line"><span class="built_in">cd</span> /srv/homeassistant</span><br><span class="line">python3 -m venv .</span><br><span class="line"><span class="built_in">source</span> bin/activate</span><br></pre></td></tr></table></figure>
 
 <p>后期重新进入虚拟环境的命令是</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo -u homeassistant -H -s</span><br><span class="line"><span class="built_in">source</span> /srv/homeassistant/bin/activate</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> -u homeassistant -H -s</span><br><span class="line"><span class="built_in">source</span> /srv/homeassistant/bin/activate</span><br></pre></td></tr></table></figure>
 
 <p>可以将 <code>sudo -u homeassistant -H -s &amp;&amp; cd ~</code> 写入 <code>/home/homeassistant/.bashrc</code> 尾部，这样当切换到 homeassistant 用户时，就会默认激活虚拟环境。</p>
 <h2 id="安装并运行-Home-Assistant"><a href="#安装并运行-Home-Assistant" class="headerlink" title="安装并运行 Home Assistant"></a>安装并运行 Home Assistant</h2><p>由于程序 BUG，在安装最新版本 Home Assistant 时，不会自动下载所有依赖。经过各种资料查找和尝试，我确认了可以先安装 0.100.3 版本并运行，再安装最新版本程序。</p>
@@ -321,31 +321,31 @@
 <p>时，代表程序已经可以正常运行了。此时 Ctrl + C 结束进程，然后安装最新版的 Home Assistant。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip3 install homeassistant -U</span><br><span class="line">hass</span><br></pre></td></tr></table></figure>
 
-<p>继续等待一段时间的依赖安装，然后进入 <a href="http://IP:8123" target="_blank" rel="noopener">http://IP:8123</a> 配置 Home Assistant。</p>
+<p>继续等待一段时间的依赖安装，然后进入 <a target="_blank" rel="noopener" href="http://ip:8123/">http://IP:8123</a> 配置 Home Assistant。</p>
 <img src="/blog/2020/06/run-hass-on-raspberry/5.install-finished.png" class="" title="Home Assistant 安装完成">
 
 <h1 id="配置-Home-Assistant"><a href="#配置-Home-Assistant" class="headerlink" title="配置 Home Assistant"></a>配置 Home Assistant</h1><h2 id="接入米家"><a href="#接入米家" class="headerlink" title="接入米家"></a>接入米家</h2><p>小米在米家 app 开放了部分绿米 IoT 设备的管理接口，允许第三方管理程序管理 IoT 智能设备。但是大多数米家设备并没有在明面上开放管理密钥。但是实际情况中，所有通过蓝牙或 Zigbee 协议连接的智能设备都需要配置网关，网关需要接入 WiFi，算上原本就通过 WiFi 接入的设备，所有米家设备都可以从内网进行访问。米家 app 也是通过内网 WiFi 进行控制的</p>
-<p>感谢开源社区和开发者的工作，封装好了各种插件，使我们能够直接配置获取到的 token 和设备地址，将 IoT 设备接入 Home Assistant。设备的接入方式可以在 <a href="https://www.home-assistant.io/integrations/#search/xiaomi" target="_blank" rel="noopener">https://www.home-assistant.io/integrations/#search/xiaomi</a> 页面找到，配置文件样例也包含在页面中。可以通过 Android 系统下 <code>米家 5.4.54</code> 版本程序泄露的日志获取 token ，参考 <a href="https://zhuanlan.zhihu.com/p/62681849" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/62681849</a></p>
+<p>感谢开源社区和开发者的工作，封装好了各种插件，使我们能够直接配置获取到的 token 和设备地址，将 IoT 设备接入 Home Assistant。设备的接入方式可以在 <a target="_blank" rel="noopener" href="https://www.home-assistant.io/integrations/#search/xiaomi">https://www.home-assistant.io/integrations/#search/xiaomi</a> 页面找到，配置文件样例也包含在页面中。可以通过 Android 系统下 <code>米家 5.4.54</code> 版本程序泄露的日志获取 token ，参考 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62681849">https://zhuanlan.zhihu.com/p/62681849</a></p>
 <img src="/blog/2020/06/run-hass-on-raspberry/6.hass-sample.png" class="" title="Home Assistant 界面">
 
 <p>根据各处的教程，我将我的设备接入了 Home Assistant。上面的截图就是界面平时的样子，可以手动更改界面排序。我打算在之后用一块独立的电子墨水屏显示状态。由于我刚组了 Mesh，重命名了 WiFi ，所以以前的部分设备掉线了，图中没有相关的设备信息</p>
-<p>支持的米家设备可以在 <a href="https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB" target="_blank" rel="noopener">https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB</a> 查询到，可以说基本覆盖全了</p>
-<h2 id="桥接至-Apple-HomeKit"><a href="#桥接至-Apple-HomeKit" class="headerlink" title="桥接至 Apple HomeKit"></a>桥接至 Apple HomeKit</h2><p>桥接至 HomeKit 的方法也很简单。在 /home/homeassistant/.homeassistant 下的 <code>configuration.yaml</code> 中新增一行</p>
+<p>支持的米家设备可以在 <a target="_blank" rel="noopener" href="https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB">https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB</a> 查询到，可以说基本覆盖全了</p>
+<h2 id="桥接至-Apple-HomeKit"><a href="#桥接至-Apple-HomeKit" class="headerlink" title="桥接至 Apple HomeKit"></a>桥接至 Apple HomeKit</h2><p>桥接至 HomeKit 的方法也很简单。在 &#x2F;home&#x2F;homeassistant&#x2F;.homeassistant 下的 <code>configuration.yaml</code> 中新增一行</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">homekit:</span></span><br></pre></td></tr></table></figure>
 
 <p>然后重启程序即可。重启后就可以在左下角的通知处看到接入 HomeKit 的消息。至于自动化、联动等操作，我打算全部通过 HomeKit 和米家管理。因此，这部分配置我没有继续研究下去</p>
 <img src="/blog/2020/06/run-hass-on-raspberry/7.homekit-code.png" class="" title="接入 HomeKit">
 
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a href="https://blog.csdn.net/fanmengmeng1/article/details/46366695" target="_blank" rel="noopener">https://blog.csdn.net/fanmengmeng1/article/details/46366695</a></li>
-<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/raspbian/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/help/raspbian/</a></li>
-<li><a href="https://www.home-assistant.io/docs/installation/raspberry-pi/" target="_blank" rel="noopener">https://www.home-assistant.io/docs/installation/raspberry-pi/</a></li>
-<li><a href="https://home-assistant.cc/installation/general/" target="_blank" rel="noopener">https://home-assistant.cc/installation/general/</a></li>
-<li><a href="https://github.com/home-assistant/core/issues/28361" target="_blank" rel="noopener">https://github.com/home-assistant/core/issues/28361</a></li>
-<li><a href="https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB" target="_blank" rel="noopener">https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/62681849" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/62681849</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/fanmengmeng1/article/details/46366695">https://blog.csdn.net/fanmengmeng1/article/details/46366695</a></li>
+<li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/raspbian/">https://mirrors.tuna.tsinghua.edu.cn/help/raspbian/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.home-assistant.io/docs/installation/raspberry-pi/">https://www.home-assistant.io/docs/installation/raspberry-pi/</a></li>
+<li><a target="_blank" rel="noopener" href="https://home-assistant.cc/installation/general/">https://home-assistant.cc/installation/general/</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/home-assistant/core/issues/28361">https://github.com/home-assistant/core/issues/28361</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB">https://www.jianguoyun.com/p/DbzdYzoQp5HMBhjZ4IkB</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62681849">https://zhuanlan.zhihu.com/p/62681849</a></li>
 </ul>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/run-hass-on-raspberry/">https://wasteland.touko.moe//blog/2020/06/run-hass-on-raspberry/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/run-hass-on-raspberry/">https://wasteland.touko.moe//blog/2020/06/run-hass-on-raspberry/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -422,13 +422,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -437,6 +434,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -486,7 +486,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#捡了块树莓派"><span class="nav-number">1.1.</span> <span class="nav-text">捡了块树莓派</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#桥接平台的选择"><span class="nav-number">1.2.</span> <span class="nav-text">桥接平台的选择</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#树莓派的初步配置"><span class="nav-number">2.</span> <span class="nav-text">树莓派的初步配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SD-卡安装树莓派系统"><span class="nav-number">2.1.</span> <span class="nav-text">SD 卡安装树莓派系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像源"><span class="nav-number">2.2.</span> <span class="nav-text">镜像源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑-etc-apt-sources-list-文件，删除原文件所有内容，用以下内容取代："><span class="nav-number">3.</span> <span class="nav-text">编辑 &#x2F;etc&#x2F;apt&#x2F;sources.list 文件，删除原文件所有内容，用以下内容取代：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑-etc-apt-sources-list-d-raspi-list-文件，删除原文件所有内容，用以下内容取代："><span class="nav-number">4.</span> <span class="nav-text">编辑 &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;raspi.list 文件，删除原文件所有内容，用以下内容取代：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-Home-Assistant"><span class="nav-number">5.</span> <span class="nav-text">安装 Home Assistant</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Home-Assistant，Hass-和-Hassbian-的关系"><span class="nav-number">5.1.</span> <span class="nav-text">Home Assistant，Hass 和 Hassbian 的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">5.2.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动虚拟环境"><span class="nav-number">5.3.</span> <span class="nav-text">启动虚拟环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装并运行-Home-Assistant"><span class="nav-number">5.4.</span> <span class="nav-text">安装并运行 Home Assistant</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置-Home-Assistant"><span class="nav-number">6.</span> <span class="nav-text">配置 Home Assistant</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#接入米家"><span class="nav-number">6.1.</span> <span class="nav-text">接入米家</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#桥接至-Apple-HomeKit"><span class="nav-number">6.2.</span> <span class="nav-text">桥接至 Apple HomeKit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">7.</span> <span class="nav-text">References</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8D%A1%E4%BA%86%E5%9D%97%E6%A0%91%E8%8E%93%E6%B4%BE"><span class="nav-number">1.1.</span> <span class="nav-text">捡了块树莓派</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%A5%E6%8E%A5%E5%B9%B3%E5%8F%B0%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">1.2.</span> <span class="nav-text">桥接平台的选择</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E7%9A%84%E5%88%9D%E6%AD%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">树莓派的初步配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SD-%E5%8D%A1%E5%AE%89%E8%A3%85%E6%A0%91%E8%8E%93%E6%B4%BE%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.</span> <span class="nav-text">SD 卡安装树莓派系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">2.2.</span> <span class="nav-text">镜像源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%BE%91-etc-apt-sources-list-%E6%96%87%E4%BB%B6%EF%BC%8C%E5%88%A0%E9%99%A4%E5%8E%9F%E6%96%87%E4%BB%B6%E6%89%80%E6%9C%89%E5%86%85%E5%AE%B9%EF%BC%8C%E7%94%A8%E4%BB%A5%E4%B8%8B%E5%86%85%E5%AE%B9%E5%8F%96%E4%BB%A3%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">编辑 &#x2F;etc&#x2F;apt&#x2F;sources.list 文件，删除原文件所有内容，用以下内容取代：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%BE%91-etc-apt-sources-list-d-raspi-list-%E6%96%87%E4%BB%B6%EF%BC%8C%E5%88%A0%E9%99%A4%E5%8E%9F%E6%96%87%E4%BB%B6%E6%89%80%E6%9C%89%E5%86%85%E5%AE%B9%EF%BC%8C%E7%94%A8%E4%BB%A5%E4%B8%8B%E5%86%85%E5%AE%B9%E5%8F%96%E4%BB%A3%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">编辑 &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;raspi.list 文件，删除原文件所有内容，用以下内容取代：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Home-Assistant"><span class="nav-number">5.</span> <span class="nav-text">安装 Home Assistant</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Home-Assistant%EF%BC%8CHass-%E5%92%8C-Hassbian-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">5.1.</span> <span class="nav-text">Home Assistant，Hass 和 Hassbian 的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">5.2.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">5.3.</span> <span class="nav-text">启动虚拟环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%B9%B6%E8%BF%90%E8%A1%8C-Home-Assistant"><span class="nav-number">5.4.</span> <span class="nav-text">安装并运行 Home Assistant</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-Home-Assistant"><span class="nav-number">6.</span> <span class="nav-text">配置 Home Assistant</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E5%85%A5%E7%B1%B3%E5%AE%B6"><span class="nav-number">6.1.</span> <span class="nav-text">接入米家</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%A5%E6%8E%A5%E8%87%B3-Apple-HomeKit"><span class="nav-number">6.2.</span> <span class="nav-text">桥接至 Apple HomeKit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">7.</span> <span class="nav-text">References</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -580,7 +580,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -743,26 +743,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : '0b42d7d632690dbc9d095b1cdd633f23',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/06/run-hass-on-raspberry/";
@@ -782,6 +762,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : '0b42d7d632690dbc9d095b1cdd633f23',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

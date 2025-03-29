@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="前言近期，拼拼凑凑从各类垃圾中组装出了一台轻便的 ITX 主机。主板是真白丢给我的，在他那不能工作的 华擎 H110M-ITX ；CPU 是我之前测试 QL3X 时点亮用的 Pentium G4500T 6 代低压 U；电源是 tb 买的韩国牌子 全汉代工 450W SFX ；机箱是 酷鱼 T40 ；内存是 影驰 镭 RGB 灯条 3200MHz 8G×2；硬盘是以前捡的 昂达 480G SSD，">
@@ -343,7 +343,7 @@
 </tbody></table>
 <p>其中内存可以不用这么好的，CPU 可以再上好一些的，显卡可以换矿卡（等矿难）。整机价格偏高，不过既然都是捡来的垃圾，那就无所谓性价比了。</p>
 <h2 id="上机图片"><a href="#上机图片" class="headerlink" title="上机图片"></a>上机图片</h2><p>酷鱼 T40 的设计十分紧凑，附带扶手，单手就能轻松提起。机器显卡为倒装，很有意思。由于是非模组电源，走线较为凌乱。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <img src="/blog/2020/11/my-first-hackintosh/1.case_graphic_card.JPG" class="" title="机箱 显卡面">
 
@@ -357,27 +357,27 @@
 <p>其次，需要准备 安装介质写入工具。我使用的是 <code>balenaEtcher</code> 作为写入工具。</p>
 <p>同时最重要的，带引导的黑苹果镜像。我主要从</p>
 <ul>
-<li>黑苹果星球 <a href="https://heipg.cn/" target="_blank" rel="noopener">https://heipg.cn/</a></li>
-<li>黑果小兵 <a href="https://blog.daliansky.net/" target="_blank" rel="noopener">https://blog.daliansky.net/</a></li>
+<li>黑苹果星球 <a target="_blank" rel="noopener" href="https://heipg.cn/">https://heipg.cn/</a></li>
+<li>黑果小兵 <a target="_blank" rel="noopener" href="https://blog.daliansky.net/">https://blog.daliansky.net/</a></li>
 </ul>
 <p>上下载镜像。</p>
-<p>这类镜像一般由几个分区组成。OpenCore / Clover 引导分区，白苹果分区，WePE 分区（用于应急）。需要安装黑苹果的电脑由 OpenCore 引导启动（Clover 底层也是 OpenCore 了），模拟 Mac 相关硬件，最后启动白苹果系统。</p>
+<p>这类镜像一般由几个分区组成。OpenCore &#x2F; Clover 引导分区，白苹果分区，WePE 分区（用于应急）。需要安装黑苹果的电脑由 OpenCore 引导启动（Clover 底层也是 OpenCore 了），模拟 Mac 相关硬件，最后启动白苹果系统。</p>
 <h2 id="镜像烧录"><a href="#镜像烧录" class="headerlink" title="镜像烧录"></a>镜像烧录</h2><p>此处以从 heipg.cn 上下载的最新版本的 <code>Catalina</code> 为例。下载镜像，并使用 <code>balenaEtcher</code> 烧录进 U 盘。</p>
 <img src="/blog/2020/11/my-first-hackintosh/6.etcher.png" class="" title="balenaEtcher 烧录">
 
 <p>确认 Etcher 烧录没有报错后，弹出 U 盘并重新插入，准备修改 EFI。</p>
-<h2 id="微调-EFI"><a href="#微调-EFI" class="headerlink" title="微调 EFI"></a>微调 EFI</h2><p>此类打包好的镜像文件一般集成了现有大多数常用驱动程序。我们首先要做的是点亮系统，再考虑其他硬件的运行情况。最开始安装黑苹果的过程中，我没有考虑 CPU 的影响，结果安装触发了 <code>PANIC</code>。经各种资料查阅，发现是由于我使用的奔腾 CPU 并不被苹果官方支持，需要微调 EFI，让 OC / Clover 欺骗苹果系统。</p>
+<h2 id="微调-EFI"><a href="#微调-EFI" class="headerlink" title="微调 EFI"></a>微调 EFI</h2><p>此类打包好的镜像文件一般集成了现有大多数常用驱动程序。我们首先要做的是点亮系统，再考虑其他硬件的运行情况。最开始安装黑苹果的过程中，我没有考虑 CPU 的影响，结果安装触发了 <code>PANIC</code>。经各种资料查阅，发现是由于我使用的奔腾 CPU 并不被苹果官方支持，需要微调 EFI，让 OC &#x2F; Clover 欺骗苹果系统。</p>
 <p>EFI 分区在 Windows 下不默认挂载。我们需要使用 <code>diskpart</code> 工具将其挂载至硬盘驱动器目录中。打开<strong>带管理员权限的</strong> <code>PowerShell (Admin)</code>，执行</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">diskpart</span><br></pre></td></tr></table></figure>
 
 <p>进入 diskpart 后，</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; list disk</span><br><span class="line"></span><br><span class="line">  Disk <span class="comment">###  Status         Size     Free     Dyn  Gpt</span></span><br><span class="line">  --------  -------------  -------  -------  ---  ---</span><br><span class="line">  Disk <span class="number">0</span>    Online          <span class="number">447</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">1</span>    Online          <span class="number">931</span> GB  <span class="number">1024</span> KB        *</span><br><span class="line">  Disk <span class="number">2</span>    Online          <span class="number">953</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">4</span>    Online          <span class="number">238</span> GB   <span class="number">225</span> GB        *</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; list disk</span><br><span class="line"></span><br><span class="line">  Disk <span class="comment">###  Status         Size     Free     Dyn  Gpt</span></span><br><span class="line">  <span class="literal">--------</span>  <span class="literal">-------------</span>  <span class="literal">-------</span>  <span class="literal">-------</span>  <span class="literal">---</span>  <span class="literal">---</span></span><br><span class="line">  Disk <span class="number">0</span>    Online          <span class="number">447</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">1</span>    Online          <span class="number">931</span> GB  <span class="number">1024</span> KB        *</span><br><span class="line">  Disk <span class="number">2</span>    Online          <span class="number">953</span> GB      <span class="number">0</span> B        *</span><br><span class="line">  Disk <span class="number">4</span>    Online          <span class="number">238</span> GB   <span class="number">225</span> GB        *</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>选择 U 盘对应的 Disk</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; select disk <span class="number">4</span></span><br><span class="line"></span><br><span class="line">Disk <span class="number">4</span> is now the selected disk.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; list partition</span><br><span class="line"></span><br><span class="line">  Partition <span class="comment">###  Type              Size     Offset</span></span><br><span class="line">  -------------  ----------------  -------  -------</span><br><span class="line">  Partition <span class="number">1</span>    System             <span class="number">200</span> MB    <span class="number">20</span> KB</span><br><span class="line">  Partition <span class="number">2</span>    Primary             <span class="number">12</span> GB   <span class="number">200</span> MB</span><br><span class="line">  Partition <span class="number">3</span>    Primary            <span class="number">380</span> MB    <span class="number">12</span> GB</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; <span class="built_in">select</span> disk <span class="number">4</span></span><br><span class="line"></span><br><span class="line">Disk <span class="number">4</span> is now the selected disk.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; list partition</span><br><span class="line"></span><br><span class="line">  Partition <span class="comment">###  Type              Size     Offset</span></span><br><span class="line">  <span class="literal">-------------</span>  <span class="literal">----------------</span>  <span class="literal">-------</span>  <span class="literal">-------</span></span><br><span class="line">  Partition <span class="number">1</span>    System             <span class="number">200</span> MB    <span class="number">20</span> KB</span><br><span class="line">  Partition <span class="number">2</span>    Primary             <span class="number">12</span> GB   <span class="number">200</span> MB</span><br><span class="line">  Partition <span class="number">3</span>    Primary            <span class="number">380</span> MB    <span class="number">12</span> GB</span><br></pre></td></tr></table></figure>
 
 <p>选择对应分区。EFI 分区一般为 <code>200MB</code>。最后进入分区并分配盘符</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; select partition <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Partition <span class="number">1</span> is now the selected partition.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; assign letter=H</span><br><span class="line"></span><br><span class="line">DiskPart successfully assigned the drive letter or mount point.</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DISKPART&gt; <span class="built_in">select</span> partition <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Partition <span class="number">1</span> is now the selected partition.</span><br><span class="line"></span><br><span class="line">DISKPART&gt; assign letter=<span class="built_in">H</span></span><br><span class="line"></span><br><span class="line">DiskPart successfully assigned the drive letter or <span class="built_in">mount</span> point.</span><br></pre></td></tr></table></figure>
 
 <p>运行后，EFI 分区可以在电脑中看到。修改 <code>/EFI/OC/config.plist</code> </p>
 <p>对于 Clover，修改 <code>KernelCPU</code> 附近的代码为</p>
@@ -387,13 +387,13 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>Cpuid1Data<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span>oAYDAAAAAAAAAAAAAAAAAA==<span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>Cpuid1Mask<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span>/////wAAAAAAAAAAAAAAAA==<span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>以欺骗苹果系统，让其认为该 CPU 是 <code>Ivy Bridge 的 i5 CPU</code>。</p>
-<p>由于我使用的是 Windows 系统，需要手撸配置文件。由于 OpenCore 这项的表示方法是 id + mask，并且是 <strong>Little Endian</strong> 的。所以对于 Clover 中的 <code>0x0306A0</code> ，需要将其转换为 A0 06 03 00，掩码 11 11 11 11，补齐后面 12 个 <code>00</code> 后，使用工具 <a href="https://cryptii.com/pipes/base64-to-hex" target="_blank" rel="noopener">https://cryptii.com/pipes/base64-to-hex</a> 转换为对应的 Base 64 编码。</p>
+<p>由于我使用的是 Windows 系统，需要手撸配置文件。由于 OpenCore 这项的表示方法是 id + mask，并且是 <strong>Little Endian</strong> 的。所以对于 Clover 中的 <code>0x0306A0</code> ，需要将其转换为 A0 06 03 00，掩码 11 11 11 11，补齐后面 12 个 <code>00</code> 后，使用工具 <a target="_blank" rel="noopener" href="https://cryptii.com/pipes/base64-to-hex">https://cryptii.com/pipes/base64-to-hex</a> 转换为对应的 Base 64 编码。</p>
 <p>太麻烦了，还是用 Clover 吧。</p>
 <p>设置结束后，不要忘了在 <code>diskpart</code> 中执行</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">remove letter=H</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">remove letter=<span class="built_in">H</span></span><br></pre></td></tr></table></figure>
 
 <p>取消挂载，避免占用盘符。</p>
-<h2 id="BIOS-设置"><a href="#BIOS-设置" class="headerlink" title="BIOS 设置"></a>BIOS 设置</h2><p>BIOS 设置可以参考 <a href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html" target="_blank" rel="noopener">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a> 。基本思路是</p>
+<h2 id="BIOS-设置"><a href="#BIOS-设置" class="headerlink" title="BIOS 设置"></a>BIOS 设置</h2><p>BIOS 设置可以参考 <a target="_blank" rel="noopener" href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a> 。基本思路是</p>
 <ul>
 <li>关闭 CFG Lock</li>
 <li>关闭 VT-d</li>
@@ -422,16 +422,16 @@
 <img src="/blog/2020/11/my-first-hackintosh/11.OS_info.jpg" class="" title="系统信息">
 
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a href="https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html" target="_blank" rel="noopener">https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html</a></li>
-<li><a href="https://www.mfpud.com/topics/1031/" target="_blank" rel="noopener">https://www.mfpud.com/topics/1031/</a></li>
-<li><a href="https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html" target="_blank" rel="noopener">https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html</a></li>
-<li><a href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html" target="_blank" rel="noopener">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a></li>
-<li><a href="https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/" target="_blank" rel="noopener">https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/</a></li>
-<li><a href="https://oc.skk.moe/7-kernel.html" target="_blank" rel="noopener">https://oc.skk.moe/7-kernel.html</a></li>
-<li><a href="https://cryptii.com/pipes/base64-to-hex" target="_blank" rel="noopener">https://cryptii.com/pipes/base64-to-hex</a></li>
-<li><a href="https://www.bilibili.com/read/cv7941995/" target="_blank" rel="noopener">https://www.bilibili.com/read/cv7941995/</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html">https://blog.daliansky.net/Updated-Frequently-Asked-Questions-in-Sierra-or-high-sierra.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.mfpud.com/topics/1031/">https://www.mfpud.com/topics/1031/</a></li>
+<li><a target="_blank" rel="noopener" href="https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html">https://ark.intel.com/content/www/us/en/ark/products/90725/intel-pentium-processor-g4500t-3m-cache-3-00-ghz.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html">https://heipg.cn/tutorial/basic-install-hackintosh-walkthrough.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/">https://www.insanelymac.com/forum/topic/343348-transition-from-clover-to-opencore-with-pentium-g4560/</a></li>
+<li><a target="_blank" rel="noopener" href="https://oc.skk.moe/7-kernel.html">https://oc.skk.moe/7-kernel.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://cryptii.com/pipes/base64-to-hex">https://cryptii.com/pipes/base64-to-hex</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv7941995/">https://www.bilibili.com/read/cv7941995/</a></li>
 </ul>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/">https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/">https://wasteland.touko.moe//blog/2020/11/my-first-hackintosh/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -511,13 +511,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -526,6 +523,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -575,7 +575,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置价格"><span class="nav-number">1.1.</span> <span class="nav-text">配置价格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上机图片"><span class="nav-number">1.2.</span> <span class="nav-text">上机图片</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装准备"><span class="nav-number">2.</span> <span class="nav-text">安装准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像烧录"><span class="nav-number">2.1.</span> <span class="nav-text">镜像烧录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微调-EFI"><span class="nav-number">2.2.</span> <span class="nav-text">微调 EFI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIOS-设置"><span class="nav-number">2.3.</span> <span class="nav-text">BIOS 设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实机安装"><span class="nav-number">3.</span> <span class="nav-text">实机安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#执行安装程序"><span class="nav-number">3.1.</span> <span class="nav-text">执行安装程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立本机引导"><span class="nav-number">3.2.</span> <span class="nav-text">建立本机引导</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%B7%E6%A0%BC"><span class="nav-number">1.1.</span> <span class="nav-text">配置价格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E6%9C%BA%E5%9B%BE%E7%89%87"><span class="nav-number">1.2.</span> <span class="nav-text">上机图片</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">安装准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95"><span class="nav-number">2.1.</span> <span class="nav-text">镜像烧录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83-EFI"><span class="nav-number">2.2.</span> <span class="nav-text">微调 EFI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIOS-%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">BIOS 设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%9C%BA%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">实机安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%AE%89%E8%A3%85%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.1.</span> <span class="nav-text">执行安装程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E6%9C%AC%E6%9C%BA%E5%BC%95%E5%AF%BC"><span class="nav-number">3.2.</span> <span class="nav-text">建立本机引导</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -669,7 +669,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -832,26 +832,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : 'fbd9a513e0b8ac4bfc3e059de709de1a',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/11/my-first-hackintosh/";
@@ -871,6 +851,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'fbd9a513e0b8ac4bfc3e059de709de1a',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

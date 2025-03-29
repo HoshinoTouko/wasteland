@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="Syncthing Official Site: https:&#x2F;&#x2F;syncthing.net&#x2F; Syncthing Github: https:&#x2F;&#x2F;github.com&#x2F;syncthing&#x2F; KodExplorer Official Site: https:&#x2F;&#x2F;kodcloud.com&#x2F; KodExplorer Github: https:&#x2F;&#x2F;github.com&#x2F;kalcaddle&#x2F;KodExp">
@@ -282,10 +282,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Syncthing Official Site: <a href="https://syncthing.net/" target="_blank" rel="noopener">https://syncthing.net/</a></p>
-<p>Syncthing Github: <a href="https://github.com/syncthing/" target="_blank" rel="noopener">https://github.com/syncthing/</a></p>
-<p>KodExplorer Official Site: <a href="https://kodcloud.com/" target="_blank" rel="noopener">https://kodcloud.com/</a></p>
-<p>KodExplorer Github: <a href="https://github.com/kalcaddle/KodExplorer" target="_blank" rel="noopener">https://github.com/kalcaddle/KodExplorer</a></p>
+        <p>Syncthing Official Site: <a target="_blank" rel="noopener" href="https://syncthing.net/">https://syncthing.net/</a></p>
+<p>Syncthing Github: <a target="_blank" rel="noopener" href="https://github.com/syncthing/">https://github.com/syncthing/</a></p>
+<p>KodExplorer Official Site: <a target="_blank" rel="noopener" href="https://kodcloud.com/">https://kodcloud.com/</a></p>
+<p>KodExplorer Github: <a target="_blank" rel="noopener" href="https://github.com/kalcaddle/KodExplorer">https://github.com/kalcaddle/KodExplorer</a></p>
 <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><blockquote>
 <p>Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers in real time, safely protected from prying eyes. Your data is your data alone and you deserve to choose where it is stored, whether it is shared with some third party, and how it’s transmitted over the internet.</p>
 </blockquote>
@@ -293,36 +293,36 @@
 <p>我将 <em>Syngthing</em> 安装在了学校电脑、 Surface 和远端服务器上，远端服务器有公网 IP ，方便进行快速同步。这样只要我本地的数据发生更新，远端服务器就会同步数据，并且保存文件的旧版本。</p>
 <h1 id="服务器安装"><a href="#服务器安装" class="headerlink" title="服务器安装"></a>服务器安装</h1><p>虽然是开源项目，但是我不建议使用源代码安装。源码安装不利于软件的升级和版本控制。</p>
 <p>官网对文件安装的文档说明已经非常详细了，这边简单摘抄一些，并分享在安装过程中发现的问题并提供解决方案。</p>
-<p>全平台（除了 iOS）的安装文件可以在这里找到 <a href="https://syncthing.net/downloads/" target="_blank" rel="noopener">https://syncthing.net/downloads/</a> 。</p>
+<p>全平台（除了 iOS）的安装文件可以在这里找到 <a target="_blank" rel="noopener" href="https://syncthing.net/downloads/">https://syncthing.net/downloads/</a> 。</p>
 <h2 id="Deb-系"><a href="#Deb-系" class="headerlink" title="Deb 系"></a>Deb 系</h2><p>用户可以在两条 release 轨道中进行选择，分别是”stable” (latest release) 和 “candidate” (earlier release candidate) 。</p>
 <p>同时强烈建议通过 HTTPS 从 apt 源进行下载。</p>
 <p>Candidate Track 的版本升级会比 Stable Track <strong>早大约三个星期</strong>，追求刺激的用户可以使用 Candidate Track 。</p>
-<h3 id="Stable-Track"><a href="#Stable-Track" class="headerlink" title="Stable Track"></a>Stable Track</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line">sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the "stable" channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"deb https://apt.syncthing.net/ syncthing stable"</span> | sudo tee /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install syncthing</span><br></pre></td></tr></table></figure>
+<h3 id="Stable-Track"><a href="#Stable-Track" class="headerlink" title="Stable Track"></a>Stable Track</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | <span class="built_in">sudo</span> apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the &quot;stable&quot; channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb https://apt.syncthing.net/ syncthing stable&quot;</span> | <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get update</span><br><span class="line"><span class="built_in">sudo</span> apt-get install syncthing</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="Candidate-Track"><a href="#Candidate-Track" class="headerlink" title="Candidate Track"></a>Candidate Track</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line">sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Candidate Version</span></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the "candidate" channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"deb https://apt.syncthing.net/ syncthing candidate"</span> | sudo tee /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install syncthing</span><br></pre></td></tr></table></figure>
+<h3 id="Candidate-Track"><a href="#Candidate-Track" class="headerlink" title="Candidate Track"></a>Candidate Track</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add apt https support</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line"><span class="comment"># Candidate Version</span></span><br><span class="line"><span class="comment"># Add the release PGP keys:</span></span><br><span class="line">curl -s https://syncthing.net/release-key.txt | <span class="built_in">sudo</span> apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add the &quot;candidate&quot; channel to your APT sources:</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb https://apt.syncthing.net/ syncthing candidate&quot;</span> | <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/syncthing.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update and install syncthing:</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get update</span><br><span class="line"><span class="built_in">sudo</span> apt-get install syncthing</span><br></pre></td></tr></table></figure>
 
 <h2 id="RedHat-系"><a href="#RedHat-系" class="headerlink" title="RedHat 系"></a>RedHat 系</h2><p>RedHat 系统可以直接在官网下载已经编译好的程序，并直接执行。为了方便执行，可以通过 <code>ln -s</code> 将程序可执行文件软连接到 <code>/usr/bin</code> 下。</p>
-<h2 id="Windows-amp-MacOS"><a href="#Windows-amp-MacOS" class="headerlink" title="Windows &amp; MacOS"></a>Windows &amp; MacOS</h2><p>可以直接在官网下载到可执行程序，执行后将会自动弹出 Web 页面。</p>
+<h2 id="Windows-MacOS"><a href="#Windows-MacOS" class="headerlink" title="Windows &amp; MacOS"></a>Windows &amp; MacOS</h2><p>可以直接在官网下载到可执行程序，执行后将会自动弹出 Web 页面。</p>
 <h1 id="打通-Syncthing-节点之间的第一条-P2P-连接"><a href="#打通-Syncthing-节点之间的第一条-P2P-连接" class="headerlink" title="打通 Syncthing 节点之间的第一条 P2P 连接"></a>打通 Syncthing 节点之间的第一条 P2P 连接</h1><p>让我们开始连接第一条端到端同步线路。这条线路将会在本地 PC 和远端服务器之间同步数据。</p>
 <p>我打算将我的服务器作为文件存放的主服务器，一大原因是服务器有公网地址，不需要通过 NAT 穿透来访问，这会大大提高同步速度。我的主服务器是 Debian buster。</p>
 <p>因为 <em>Syncthing</em> 并没有 iOS 客户端。为了在 iOS 上使用 <em>Syncthing</em> ，我采用了一个 Trick，用 <em>KodExplorer</em> 作为网页访问文件的工具，并将同步文件夹放置在 <em>KodExplorer</em> 的目录下。所以，如果想保持 <em>KodExplorer</em> 和 <em>Syncthing</em> 可以正常协同工作，需要单独创建一个用户来运行 <em>Syncthing</em> 和 <em>PHP</em> ，保证他们的 <strong>读写权限相同</strong> 。同时，官方也建议不要使用 root 账户运行 <em>Syncthing</em> 。</p>
 <p>我使用 <code>www</code> 用户运行 <em>PHP</em> ，所以现在默认我已经切换到 <code>www</code> 账户运行 <em>Syncthing</em> 了。</p>
 <p>我使用 <code>screen</code> 控制程序后台运行。在安装完程序后，执行命令 <code>syncthing</code> 让其在 <code>~/.config/syncthing</code> 下生成初始配置文件。程序默认监听 127.0.0.1:8384 作为其 Web GUI 页面。如果你有 <em>NginX</em> 或者 <em>Apache</em> ，可以设置一个反向代理到这个端口，就能直接进入网站页面。如果没有，需要 <code>Ctrl + C</code> 终止程序运行，并修改 <code>~/.config/syncthing/config.xml</code> 中的监听地址为 <code>0.0.0.0</code> ，然后通过公网 IP 访问该地址进行配置。如果这个页面是暴露在公网上的，请 <strong>务必设置管理员密码</strong> 。</p>
 <p>远端服务器节点配置完成后，我们开始配置本地 PC 节点。在 PC 中下载程序并运行，在 GUI 页面中点击右下角 <strong>添加远程设备</strong> ，输入从远端服务器的 ID（服务器 GUI 界面右上角操作-显示 ID），然后等待一段时间，远端服务器会收到本地 PC 发起的远程设备连接请求，同意即可。</p>
-<p>如果没有收到请求，可以检查一下远端服务器是否打开了端口 22000/TCP ，21027/UDP 防火墙。</p>
+<p>如果没有收到请求，可以检查一下远端服务器是否打开了端口 22000&#x2F;TCP ，21027&#x2F;UDP 防火墙。</p>
 <p>远端接受请求后，就可以添加本地同步文件夹，并和远端进行共享了。</p>
 <p>理论上说，如果两个设备都在 NAT 设备背后，也可以进行数据同步。但是在测试过程中发现数据同步速度相对缓慢，并且无法用本文的 Trick 让 iOS 设备访问。</p>
 <h1 id="Syncthing-和-KodExplorer-的协同工作"><a href="#Syncthing-和-KodExplorer-的协同工作" class="headerlink" title="Syncthing 和 KodExplorer 的协同工作"></a>Syncthing 和 KodExplorer 的协同工作</h1><p>为了让这两个程序协作，让 iOS 设备也能访问远端文件，我们需要把同步文件夹放在 <em>KodExplorer</em> 程序的 <code>data/对应用户/home</code> 文件夹下。这样，iOS 设备就可以通过浏览器访问远程文件了。</p>
 <p><em>KodExplorer</em> 的安装这里不赘述。</p>
 <p>当然，这也会有安全问题。将私人文件放在可以直接被访问到的服务器目录下是一件很危险的行为。这时候需要对 <code>data/</code> 文件夹进行访问权限控制，在 <em>NginX</em> 配置文件中增加一条即可。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /data/ &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> /data/ &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <img src="/blog/2020/03/syncthing-all-platform/403-Foibbden.png" class="" title="NginX 403 Foibbden">
 
 <p>这样，在 iOS 设备上，可以直接通过访问 <em>KodExplorer</em> 页面来访问文件，并且能够在多端间进行同步。</p>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/">https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/">https://wasteland.touko.moe//blog/2020/03/syncthing-all-platform/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -403,13 +403,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -418,6 +415,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -467,7 +467,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器安装"><span class="nav-number">2.</span> <span class="nav-text">服务器安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deb-系"><span class="nav-number">2.1.</span> <span class="nav-text">Deb 系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stable-Track"><span class="nav-number">2.1.1.</span> <span class="nav-text">Stable Track</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Candidate-Track"><span class="nav-number">2.1.2.</span> <span class="nav-text">Candidate Track</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RedHat-系"><span class="nav-number">2.2.</span> <span class="nav-text">RedHat 系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-amp-MacOS"><span class="nav-number">2.3.</span> <span class="nav-text">Windows &amp; MacOS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#打通-Syncthing-节点之间的第一条-P2P-连接"><span class="nav-number">3.</span> <span class="nav-text">打通 Syncthing 节点之间的第一条 P2P 连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Syncthing-和-KodExplorer-的协同工作"><span class="nav-number">4.</span> <span class="nav-text">Syncthing 和 KodExplorer 的协同工作</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">服务器安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deb-%E7%B3%BB"><span class="nav-number">2.1.</span> <span class="nav-text">Deb 系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stable-Track"><span class="nav-number">2.1.1.</span> <span class="nav-text">Stable Track</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Candidate-Track"><span class="nav-number">2.1.2.</span> <span class="nav-text">Candidate Track</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RedHat-%E7%B3%BB"><span class="nav-number">2.2.</span> <span class="nav-text">RedHat 系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-MacOS"><span class="nav-number">2.3.</span> <span class="nav-text">Windows &amp; MacOS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%93%E9%80%9A-Syncthing-%E8%8A%82%E7%82%B9%E4%B9%8B%E9%97%B4%E7%9A%84%E7%AC%AC%E4%B8%80%E6%9D%A1-P2P-%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">打通 Syncthing 节点之间的第一条 P2P 连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Syncthing-%E5%92%8C-KodExplorer-%E7%9A%84%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">Syncthing 和 KodExplorer 的协同工作</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -561,7 +561,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -724,26 +724,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : 'df7e1d3931c45f71f34356dc6436f09d',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/03/syncthing-all-platform/";
@@ -763,6 +743,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : 'df7e1d3931c45f71f34356dc6436f09d',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

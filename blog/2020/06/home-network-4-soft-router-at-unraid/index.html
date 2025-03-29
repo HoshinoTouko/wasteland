@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="软路由为了进一步发挥 NAS 的作用，我决定在它上面部署一个软路由。因为软路由可以更好地管理流量，部署科学上网，特别是在主路由小米 AC2100 MT7621 方案性能有限的情况下，x86 架构的软路由能够进行的加解密运算能力远远超过主路由。我的 NAS 只有板载千兆单网口，实现起来没有多网口路由器那么优雅，好在还是能够用单臂路由的方法实现软路由。 网络拓扑规划设备一览在规划网络之前，需要先清点一">
@@ -324,9 +324,9 @@
 <img src="/blog/2020/06/home-network-4-soft-router-at-unraid/%E5%8D%95%E8%87%82%E8%B7%AF%E7%94%B1%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png" class="" title="单臂路由网络拓扑图">
 
 <p>我的规划如图，光猫负责拨号，小米 AC2100 作为主路由处理流量，R3 通过无线中继服务 IoT 设备，NAS 虚拟化各种服务和软路由提供功能。其中，主路由的 IP 地址为 192.168.31.1，软路由的 IP 地址为 192.168.31.2。为了让所有流量在转发至公网时经过软路由处理，由 AC2100、R3 所有通过 AP 接入的设备和有线接入的设备都要以 192.168.31.2（软路由） 作为网关，而软路由要以 192.168.31.1（主路由） 作为网关。为了实现这个功能，整个 LAN 中只能由软路由一个 DHCP 服务端。即，让新加入的设备自动以软路由作为网关。</p>
-<h1 id="单臂软路由配置"><a href="#单臂软路由配置" class="headerlink" title="单臂软路由配置"></a>单臂软路由配置</h1><h2 id="选择系统"><a href="#选择系统" class="headerlink" title="选择系统"></a>选择系统</h2><a id="more"></a>
+<h1 id="单臂软路由配置"><a href="#单臂软路由配置" class="headerlink" title="单臂软路由配置"></a>单臂软路由配置</h1><h2 id="选择系统"><a href="#选择系统" class="headerlink" title="选择系统"></a>选择系统</h2><span id="more"></span>
 
-<p>首先下载 OpenWRT 系统安装文件。进入 <a href="https://downloads.openwrt.org/releases/" target="_blank" rel="noopener">https://downloads.openwrt.org/releases/</a> 选择对应版本和对应系统架构。由于我是 x86，所以我下载了 x86 generic 版本（openwrt-19.07.3-x86-generic-combined-ext4.img）<a href="https://downloads.openwrt.org/releases/19.07.3/targets/x86/generic/" target="_blank" rel="noopener">https://downloads.openwrt.org/releases/19.07.3/targets/x86/generic/</a>。将其解压，复制到 NAS 上任意位置。由于该镜像已经打包好，可以作为硬盘使用，所以不用额外预留其他空间用于存放文件。</p>
+<p>首先下载 OpenWRT 系统安装文件。进入 <a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/">https://downloads.openwrt.org/releases/</a> 选择对应版本和对应系统架构。由于我是 x86，所以我下载了 x86 generic 版本（openwrt-19.07.3-x86-generic-combined-ext4.img）<a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/19.07.3/targets/x86/generic/">https://downloads.openwrt.org/releases/19.07.3/targets/x86/generic/</a>。将其解压，复制到 NAS 上任意位置。由于该镜像已经打包好，可以作为硬盘使用，所以不用额外预留其他空间用于存放文件。</p>
 <img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-image.png" class="" title="OpenWRT 镜像">
 
 <h2 id="部署虚拟机"><a href="#部署虚拟机" class="headerlink" title="部署虚拟机"></a>部署虚拟机</h2><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-vm-setting.png" class="" title="OpenWRT VM 设置">
@@ -339,12 +339,12 @@
 <h2 id="初期配置"><a href="#初期配置" class="headerlink" title="初期配置"></a>初期配置</h2><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/openwrt-interface-settings.png" class="" title="OpenWRT UI 界面网络设置">
 
 <p>安装完路由系统后，首先需要对系统进行一些初期配置。浏览器进入设置好的 IP，<code>Network</code> - <code>Interfaces</code> - <code>Edit LAN</code>，增加 <code>gateway</code> 为主路由（在我这是小米 AC2100）的 IP 地址，IPv4 broadcast<br> 保持默认，DNS 随意设置（但是一定要设置）。切换到 <code>DHCP Server</code> 选项卡，将 <code>Advanced Settings</code> 的 <code>Force</code> 勾选。</p>
-<p>SSH 登录路由，执行 <code>sed -i &#39;s_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_&#39; /etc/opkg/distfeeds.conf</code> 更换国内 OpenWRT 源，更新软件包 <code>opkg update</code> ，执行 <code>opkg install luci-i18n-base-zh-cn</code> 安装中文 Web 界面。如果安装过程无法正常进行，请重新检查联网设置。</p>
+<p>SSH 登录路由，执行 <code>sed -i &#39;s_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_&#39; /etc/opkg/distfeeds.conf</code> 更换国内 OpenWRT 源，更新软件包 <code>opkg update</code> ，执行 <code> opkg install luci-i18n-base-zh-cn</code> 安装中文 Web 界面。如果安装过程无法正常进行，请重新检查联网设置。</p>
 <h2 id="测试联网情况"><a href="#测试联网情况" class="headerlink" title="测试联网情况"></a>测试联网情况</h2><img src="/blog/2020/06/home-network-4-soft-router-at-unraid/local-test.png" class="" title="本地联网测试">
 
 <p>为了测试软路由工作情况，我们可以手工设置本地网关，修改网关至软路由对应的 IP 地址，查看连接情况。如果一切正常，就可以关掉主路由上的 DHCP 服务，让软路由提供 DHCP 服务了。一般来说，只要初期配置中路由命令行能够正常更新软件包，这一步也不会有太多问题。</p>
 <p>在软路由提供 DHCP 服务后，新接入的设备和需要更新 DHCP 租约的设备都会以软路由作为网关访问外网。从路径上看，就是 终端 - 主路由 - 软路由（处理流量） - 主路由 - WAN。</p>
-<h1 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h1><h2 id="延迟"><a href="#延迟" class="headerlink" title="延迟"></a>延迟</h2><p>我使用高精度延迟测试工具 hrping 进行测试，这个工具可以从 <a href="http://www.cfos.de/en/download/start-download.htm?file=/hrping-v507.zip" target="_blank" rel="noopener">http://www.cfos.de/en/download/start-download.htm?file=/hrping-v507.zip</a> 下载。我将一台电脑连接至联通光猫 192.168.1.1 ，关闭防火墙，进行长时间 ping 测试。</p>
+<h1 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h1><h2 id="延迟"><a href="#延迟" class="headerlink" title="延迟"></a>延迟</h2><p>我使用高精度延迟测试工具 hrping 进行测试，这个工具可以从 <a target="_blank" rel="noopener" href="http://www.cfos.de/en/download/start-download.htm?file=/hrping-v507.zip">http://www.cfos.de/en/download/start-download.htm?file=/hrping-v507.zip</a> 下载。我将一台电脑连接至联通光猫 192.168.1.1 ，关闭防火墙，进行长时间 ping 测试。</p>
 <p><strong>软路由作为网关</strong></p>
 <p>tracert</p>
 <img src="/blog/2020/06/home-network-4-soft-router-at-unraid/tracert.png" class="" title="Tracert 结果">
@@ -383,17 +383,17 @@
 <h1 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h1><p>一切看起来都很美好，但是也有美中不足的地方。UNRAID 运行的 Docker 无法以软路由作为网关，即 UNRAID Docker 的流量无法经过软路由。目前我并不知道为什么会这样，可能是由于启动顺序不同导致的问题。因为如果要修改 UNRAID 的默认网关，需要停止整个阵列。一旦阵列停止，Docker 和 VM（包括软路由）也需要停止。如果修改完设置，启动阵列时，Docker 会因为没有 DHCP 服务器而无法分配到 IP 地址（一般来说 VM 启动优先级更慢）。我正在继续寻找解决方案。</p>
 <p>由于 CPU 性能足够，我打算下一步上万兆网卡和万兆交换机，让内网进一步加速。同时，我打算直接在 NAS 上安装万兆网卡。这块主板还有一个 PCIE x16 插槽，可以插一张多口万兆网卡实现软路由硬件直通，进一步提高效率。</p>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a href="https://openwrt.org/toh/views/toh_fwdownload" target="_blank" rel="noopener">https://openwrt.org/toh/views/toh_fwdownload</a></li>
-<li><a href="http://www.cfos.de/en/ping/ping.htm" target="_blank" rel="noopener">http://www.cfos.de/en/ping/ping.htm</a></li>
-<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/</a></li>
-<li><a href="https://post.smzdm.com/p/az502200/" target="_blank" rel="noopener">https://post.smzdm.com/p/az502200/</a></li>
-<li><a href="https://www.jianshu.com/p/da01ce070688" target="_blank" rel="noopener">https://www.jianshu.com/p/da01ce070688</a></li>
-<li><a href="https://post.smzdm.com/p/ax027g83/" target="_blank" rel="noopener">https://post.smzdm.com/p/ax027g83/</a></li>
-<li><a href="https://toutyrater.github.io/app/reverse.html" target="_blank" rel="noopener">https://toutyrater.github.io/app/reverse.html</a></li>
-<li><a href="https://iperf.fr/iperf-doc.php" target="_blank" rel="noopener">https://iperf.fr/iperf-doc.php</a></li>
-<li>感谢拓扑绘画工具 <a href="https://www.processon.com/" target="_blank" rel="noopener">https://www.processon.com/</a> 尽管使用中还遇上很多 BUG</li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/toh/views/toh_fwdownload">https://openwrt.org/toh/views/toh_fwdownload</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cfos.de/en/ping/ping.htm">http://www.cfos.de/en/ping/ping.htm</a></li>
+<li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/">https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/</a></li>
+<li><a target="_blank" rel="noopener" href="https://post.smzdm.com/p/az502200/">https://post.smzdm.com/p/az502200/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/da01ce070688">https://www.jianshu.com/p/da01ce070688</a></li>
+<li><a target="_blank" rel="noopener" href="https://post.smzdm.com/p/ax027g83/">https://post.smzdm.com/p/ax027g83/</a></li>
+<li><a target="_blank" rel="noopener" href="https://toutyrater.github.io/app/reverse.html">https://toutyrater.github.io/app/reverse.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://iperf.fr/iperf-doc.php">https://iperf.fr/iperf-doc.php</a></li>
+<li>感谢拓扑绘画工具 <a target="_blank" rel="noopener" href="https://www.processon.com/">https://www.processon.com/</a> 尽管使用中还遇上很多 BUG</li>
 </ul>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-4-soft-router-at-unraid/">https://wasteland.touko.moe//blog/2020/06/home-network-4-soft-router-at-unraid/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/06/home-network-4-soft-router-at-unraid/">https://wasteland.touko.moe//blog/2020/06/home-network-4-soft-router-at-unraid/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -474,13 +474,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -489,6 +486,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -538,7 +538,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#软路由"><span class="nav-number">1.</span> <span class="nav-text">软路由</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络拓扑规划"><span class="nav-number">2.</span> <span class="nav-text">网络拓扑规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设备一览"><span class="nav-number">2.1.</span> <span class="nav-text">设备一览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓扑规划"><span class="nav-number">2.2.</span> <span class="nav-text">拓扑规划</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单臂软路由配置"><span class="nav-number">3.</span> <span class="nav-text">单臂软路由配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#选择系统"><span class="nav-number">3.1.</span> <span class="nav-text">选择系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署虚拟机"><span class="nav-number">3.2.</span> <span class="nav-text">部署虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初期配置"><span class="nav-number">3.3.</span> <span class="nav-text">初期配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试联网情况"><span class="nav-number">3.4.</span> <span class="nav-text">测试联网情况</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#性能测试"><span class="nav-number">4.</span> <span class="nav-text">性能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#延迟"><span class="nav-number">4.1.</span> <span class="nav-text">延迟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#带宽和功耗"><span class="nav-number">4.2.</span> <span class="nav-text">带宽和功耗</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP"><span class="nav-number">4.2.1.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NAS-静止功耗"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">NAS 静止功耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PC（软路由网关）-PC（光猫-LAN）"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">PC（软路由网关）- PC（光猫 LAN）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PC（软路由网关）-软路由"><span class="nav-number">4.2.1.3.</span> <span class="nav-text">PC（软路由网关） - 软路由</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PC（软路由网关）-NAS"><span class="nav-number">4.2.1.4.</span> <span class="nav-text">PC（软路由网关） - NAS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软路由-NAS-（网桥内网）"><span class="nav-number">4.2.1.5.</span> <span class="nav-text">软路由 - NAS （网桥内网）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软路由-V2Ray-加密带宽和功耗"><span class="nav-number">4.2.1.6.</span> <span class="nav-text">软路由 V2Ray 加密带宽和功耗</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-with-V2Ray"><span class="nav-number">4.2.2.</span> <span class="nav-text">TCP with V2Ray</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#展望"><span class="nav-number">5.</span> <span class="nav-text">展望</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AF%E8%B7%AF%E7%94%B1"><span class="nav-number">1.</span> <span class="nav-text">软路由</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E8%A7%84%E5%88%92"><span class="nav-number">2.</span> <span class="nav-text">网络拓扑规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E4%B8%80%E8%A7%88"><span class="nav-number">2.1.</span> <span class="nav-text">设备一览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E8%A7%84%E5%88%92"><span class="nav-number">2.2.</span> <span class="nav-text">拓扑规划</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E8%87%82%E8%BD%AF%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">单臂软路由配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.1.</span> <span class="nav-text">选择系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">3.2.</span> <span class="nav-text">部署虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E6%9C%9F%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">初期配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%81%94%E7%BD%91%E6%83%85%E5%86%B5"><span class="nav-number">3.4.</span> <span class="nav-text">测试联网情况</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">性能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F"><span class="nav-number">4.1.</span> <span class="nav-text">延迟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E5%AE%BD%E5%92%8C%E5%8A%9F%E8%80%97"><span class="nav-number">4.2.</span> <span class="nav-text">带宽和功耗</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP"><span class="nav-number">4.2.1.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NAS-%E9%9D%99%E6%AD%A2%E5%8A%9F%E8%80%97"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">NAS 静止功耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PC%EF%BC%88%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%BD%91%E5%85%B3%EF%BC%89-PC%EF%BC%88%E5%85%89%E7%8C%AB-LAN%EF%BC%89"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">PC（软路由网关）- PC（光猫 LAN）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PC%EF%BC%88%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%BD%91%E5%85%B3%EF%BC%89-%E8%BD%AF%E8%B7%AF%E7%94%B1"><span class="nav-number">4.2.1.3.</span> <span class="nav-text">PC（软路由网关） - 软路由</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PC%EF%BC%88%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%BD%91%E5%85%B3%EF%BC%89-NAS"><span class="nav-number">4.2.1.4.</span> <span class="nav-text">PC（软路由网关） - NAS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E8%B7%AF%E7%94%B1-NAS-%EF%BC%88%E7%BD%91%E6%A1%A5%E5%86%85%E7%BD%91%EF%BC%89"><span class="nav-number">4.2.1.5.</span> <span class="nav-text">软路由 - NAS （网桥内网）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E8%B7%AF%E7%94%B1-V2Ray-%E5%8A%A0%E5%AF%86%E5%B8%A6%E5%AE%BD%E5%92%8C%E5%8A%9F%E8%80%97"><span class="nav-number">4.2.1.6.</span> <span class="nav-text">软路由 V2Ray 加密带宽和功耗</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-with-V2Ray"><span class="nav-number">4.2.2.</span> <span class="nav-text">TCP with V2Ray</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%95%E6%9C%9B"><span class="nav-number">5.</span> <span class="nav-text">展望</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -632,7 +632,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -795,26 +795,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : '5963dafc8ae5d3e9631bdb1f4b9c37fa',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/06/home-network-4-soft-router-at-unraid/";
@@ -834,6 +814,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : '5963dafc8ae5d3e9631bdb1f4b9c37fa',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

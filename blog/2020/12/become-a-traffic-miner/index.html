@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="简短地水一篇  闲置了一块主板前段时间给实验室配置了软路由，为了避免意外，多买了一块主板。最近，在实验室成功部署了异地组网后，才想起来自己多买了一台机器。这台机器的配置是 1037u，我之前买过三块，分别用于各种地方的软路由和小型机。这块u价格便宜，没有 J1900 那样的溢价，性能和 J1900 差不多，功耗不高，非常适合用来做 NAS 和软路由。对于手上这块 1037u，我准备拿来挖矿。 硬">
@@ -302,7 +302,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">主板 / CPU</td>
+<td align="center">主板 &#x2F; CPU</td>
 <td align="center">1037u 集成主板</td>
 </tr>
 <tr>
@@ -323,7 +323,7 @@
 </tr>
 </tbody></table>
 <p>给主板来一张全貌图</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <img src="/blog/2020/12/become-a-traffic-miner/1.motherboard-overview.jpg" class="" title="主板全貌">
 
@@ -339,9 +339,9 @@
 <p>一定要进行上述步骤检查，否则就会像我第一次一样，烧坏了一块蓝盘（大短路，磁头烧毁）</p>
 <h2 id="挖矿程序选择"><a href="#挖矿程序选择" class="headerlink" title="挖矿程序选择"></a>挖矿程序选择</h2><p>我选择的是星际比特 PolarOS 所属的银河计划，原理大概是运行某些互联网厂商（如 271）的边缘 CDN 项目，共享上传带宽。安装方式很简单，从官网下载 img 镜像，用烧录工具烧录至 U 盘。我用的是老朋友 <code>balenaEtcher</code>。烧录完成后，通过 u 盘启动机器，选择安装到系统硬盘上。运行这个挖矿程序一定要两块以上的硬盘，其中一块用来安装系统，另一块用于存储分发的数据。</p>
 <p>系统安装完成后，等待重启。控制台中会出现一个二维码，从微信小程序<code>IPFS星际比特</code>或者安卓官方 app 扫码绑定设备，并运行 <code>银河计划</code>。我选择银河计划的原因是因为他是现金结算项目，且每次提现仅收取 2 元手续费。</p>
-<p>经过三四天的运行，单台机器的收益大约是 1.5 / 天（两台机器，30Mbps 上行）</p>
+<p>经过三四天的运行，单台机器的收益大约是 1.5 &#x2F; 天（两台机器，30Mbps 上行）</p>
 <h2 id="提高挖矿效率的一些方案"><a href="#提高挖矿效率的一些方案" class="headerlink" title="提高挖矿效率的一些方案"></a>提高挖矿效率的一些方案</h2><p>由于刚开始挖矿，没有什么经验，仅根据个人猜测提供一些方案。首先一定要保持设备随时在线。前几天我调整路由器的时候进行了一次网络设备断电，直接导致了收益锐减。估计设备掉线惩罚很严重，不知道先手动停止再操作掉线会不会惩罚的少一些。其次是内存尽量保持 4G 以上，硬盘保持 500G 以上，以提供更好的挖矿能力。CPU 的选择比较随意，性能约等于 1037u，J1900 就行。建议一定要申请<code>公网 IP</code> ，打开光猫或者拨号设备上的 <code>uPnP</code>，减少外网到挖矿设备的 NAT 层数，最好直接挂在拨号设备下。</p>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/">https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/">https://wasteland.touko.moe//blog/2020/12/become-a-traffic-miner/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -422,13 +422,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -437,6 +434,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -486,7 +486,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#闲置了一块主板"><span class="nav-number">1.</span> <span class="nav-text">闲置了一块主板</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件"><span class="nav-number">1.1.</span> <span class="nav-text">硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决硬盘供电问题"><span class="nav-number">1.2.</span> <span class="nav-text">解决硬盘供电问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挖矿程序选择"><span class="nav-number">1.3.</span> <span class="nav-text">挖矿程序选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高挖矿效率的一些方案"><span class="nav-number">1.4.</span> <span class="nav-text">提高挖矿效率的一些方案</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%B2%E7%BD%AE%E4%BA%86%E4%B8%80%E5%9D%97%E4%B8%BB%E6%9D%BF"><span class="nav-number">1.</span> <span class="nav-text">闲置了一块主板</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E7%A1%AC%E7%9B%98%E4%BE%9B%E7%94%B5%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">解决硬盘供电问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%96%E7%9F%BF%E7%A8%8B%E5%BA%8F%E9%80%89%E6%8B%A9"><span class="nav-number">1.3.</span> <span class="nav-text">挖矿程序选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E9%AB%98%E6%8C%96%E7%9F%BF%E6%95%88%E7%8E%87%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88"><span class="nav-number">1.4.</span> <span class="nav-text">提高挖矿效率的一些方案</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -580,7 +580,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -743,26 +743,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : '9e7ee4da808596781c114d6604f57483',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/12/become-a-traffic-miner/";
@@ -782,6 +762,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : '9e7ee4da808596781c114d6604f57483',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

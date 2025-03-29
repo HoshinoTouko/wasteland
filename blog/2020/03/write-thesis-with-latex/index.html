@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="本文使用 武汉大学 毕业论文模板。 准备写论文可喜可贺，我终于要开始动笔我的毕业论文了。虽然论文相关的实验和理论准备已经就绪了很长一段时间，但是就是提不起精神写文章。这周其他突发堆积的事情逐渐清空，我准备忙里偷闲，开始写毕业论文。 某天，一同学在群里发了一份 武汉大学毕业论文 LaTeX 模板，我一看，巧了，老朋友写的 repository ，于是正好近期开工，把它下载下来用。 环境配置 本文基础">
@@ -283,13 +283,13 @@
       
         <p>本文使用 <strong>武汉大学</strong> 毕业论文模板。</p>
 <h1 id="准备写论文"><a href="#准备写论文" class="headerlink" title="准备写论文"></a>准备写论文</h1><p>可喜可贺，我终于要开始动笔我的毕业论文了。虽然论文相关的实验和理论准备已经就绪了很长一段时间，但是就是提不起精神写文章。这周其他突发堆积的事情逐渐清空，我准备忙里偷闲，开始写毕业论文。</p>
-<p>某天，一同学在群里发了一份 <a href="https://github.com/mtobeiyf/whu-thesis/" target="_blank" rel="noopener">武汉大学毕业论文 LaTeX 模板</a>，我一看，巧了，老朋友写的 <code>repository</code> ，于是正好近期开工，把它下载下来用。</p>
+<p>某天，一同学在群里发了一份 <a target="_blank" rel="noopener" href="https://github.com/mtobeiyf/whu-thesis/">武汉大学毕业论文 LaTeX 模板</a>，我一看，巧了，老朋友写的 <code>repository</code> ，于是正好近期开工，把它下载下来用。</p>
 <h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><blockquote>
 <p>本文基础环境是 Windows 10，使用的 IDE 为 <strong>VSCode</strong>，Linux、Mac 配置方式类似</p>
 </blockquote>
-<h2 id="Perl"><a href="#Perl" class="headerlink" title="Perl"></a>Perl</h2><p>首先我们需要安装 Windows 下的 <code>Perl</code> 依赖。前往官网 <a href="https://www.perl.org/get.html" target="_blank" rel="noopener">https://www.perl.org/get.html</a> 我发现，有 <code>ActiveState Perl</code> 和 <code>Strawberry Perl</code> 两种版本的 <code>Perl</code> ，具体使用起来差不多，所以我选择了下载起来相对方便的 <code>草莓 Perl</code> <a href="http://strawberryperl.com/" target="_blank" rel="noopener">http://strawberryperl.com/</a> 。</p>
-<h2 id="LaTeX"><a href="#LaTeX" class="headerlink" title="LaTeX"></a>LaTeX</h2><p>Windows 下有两种广泛使用的 LaTeX 版本，分别是 <code>TeX Live</code> 和 <code>MiKTeX</code> 。 <code>TeX Live</code> 安装体积高达 <strong>6GB</strong> ，我立刻放弃，选择了安装体积较小，后续使用中<strong>按需下载</strong>的 <code>MiKTeX</code> <a href="https://miktex.org/download" target="_blank" rel="noopener">https://miktex.org/download</a> 。建议在安装时安装给<strong>当前用户</strong>，可以避免很多麻烦。</p>
-<a id="more"></a>
+<h2 id="Perl"><a href="#Perl" class="headerlink" title="Perl"></a>Perl</h2><p>首先我们需要安装 Windows 下的 <code>Perl</code> 依赖。前往官网 <a target="_blank" rel="noopener" href="https://www.perl.org/get.html">https://www.perl.org/get.html</a> 我发现，有 <code>ActiveState Perl</code> 和 <code>Strawberry Perl</code> 两种版本的 <code>Perl</code> ，具体使用起来差不多，所以我选择了下载起来相对方便的 <code>草莓 Perl</code> <a target="_blank" rel="noopener" href="http://strawberryperl.com/">http://strawberryperl.com/</a> 。</p>
+<h2 id="LaTeX"><a href="#LaTeX" class="headerlink" title="LaTeX"></a>LaTeX</h2><p>Windows 下有两种广泛使用的 LaTeX 版本，分别是 <code>TeX Live</code> 和 <code>MiKTeX</code> 。 <code>TeX Live</code> 安装体积高达 <strong>6GB</strong> ，我立刻放弃，选择了安装体积较小，后续使用中<strong>按需下载</strong>的 <code>MiKTeX</code> <a target="_blank" rel="noopener" href="https://miktex.org/download">https://miktex.org/download</a> 。建议在安装时安装给<strong>当前用户</strong>，可以避免很多麻烦。</p>
+<span id="more"></span>
 
 <img src="/blog/2020/03/write-thesis-with-latex/Install-for-current-user.jpg" class="" title="Install for current user">
 
@@ -298,37 +298,37 @@
 
 <h2 id="VSCode"><a href="#VSCode" class="headerlink" title="VSCode"></a>VSCode</h2><p>首先需要在 VSCode 中安装依赖 <code>LaTeX Workshop</code> 。</p>
 <p>VSCode 的配置文件在上述模板中包含。但是我建议对配置文件进行一定的修改，使用更方便的安装命令。并将工程和 pdf 文件构建于 <code>build/</code> 文件夹下，保持根目录干净。</p>
-<p>可以在 <a href="https://gist.github.com/HoshinoTouko/a2332b1756996d5e9c71605d0ff7591a" target="_blank" rel="noopener">https://gist.github.com/HoshinoTouko/a2332b1756996d5e9c71605d0ff7591a</a> 获取 <code>.vscode/settings.json</code> 和 <code>.latexmkrc</code> ，下载后放置于对应目录即可工作。</p>
+<p>可以在 <a target="_blank" rel="noopener" href="https://gist.github.com/HoshinoTouko/a2332b1756996d5e9c71605d0ff7591a">https://gist.github.com/HoshinoTouko/a2332b1756996d5e9c71605d0ff7591a</a> 获取 <code>.vscode/settings.json</code> 和 <code>.latexmkrc</code> ，下载后放置于对应目录即可工作。</p>
 <h2 id="手工执行"><a href="#手工执行" class="headerlink" title="手工执行"></a>手工执行</h2><p>也可以通过手工执行的方式对工程进行编译。下载上文的 <code>.latexmkrc</code> 放置于根目录，如果无法访问 gist ，也可以复制下方文件。然后确认自己的 <code>PowerShell</code> 工作于 <code>UTF-8</code> 编码下。确认 <code>PowerShell</code> 编码可以执行 <code>chcp</code> 命令。</p>
-<figure class="highlight plain"><figcaption><span>.latexmkrc</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$pdflatex&#x3D;q&#x2F;xelatex -synctex&#x3D;1 %O %S&#x2F;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><figcaption><span>.latexmkrc</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$pdflatex=q/xelatex -synctex=1 %O %S/</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight ps"><figcaption><span>确认 PowerShell 编码</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Research\undergraduate<span class="literal">-thesis</span>&gt; chcp</span><br><span class="line">Active code page: <span class="number">65001</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ps"><figcaption><span>确认 PowerShell 编码</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Research\undergraduate<span class="literal">-thesis</span>&gt; chcp</span><br><span class="line">Active code page: <span class="number">65001</span></span><br></pre></td></tr></table></figure>
 
 <p>如果 <code>Active code page</code> 是 65001 ，则该 PowerShell 运行于 <code>UTF-8</code> 编码下。如果不是，执行 <code>chcp 65001</code> 即可。如需更改默认 PowerShell 编码，可以通过以下方式。</p>
 <img src="/blog/2020/03/write-thesis-with-latex/Change-ps-to-UTF8.jpg" class="" title="Change ps to utf-8">
 
 <p>执行 </p>
-<figure class="highlight ps"><figcaption><span>使用 latexmk 调用 xelatex 编译 LaTeX 文档</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">latexmk <span class="literal">-xelatex</span> <span class="literal">-pdf</span> <span class="literal">-synctex</span>=<span class="number">1</span> <span class="literal">-interaction</span>=nonstopmode <span class="operator">-file</span><span class="literal">-line</span><span class="literal">-error</span> <span class="literal">-shell</span><span class="literal">-escape</span> <span class="literal">-outdir</span>=build ./main</span><br></pre></td></tr></table></figure>
+<figure class="highlight ps"><figcaption><span>使用 latexmk 调用 xelatex 编译 LaTeX 文档</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">latexmk <span class="literal">-xelatex</span> <span class="literal">-pdf</span> <span class="literal">-synctex</span>=<span class="number">1</span> <span class="literal">-interaction</span>=nonstopmode <span class="operator">-file</span><span class="literal">-line-error</span> <span class="literal">-shell-escape</span> <span class="literal">-outdir</span>=build ./main</span><br></pre></td></tr></table></figure>
 
 <p>即可在 <code>build/</code> 文件夹下完成工程构建。</p>
 <h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>其实我本来是想用 <code>overleaf</code> 的，但是觉得学位论文这种东西，在线保存有一定风险，还是握在自己手里比较好。所以我就捣鼓了几个小时，把环境都部署好跑起来了。本文提供的样例是武汉大学的，在 GitHub 或者 Google 根据关键词搜索，即可找到别的学校的同学制作的相关模板。例如</p>
 <ul>
-<li>浙江大学毕业设计/论文 LaTeX 模板 - <a href="https://github.com/TheNetAdmin/zjuthesis" target="_blank" rel="noopener">https://github.com/TheNetAdmin/zjuthesis</a><br>包含本科生、硕士生与博士生模板，以及英文硕博士模板</li>
-<li>Tsinghua University Thesis LaTeX Template - <a href="https://github.com/xueruini/thuthesis" target="_blank" rel="noopener">https://github.com/xueruini/thuthesis</a></li>
-<li>fduthesis - <a href="https://github.com/stone-zeng/fduthesis" target="_blank" rel="noopener">https://github.com/stone-zeng/fduthesis</a></li>
-<li>上海交通大学 XeLaTeX 学位论文及课程论文模板 - <a href="https://github.com/sjtug/SJTUThesis" target="_blank" rel="noopener">https://github.com/sjtug/SJTUThesis</a></li>
+<li>浙江大学毕业设计&#x2F;论文 LaTeX 模板 - <a target="_blank" rel="noopener" href="https://github.com/TheNetAdmin/zjuthesis">https://github.com/TheNetAdmin/zjuthesis</a><br>包含本科生、硕士生与博士生模板，以及英文硕博士模板</li>
+<li>Tsinghua University Thesis LaTeX Template - <a target="_blank" rel="noopener" href="https://github.com/xueruini/thuthesis">https://github.com/xueruini/thuthesis</a></li>
+<li>fduthesis - <a target="_blank" rel="noopener" href="https://github.com/stone-zeng/fduthesis">https://github.com/stone-zeng/fduthesis</a></li>
+<li>上海交通大学 XeLaTeX 学位论文及课程论文模板 - <a target="_blank" rel="noopener" href="https://github.com/sjtug/SJTUThesis">https://github.com/sjtug/SJTUThesis</a></li>
 <li>…</li>
 </ul>
 <p>希望大家度过一个特殊又充实的毕业论文假期</p>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li>武汉大学毕业论文 LaTeX 模版 2019 - <a href="https://github.com/mtobeiyf/whu-thesis" target="_blank" rel="noopener">https://github.com/mtobeiyf/whu-thesis</a></li>
-<li>How to make LaTeXmk work with XeLaTeX and biber - <a href="https://tex.stackexchange.com/questions/27450/how-to-make-latexmk-work-with-xelatex-and-biber" target="_blank" rel="noopener">https://tex.stackexchange.com/questions/27450/how-to-make-latexmk-work-with-xelatex-and-biber</a></li>
-<li>Using Latexmk - <a href="https://mg.readthedocs.io/latexmk.html" target="_blank" rel="noopener">https://mg.readthedocs.io/latexmk.html</a></li>
-<li>How do I run bibtex after using the -output-directory flag with pdflatex, when files are included from subdirectories? - <a href="https://tex.stackexchange.com/questions/12686/how-do-i-run-bibtex-after-using-the-output-directory-flag-with-pdflatex-when-f" target="_blank" rel="noopener">https://tex.stackexchange.com/questions/12686/how-do-i-run-bibtex-after-using-the-output-directory-flag-with-pdflatex-when-f</a></li>
-<li>CTAN 镜像使用帮助 - <a href="https://mirror.tuna.tsinghua.edu.cn/help/CTAN/" target="_blank" rel="noopener">https://mirror.tuna.tsinghua.edu.cn/help/CTAN/</a></li>
-<li>LaTeX-Workshop GitHub - <a href="https://github.com/James-Yu/LaTeX-Workshop" target="_blank" rel="noopener">https://github.com/James-Yu/LaTeX-Workshop</a></li>
+<li>武汉大学毕业论文 LaTeX 模版 2019 - <a target="_blank" rel="noopener" href="https://github.com/mtobeiyf/whu-thesis">https://github.com/mtobeiyf/whu-thesis</a></li>
+<li>How to make LaTeXmk work with XeLaTeX and biber - <a target="_blank" rel="noopener" href="https://tex.stackexchange.com/questions/27450/how-to-make-latexmk-work-with-xelatex-and-biber">https://tex.stackexchange.com/questions/27450/how-to-make-latexmk-work-with-xelatex-and-biber</a></li>
+<li>Using Latexmk - <a target="_blank" rel="noopener" href="https://mg.readthedocs.io/latexmk.html">https://mg.readthedocs.io/latexmk.html</a></li>
+<li>How do I run bibtex after using the -output-directory flag with pdflatex, when files are included from subdirectories? - <a target="_blank" rel="noopener" href="https://tex.stackexchange.com/questions/12686/how-do-i-run-bibtex-after-using-the-output-directory-flag-with-pdflatex-when-f">https://tex.stackexchange.com/questions/12686/how-do-i-run-bibtex-after-using-the-output-directory-flag-with-pdflatex-when-f</a></li>
+<li>CTAN 镜像使用帮助 - <a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/CTAN/">https://mirror.tuna.tsinghua.edu.cn/help/CTAN/</a></li>
+<li>LaTeX-Workshop GitHub - <a target="_blank" rel="noopener" href="https://github.com/James-Yu/LaTeX-Workshop">https://github.com/James-Yu/LaTeX-Workshop</a></li>
 </ul>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/write-thesis-with-latex/">https://wasteland.touko.moe//blog/2020/03/write-thesis-with-latex/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2020/03/write-thesis-with-latex/">https://wasteland.touko.moe//blog/2020/03/write-thesis-with-latex/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
     </div>
 
@@ -410,13 +410,10 @@
           
       <div class="tabs tabs-comment">
         <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
             <li class="tab"><a href="#comment-disqus">disqus</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
             <div class="tab-pane disqus" id="comment-disqus">
               
   <div class="comments">
@@ -425,6 +422,9 @@
     </div>
   </div>
   
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
             </div>
         </div>
       </div>
@@ -474,7 +474,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备写论文"><span class="nav-number">1.</span> <span class="nav-text">准备写论文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境配置"><span class="nav-number">2.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Perl"><span class="nav-number">2.1.</span> <span class="nav-text">Perl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LaTeX"><span class="nav-number">2.2.</span> <span class="nav-text">LaTeX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCode"><span class="nav-number">2.3.</span> <span class="nav-text">VSCode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手工执行"><span class="nav-number">2.4.</span> <span class="nav-text">手工执行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写在最后"><span class="nav-number">3.</span> <span class="nav-text">写在最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%86%99%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">准备写论文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Perl"><span class="nav-number">2.1.</span> <span class="nav-text">Perl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LaTeX"><span class="nav-number">2.2.</span> <span class="nav-text">LaTeX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCode"><span class="nav-number">2.3.</span> <span class="nav-text">VSCode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E6%89%A7%E8%A1%8C"><span class="nav-number">2.4.</span> <span class="nav-text">手工执行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-number">3.</span> <span class="nav-text">写在最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -568,7 +568,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
@@ -731,26 +731,6 @@ window.addEventListener('pjax:success', () => {
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '6e3b778b69268ae5e923',
-      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
-      repo        : 'gitalk-wasteland',
-      owner       : 'HoshinoTouko',
-      admin       : ['HoshinoTouko'],
-      id          : '5262a5dd6f2b7adf210d762b73f3cba8',
-        language: '',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://wasteland.touko.moe/blog/2020/03/write-thesis-with-latex/";
@@ -770,6 +750,26 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6e3b778b69268ae5e923',
+      clientSecret: '9025af071807d6ff552d25ed4be80b1af08b9a8c',
+      repo        : 'gitalk-wasteland',
+      owner       : 'HoshinoTouko',
+      admin       : ['HoshinoTouko'],
+      id          : '5262a5dd6f2b7adf210d762b73f3cba8',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
 </script>
 
     </div>

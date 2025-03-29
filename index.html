@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -22,7 +22,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wasteland.touko.moe","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":0},"disqus":{"order":1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta property="og:type" content="website">
@@ -262,7 +262,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>惊闻米家官方接入了 Home Assistant（HA），我也是连忙重新捡起被废弃了很久的 Home Assistant。由于我的 Homelab 经过了多次升级和架构调整，已经完成了存算完全分离的架构，与<a href="/blog/2020/07/raspi-as-router/" title="之前的架构">之前的架构</a>完全不同。我也会在后期重新详细介绍现有的 Homelab 架构。</p>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>惊闻米家官方接入了 Home Assistant（HA），我也是连忙重新捡起被废弃了很久的 Home Assistant。由于我的 Homelab 经过了多次升级和架构调整，已经完成了存算完全分离的架构，与<a href="/blog/2020/07/raspi-as-router/" title="在树莓派上运行 OpenWrt 作为软路由">之前的架构</a>完全不同。我也会在后期重新详细介绍现有的 Homelab 架构。</p>
 <p>在本章中，我将着重介绍我如何通过 MQTT 和 luci-app-statistics 工具将 OpenWRT 的统计信息悉数同步至 HomeAssistant，做到如下的 Infrastructure 看板。</p>
 <img src="/blog/2025/03/ha-mqtt-openwrt/0.dashboard.jpg" class="" title="Home Assistant 上的 OpenWRT 预览">
           <!--noindex-->
@@ -332,8 +332,8 @@
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相册这种东西，堆着堆着就几万张了。粗略看了一下统计，我存放在 iCloud 上的相册中包含了 45k 张照片，在 Google Photos 上的相册有 30k 左右的照片。这些照片的成分也很复杂，包括日常拍照、屏幕截图和一堆纸片人图。因此，我需要一种方式管理这些照片。</p>
 <p>我的初步想法是，将照片同步至本地 NAS，使用自建工具进行管理。我本地使用的是群晖。即使是群晖这种较为成熟的 NAS 系统，也只有和 Google Drive 进行同步的工具，无法和 iCloud 进行同步。甚至在 Google Drive 同步工具中，也无法和相册进行同步。好消息是很多个人开发者开发了用于同步相册的工具。本文将记录这些工具的部署流程和使用方法。</p>
-<h1 id="相册同步工具"><a href="#相册同步工具" class="headerlink" title="相册同步工具"></a>相册同步工具</h1><h2 id="Google-Photos"><a href="#Google-Photos" class="headerlink" title="Google Photos"></a>Google Photos</h2><p>我搜索到两个主流的、已经封装好 Docker 镜像的 Google Photos 同步工具，分别是 <a href="https://github.com/JakeWharton/docker-gphotos-sync" target="_blank" rel="noopener">https://github.com/JakeWharton/docker-gphotos-sync</a> 和 <a href="https://github.com/gilesknap/gphotos-sync" target="_blank" rel="noopener">https://github.com/gilesknap/gphotos-sync</a>。其中，前者需要使用 <code>chromium-browser</code> 登陆谷歌账号进行验证，后者需要通过 GCP 创建 OAuth API 进行账户验证。我本人更喜欢后者的方式，因此选择后者作为本地使用的同步工具。</p>
-<h3 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h3><p>后者的配置方式在 <a href="https://gilesknap.github.io/gphotos-sync/main/index.html" target="_blank" rel="noopener">文档</a> 中有详细介绍，此处做个总结。</p>
+<h1 id="相册同步工具"><a href="#相册同步工具" class="headerlink" title="相册同步工具"></a>相册同步工具</h1><h2 id="Google-Photos"><a href="#Google-Photos" class="headerlink" title="Google Photos"></a>Google Photos</h2><p>我搜索到两个主流的、已经封装好 Docker 镜像的 Google Photos 同步工具，分别是 <a target="_blank" rel="noopener" href="https://github.com/JakeWharton/docker-gphotos-sync">https://github.com/JakeWharton/docker-gphotos-sync</a> 和 <a target="_blank" rel="noopener" href="https://github.com/gilesknap/gphotos-sync">https://github.com/gilesknap/gphotos-sync</a>。其中，前者需要使用 <code>chromium-browser</code> 登陆谷歌账号进行验证，后者需要通过 GCP 创建 OAuth API 进行账户验证。我本人更喜欢后者的方式，因此选择后者作为本地使用的同步工具。</p>
+<h3 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h3><p>后者的配置方式在 <a target="_blank" rel="noopener" href="https://gilesknap.github.io/gphotos-sync/main/index.html">文档</a> 中有详细介绍，此处做个总结。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/blog/2022/06/photo-sync-from-cloud-to-nas/#more" rel="contents">
@@ -405,9 +405,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>心心念念 <a href="https://github.com/mastodon/mastodon" target="_blank" rel="noopener">Mastodon</a> 将近两年了，昨天终于打起精神，尝试自己部署一个。作为一名十年微博用户，我对社交网络的需求已经逐渐减少，但仍希望有一个干净的、能够自由交流的工具。因此，我决定部署属于自己的 Mastodon 实例。</p>
-<h2 id="部署前准备"><a href="#部署前准备" class="headerlink" title="部署前准备"></a>部署前准备</h2><p>据我所知，Mastodon 实例对机器性能的要求较高，特别是对内存的需求。考虑这些，决定在 Homelab 部署 Mastodon 实例。但问题依然存在，为了维护双向关系，Mastodon 要求在互联网公开，因此我使用 <a href="https://www.cloudflare.com/products/zero-trust/zero-trust-network-access/" target="_blank" rel="noopener">CloudFlare ZeroTrust Tunnel</a> 将其公开至互联网。</p>
-<p>机器我选用了长期吃灰的 昂达 H310SD3-ITX 作为平台，CPU 选用 Intel Pentium G4500T 2c/4t，内存为两条 8G DDR3 AMD 专用条。即使该平台比较老旧，但仍足够胜任一般的 Web 服务器需求。</p>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>心心念念 <a target="_blank" rel="noopener" href="https://github.com/mastodon/mastodon">Mastodon</a> 将近两年了，昨天终于打起精神，尝试自己部署一个。作为一名十年微博用户，我对社交网络的需求已经逐渐减少，但仍希望有一个干净的、能够自由交流的工具。因此，我决定部署属于自己的 Mastodon 实例。</p>
+<h2 id="部署前准备"><a href="#部署前准备" class="headerlink" title="部署前准备"></a>部署前准备</h2><p>据我所知，Mastodon 实例对机器性能的要求较高，特别是对内存的需求。考虑这些，决定在 Homelab 部署 Mastodon 实例。但问题依然存在，为了维护双向关系，Mastodon 要求在互联网公开，因此我使用 <a target="_blank" rel="noopener" href="https://www.cloudflare.com/products/zero-trust/zero-trust-network-access/">CloudFlare ZeroTrust Tunnel</a> 将其公开至互联网。</p>
+<p>机器我选用了长期吃灰的 昂达 H310SD3-ITX 作为平台，CPU 选用 Intel Pentium G4500T 2c&#x2F;4t，内存为两条 8G DDR3 AMD 专用条。即使该平台比较老旧，但仍足够胜任一般的 Web 服务器需求。</p>
 <h2 id="关于这篇文章"><a href="#关于这篇文章" class="headerlink" title="关于这篇文章"></a>关于这篇文章</h2><p>Mastodon 的官方文档对使用纯 Docker 环境部署并不友好。因此，这篇文章主要对 Mastodon 使用 Docker Compose 部署做记录。当然也包括如何安全地将内网服务器暴露至公网。</p>
 <h1 id="Mastodon-部署流程"><a href="#Mastodon-部署流程" class="headerlink" title="Mastodon 部署流程"></a>Mastodon 部署流程</h1><p>经过摸索后，在集群内使用 Docker compose 起一个 Mastodon 实例仅需两个配置文件+少量部署操作。<code>docker-compose.yml</code> 如下，由官方 Github 仓库中获取并微调。</p>
 <p>由于该配置文件直接上了 <code>production</code> 环境，会强制 301 到 HTTPS。在测试环境中需要 Web 服务器反代并做好 SSL 配置。我在本地使用 <code>traefik</code> 作为 Web 服务器。</p>
@@ -485,7 +485,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 <a href="https://standardnotes.com/" target="_blank" rel="noopener">Standard Notes</a> 和 <a href="https://www.getoutline.com/" target="_blank" rel="noopener">Outline</a> 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。</p>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为有私有记录笔记和维护版本的需求，我进行了一系列的调研，并最终选中了 <a target="_blank" rel="noopener" href="https://standardnotes.com/">Standard Notes</a> 和 <a target="_blank" rel="noopener" href="https://www.getoutline.com/">Outline</a> 两款产品。我先尝试上手部署了 Standard Notes 并试用，前后时间约一天。在本文中，我对其部署和使用做一个简单的记录。</p>
 <p>近年来各类文档编辑工具类目繁多且各有特色。我最初接触的在线文档是石墨，后来随着需求和环境的变化，以及在线办公的普及，还曾使用了钉钉、企业微信等以中国大陆互联网企业为开发主体的文档工具，和 Notion 等更加国际化的文档。从使用的便捷程度和完善程度上说，我个人倾向于使用国际化的文档工具。</p>
 <p>但是，我使用在线文档在大多数情况下是为了和协作者进行信息共享。因此在更多的时间里，我会使用例如 Typora 这类的本地 Markdown 编辑工具，加上 Syncthing 进行多端同步以保证数据可靠。随着 Typora 的收费和 Beta 版本的完全禁用，我决定寻找一个更安全、方便的文档编辑和同步方式。</p>
 <h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>在部署部分，我着重记录官网文档中提及甚少的部分，如一些功能的不可用、插件的部署。</p>
@@ -579,24 +579,24 @@
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天早上收到一条提醒，用来做梯子的腾讯云机器被提示封禁了。</p>
 <blockquote>
-<p>尊敬的腾讯云用户，您好！<br>您的腾讯云账号（账号ID: <strong>*****</strong>， 昵称: <strong>**</strong>）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！<br>违规类型：存在通过技术手段使其成为跨境访问节点等行为<br>违规URL：N/A<br>违规域名：N/A<br>违规标识：101.32.26.12</p>
+<p>尊敬的腾讯云用户，您好！<br>您的腾讯云账号（账号ID: *********， 昵称: ******）下的Lighthouse服务存在违规信息，涉嫌违反相关法律法规和政策，101.32.26.12已被限制访问，感谢您理解和支持！<br>违规类型：存在通过技术手段使其成为跨境访问节点等行为<br>违规URL：N&#x2F;A<br>违规域名：N&#x2F;A<br>违规标识：101.32.26.12</p>
 </blockquote>
 <p>遂怀疑是腾讯云可能存在和阿里云类似的监控用户隐私的类云盾功能，结果确实检索到了相关信息。</p>
 <h1 id="处理腾讯云安全（审查）组件"><a href="#处理腾讯云安全（审查）组件" class="headerlink" title="处理腾讯云安全（审查）组件"></a>处理腾讯云安全（审查）组件</h1><p>理论上，现在新创建的所有服务器，包括轻量都预装了这个组件。通过以下命令检查是否被插了后门。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -A | grep agent</span><br></pre></td></tr></table></figure>
 
 <p>这时候你会看到</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@VM-4-9-debian:~<span class="comment"># ps -A | grep agent</span></span><br><span class="line">   1229 ?        00:00:00 sgagent</span><br><span class="line">   1282 ?        00:00:00 barad_agent</span><br><span class="line">   1288 ?        00:00:00 barad_agent</span><br><span class="line">   1289 ?        00:00:00 barad_agent</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@VM-4-9-debian:~# ps -A | grep agent</span><br><span class="line">   1229 ?        00:00:00 sgagent</span><br><span class="line">   1282 ?        00:00:00 barad_agent</span><br><span class="line">   1288 ?        00:00:00 barad_agent</span><br><span class="line">   1289 ?        00:00:00 barad_agent</span><br></pre></td></tr></table></figure>
 
 <p>果然是插满了后门啊。</p>
 <p>解决方法很简单，参考 hostloc 论坛帖子提供的方法，直接在ssh执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sudo -i</span><br><span class="line">systemctl stop tat_agent</span><br><span class="line">systemctl <span class="built_in">disable</span> tat_agent</span><br><span class="line">/usr/<span class="built_in">local</span>/qcloud/stargate/admin/uninstall.sh</span><br><span class="line">/usr/<span class="built_in">local</span>/qcloud/YunJing/uninst.sh</span><br><span class="line">/usr/<span class="built_in">local</span>/qcloud/monitor/barad/admin/uninstall.sh</span><br><span class="line">rm -f /etc/systemd/system/tat_agent.service</span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/qcloud</span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/sa</span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/agenttools</span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/qcloud</span><br><span class="line">process=(sap100 secu-tcs-agent sgagent64 barad_agent agent agentPlugInD pvdriver )</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$&#123;process[@]&#125;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  <span class="keyword">for</span> A <span class="keyword">in</span> $(ps aux | grep <span class="variable">$i</span> | grep -v grep | awk <span class="string">'&#123;print $2&#125;'</span>)</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    <span class="built_in">kill</span> -9 <span class="variable">$A</span></span><br><span class="line">  <span class="keyword">done</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> -i</span><br><span class="line">systemctl stop tat_agent</span><br><span class="line">systemctl <span class="built_in">disable</span> tat_agent</span><br><span class="line">/usr/local/qcloud/stargate/admin/uninstall.sh</span><br><span class="line">/usr/local/qcloud/YunJing/uninst.sh</span><br><span class="line">/usr/local/qcloud/monitor/barad/admin/uninstall.sh</span><br><span class="line"><span class="built_in">rm</span> -f /etc/systemd/system/tat_agent.service</span><br><span class="line"><span class="built_in">rm</span> -rf /usr/local/qcloud</span><br><span class="line"><span class="built_in">rm</span> -rf /usr/local/sa</span><br><span class="line"><span class="built_in">rm</span> -rf /usr/local/agenttools</span><br><span class="line"><span class="built_in">rm</span> -rf /usr/local/qcloud</span><br><span class="line">process=(sap100 secu-tcs-agent sgagent64 barad_agent agent agentPlugInD pvdriver )</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$&#123;process[@]&#125;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  <span class="keyword">for</span> A <span class="keyword">in</span> $(ps aux | grep <span class="variable">$i</span> | grep -v grep | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>)</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    <span class="built_in">kill</span> -9 <span class="variable">$A</span></span><br><span class="line">  <span class="keyword">done</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 
 <p>即可。最后再使用 <code>ps -A | grep agent</code> 检查一次。</p>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a href="https://hostloc.com/thread-1004087-1-1.html" target="_blank" rel="noopener">https://hostloc.com/thread-1004087-1-1.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://hostloc.com/thread-1004087-1-1.html">https://hostloc.com/thread-1004087-1-1.html</a></li>
 </ul>
-<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/uninst-txagent/">https://wasteland.touko.moe//blog/2022/05/uninst-txagent/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+<p>———— <br/>License: <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2022/05/uninst-txagent/">https://wasteland.touko.moe//blog/2022/05/uninst-txagent/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
 
       
     </div>
@@ -679,7 +679,7 @@
 
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>拖延症是这样的，从抽屉里翻出了半年前买的、打算做软路由的 T620 Plus。这一拖就是半年，这次准备给它部署 Openwrt，替代目前使用的单口软路由。</p>
-<p>T620 Plus 应该被不少人推荐过，包括 B 站 UP 主司波图 <a href="https://www.bilibili.com/video/BV1J54y1m7ar。这台机器的" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1J54y1m7ar。这台机器的</a> CPU 性能超过 J1900，且带 AES 指令集，从性能上看绰绰有余，甚至可以安装一些虚拟化应用。</p>
+<p>T620 Plus 应该被不少人推荐过，包括 B 站 UP 主司波图 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J54y1m7ar%E3%80%82%E8%BF%99%E5%8F%B0%E6%9C%BA%E5%99%A8%E7%9A%84">https://www.bilibili.com/video/BV1J54y1m7ar。这台机器的</a> CPU 性能超过 J1900，且带 AES 指令集，从性能上看绰绰有余，甚至可以安装一些虚拟化应用。</p>
 <h2 id="老家伙"><a href="#老家伙" class="headerlink" title="老家伙"></a>老家伙</h2><p>之前我使用的软路由是 1037U + 定制亚克力外壳。1037U 作为软路由来说，性能已经足够，就算用来科学上网也能够跑到 500Mbps 左右。但我使用的定制外壳防尘性能较差，处理器散热器已经有一定的积灰，且有时候会莫名卡死。且当前软路由只有一个网口，我将其以单臂路由的形式下挂在连接到光猫的交换机上，链路重复利用，可能也会导致某些不可知的问题。因此，我将其更换为 T620 Plus。</p>
 <img src="/blog/2021/10/t620-plus-openwrt/old_1037u.jpg" class="" title="老路由：1037U">
 
@@ -777,25 +777,25 @@
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>老是忘记怎么在 Ubuntu 上安装 CUDA，每次有新机器都要在环境恶劣的互联网上寻找各种不靠谱又容易炸的教程。还是简单做个总结，关于如何安装炼丹人必备的依赖 <code>CUDA</code>。</p>
 <h2 id="一些链接"><a href="#一些链接" class="headerlink" title="一些链接"></a>一些链接</h2><ul>
-<li>CUDA GPU Capability <a href="https://developer.nvidia.com/cuda-gpus" target="_blank" rel="noopener">https://developer.nvidia.com/cuda-gpus</a></li>
-<li>CUDA Zone <a href="https://developer.nvidia.com/CUDA-zone" target="_blank" rel="noopener">https://developer.nvidia.com/CUDA-zone</a></li>
+<li>CUDA GPU Capability <a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-gpus">https://developer.nvidia.com/cuda-gpus</a></li>
+<li>CUDA Zone <a target="_blank" rel="noopener" href="https://developer.nvidia.com/CUDA-zone">https://developer.nvidia.com/CUDA-zone</a></li>
 </ul>
 <h1 id="安装流程"><a href="#安装流程" class="headerlink" title="安装流程"></a>安装流程</h1><h2 id="安装前准备"><a href="#安装前准备" class="headerlink" title="安装前准备"></a>安装前准备</h2><p>先看看机器的版本号啥的</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo lsb_release -a</span><br><span class="line"></span><br><span class="line">No LSB modules are available.</span><br><span class="line">Distributor ID: Ubuntu</span><br><span class="line">Description:    Ubuntu 18.04.2 LTS</span><br><span class="line">Release:        18.04</span><br><span class="line">Codename:       bionic</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> lsb_release -a</span><br><span class="line"></span><br><span class="line">No LSB modules are available.</span><br><span class="line">Distributor ID: Ubuntu</span><br><span class="line">Description:    Ubuntu 18.04.2 LTS</span><br><span class="line">Release:        18.04</span><br><span class="line">Codename:       bionic</span><br></pre></td></tr></table></figure>
 
 <p>再看看显卡在不在</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lspci | grep NVIDIA</span><br><span class="line"></span><br><span class="line">18:00.0 3D controller: NVIDIA Corporation Device 1eb8 (rev a1)</span><br><span class="line">af:00.0 3D controller: NVIDIA Corporation Device 1eb8 (rev a1)</span><br></pre></td></tr></table></figure>
 
 <p>再换个源。机器在深圳，用科大了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i <span class="string">'s/archive.ubuntu.com/mirrors.ustc.edu.cn/g'</span> /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> sed -i <span class="string">&#x27;s/archive.ubuntu.com/mirrors.ustc.edu.cn/g&#x27;</span> /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
 
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Step-1：安装-ubuntu-drivers-并配置驱动"><a href="#Step-1：安装-ubuntu-drivers-并配置驱动" class="headerlink" title="Step 1：安装 ubuntu-drivers 并配置驱动"></a>Step 1：安装 <code>ubuntu-drivers</code> 并配置驱动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install ubuntu-drivers-common -y</span><br></pre></td></tr></table></figure>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Step-1：安装-ubuntu-drivers-并配置驱动"><a href="#Step-1：安装-ubuntu-drivers-并配置驱动" class="headerlink" title="Step 1：安装 ubuntu-drivers 并配置驱动"></a>Step 1：安装 <code>ubuntu-drivers</code> 并配置驱动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install ubuntu-drivers-common -y</span><br></pre></td></tr></table></figure>
 
 <p>运行</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ubuntu-drivers devices</span><br><span class="line"></span><br><span class="line">== /sys/devices/pci0000:17/0000:17:00.0/0000:18:00.0 ==</span><br><span class="line">modalias : pci:balabalabala</span><br><span class="line">vendor   : NVIDIA Corporation</span><br><span class="line">driver   : nvidia-driver-440-server - distro non-free</span><br><span class="line">driver   : nvidia-driver-450-server - distro non-free</span><br><span class="line">driver   : nvidia-driver-455 - distro non-free recommended</span><br><span class="line">driver   : nvidia-driver-450 - distro non-free</span><br><span class="line">driver   : nvidia-driver-418-server - distro non-free</span><br><span class="line">driver   : xserver-xorg-video-nouveau - distro free <span class="built_in">builtin</span></span><br></pre></td></tr></table></figure>
 
 <p>装那个 recommended 的</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install nvidia-driver-455</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install nvidia-driver-455</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/blog/2020/12/install-cuda-on-ubuntu/#more" rel="contents">
@@ -897,7 +897,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">主板 / CPU</td>
+<td align="center">主板 &#x2F; CPU</td>
 <td align="center">1037u 集成主板</td>
 </tr>
 <tr>
@@ -1146,7 +1146,7 @@
 <p>解决方案是在小米路由器的上级部署软路由，将原本放在小米路由器内网的软路由移动到光猫内网。我先用树莓派 4 作为软路由进行测试，另一块 1037U 主板在路上。光猫只有一个千兆网口，但是恰好前些时间我买了台网件的 GS105 ，得以在光猫的内网中接入更多千兆设备。</p>
 <img src="/blog/2020/07/raspi-as-router/1.netgear-gs105.jpg" class="" title="网件 GS105 交换机">
 
-<p>这是一个五口非网管型交换机，自适应 10/100/1000M，带指示灯，发热量不大，价格百元内。这样一来，网络拓扑就可以进行下面的改动</p>
+<p>这是一个五口非网管型交换机，自适应 10&#x2F;100&#x2F;1000M，带指示灯，发热量不大，价格百元内。这样一来，网络拓扑就可以进行下面的改动</p>
 <img src="/blog/2020/07/raspi-as-router/2.change-of-topology.jpg" class="" title="网络拓扑变化">
 
 <p>将内网的 DHCP 分发任务交给小米路由，允许小米路由 app 完全发挥功能，带来更严格的 WiFi 接入控制和 Mesh 组网体验。另一方面，改变静态 IP 配置将小米路由的网关设置为软路由地址，让其流量通过作为软单臂路由的树莓派，达到科学上网等目的。</p>
@@ -1323,7 +1323,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Touko Hoshino</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v7.3.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2

@@ -195,8 +195,8 @@ social:
   #YouTube: https://youtube.com/yourname || youtube
   #Instagram: https://instagram.com/yourname || instagram
   #Skype: skype:yourname?call|chat || skype
-  Mastodon: https://meteor.insky.jp/web/@touko || fab fa-question
-  RSS: ./atom.xml || rss
+  # Mastodon: https://meteor.insky.jp/web/@touko || fab fa-question
+  RSS: ./atom.xml || fa fa-rss
 
 social_icons:
   enable: true

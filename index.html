@@ -210,6 +210,87 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Touko Hoshino">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wasteland">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2025/03/ha-mqtt-openwrt/" class="post-title-link" itemprop="url">在 Home Assistant 收集 OpenWRT 数据</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2025-03-29 20:40:44 / Modified: 21:59:04" itemprop="dateCreated datePublished" datetime="2025-03-29T20:40:44+08:00">2025-03-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/Router/" itemprop="url" rel="index"><span itemprop="name">Router</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>惊闻米家官方接入了 Home Assistant（HA），我也是连忙重新捡起被废弃了很久的 Home Assistant。由于我的 Homelab 经过了多次升级和架构调整，已经完成了存算完全分离的架构，与<a href="/blog/2020/07/raspi-as-router/" title="之前的架构">之前的架构</a>完全不同。我也会在后期重新详细介绍现有的 Homelab 架构。</p>
+<p>在本章中，我将着重介绍我如何通过 MQTT 和 luci-app-statistics 工具将 OpenWRT 的统计信息悉数同步至 HomeAssistant，做到如下的 Infrastructure 看板。</p>
+<img src="/blog/2025/03/ha-mqtt-openwrt/0.dashboard.jpg" class="" title="Home Assistant 上的 OpenWRT 预览">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/blog/2025/03/ha-mqtt-openwrt/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2022/06/photo-sync-from-cloud-to-nas/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1092,83 +1173,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://wasteland.touko.moe/blog/2020/06/run-hass-on-raspberry/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="Touko Hoshino">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wasteland">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/blog/2020/06/run-hass-on-raspberry/" class="post-title-link" itemprop="url">在树莓派上运行 Home Assistant，支持米家等 IoT 设备接入 HomeKit</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-06-20 15:22:08" itemprop="dateCreated datePublished" datetime="2020-06-20T15:22:08+08:00">2020-06-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-11-21 21:17:34" itemprop="dateModified" datetime="2020-11-21T21:17:34+08:00">2020-11-21</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="捡了块树莓派"><a href="#捡了块树莓派" class="headerlink" title="捡了块树莓派"></a>捡了块树莓派</h2><p>临时被叫回学校办毕业手续，想起当年（五年前）我在淘宝买了块树莓派 2B，给家里做了个通过 HTTP 代理自动分流国内外流量的工具。那块树莓派被我带到了学校，放着吃灰三年多了。这次回学校，就顺手把这块树莓派带了回来。</p>
-<p>最近优化了家里的网络，大学四年也断断续续买了不少米家的 IoT 设备。米家设备能够原生支持 HomeKit 也应该只是最近的事，我手上只有一个台灯、三个智能插座能够加入 HomeKit 管理。因此，我打算把这台树莓派挂在 IoT 设备专用中继路由器下，作为一个中介，将其他无法原生支持 HomeKit 的米家设备接入 HomeKit，实现统一管理。</p>
-<p>为什么我不直接用米家做管理呢？一是米家的操作逻辑比较恼人；二是米家无法长期运行于后台，一些和离家、回家相关的自动化逻辑无法很好的运行。接入 HomeKit 后，这种情况会得到一定的改善。</p>
-<h2 id="桥接平台的选择"><a href="#桥接平台的选择" class="headerlink" title="桥接平台的选择"></a>桥接平台的选择</h2><p>通过资料调查和实际测试，我最终选择了 Home Assistant 作为接入智能家居设备的平台。同类解决方案还有很多，比如同样提供智能家居接入方案的 Home Bridge，ioBroker 等。我同时尝试了 Home Bridge，但是由于米家相关插件文档模糊，接入后无法正常连接挂载在网关的设备，最终作罢。</p>
-<p>其实 Home Assistant 的安装也并不容易。安装过程存在各种各样的问题和 bug，我尝试了非常多种方案才成功运行。</p>
-<h1 id="树莓派的初步配置"><a href="#树莓派的初步配置" class="headerlink" title="树莓派的初步配置"></a>树莓派的初步配置</h1><h2 id="SD-卡安装树莓派系统"><a href="#SD-卡安装树莓派系统" class="headerlink" title="SD 卡安装树莓派系统"></a>SD 卡安装树莓派系统</h2><p>我掏出了之前留在机器上的传家宝 TF 卡 三星 EVO+ 32G，不料卡在经过几次刷写后，自动写保护了。于是我又从 NS 里掏出了从 tb 20 RMB 买的朗科 32G TF 卡。现在 TF 卡的价格真的越来越便宜了，我打算屯一堆，免得弄坏了没有替换卡。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/blog/2020/06/run-hass-on-raspberry/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1240,7 +1244,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/blog">
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1251,7 +1255,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -1267,7 +1271,7 @@
         <a href="https://twitter.com/HoshinoTouko" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;HoshinoTouko" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.popiask.cn/touko_h" title="Popi → https:&#x2F;&#x2F;www.popiask.cn&#x2F;touko_h" rel="noopener" target="_blank"><i class="fa fa-fw fa-question"></i>Popi</a>
+        <a href="https://meteor.insky.jp/web/@touko" title="Mastodon → https:&#x2F;&#x2F;meteor.insky.jp&#x2F;web&#x2F;@touko" rel="noopener" target="_blank"><i class="fa fa-fw fa-question"></i>Mastodon</a>
       </span>
       <span class="links-of-author-item">
         <a href="/./atom.xml" title="RSS → .&#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
@@ -1313,7 +1317,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

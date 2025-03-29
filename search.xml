@@ -1,6 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>在 Home Assistant 收集 OpenWRT 数据</title>
+    <url>//blog/2025/03/ha-mqtt-openwrt/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>惊闻米家官方接入了 Home Assistant（HA），我也是连忙重新捡起被废弃了很久的 Home Assistant。由于我的 Homelab 经过了多次升级和架构调整，已经完成了存算完全分离的架构，与<a href="/blog/2020/07/raspi-as-router/" title="之前的架构">之前的架构</a>完全不同。我也会在后期重新详细介绍现有的 Homelab 架构。</p>
+<p>在本章中，我将着重介绍我如何通过 MQTT 和 luci-app-statistics 工具将 OpenWRT 的统计信息悉数同步至 HomeAssistant，做到如下的 Infrastructure 看板。</p>
+<img src="/blog/2025/03/ha-mqtt-openwrt/0.dashboard.jpg" class="" title="Home Assistant 上的 OpenWRT 预览">
+
+<a id="more"></a>
+
+<h2 id="Home-Assistant-安装和米家接入"><a href="#Home-Assistant-安装和米家接入" class="headerlink" title="Home Assistant 安装和米家接入"></a>Home Assistant 安装和米家接入</h2><p>由于 Homelab 架构的大部分程序运行于 Docker。因此，HA 的部署完全基于 Docker。这种架构保证了我运行的所有应用程序部署足够简单且极易维护。</p>
+<p>启动一个 HA 实例只需要以下一个 <code>docker compose</code> 文件</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">homeassistant:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">homeassistant</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">"ghcr.io/home-assistant/home-assistant:stable"</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./config:/config</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/run/dbus:/run/dbus:ro</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br></pre></td></tr></table></figure>
+
+<p>推荐将 <code>/config</code> 文件夹持久化保存且对外暴露，保证后期维护方便。</p>
+<p><a href="https://github.com/XiaoMi/ha_xiaomi_home" target="_blank" rel="noopener">米家集成</a>的接入我选择通过 The Home Assistant Community Store (HACS)。这是一个社区维护的类似 HA 应用商店的东西。Docker 安装的 HA 需要进入 Docker Container 的 bash 进行手动安装。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it <span class="string">'&lt;name of the container running homeassistant&gt;'</span> bash</span><br><span class="line">wget -O - https://get.hacs.xyz | bash -</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后重启 HA，HACS 即生效。</p>
+<p>在 HACS 中搜索 <code>Xiaomi</code>，安装插件</p>
+<img src="/blog/2025/03/ha-mqtt-openwrt/1.hacs-xiaomi-install.jpg" class="" title="HACS 安装米家官方集成">
+
+<p>重启 HA。在 Setting - Devices 中添加 Xiaomi 插件，一路下一步，登录自己的手机账号，处理好验证接口的回调跳转，几乎所有米家设备都能无缝接入。</p>
+<h2 id="接入-OpenWRT-数据"><a href="#接入-OpenWRT-数据" class="headerlink" title="接入 OpenWRT 数据"></a>接入 OpenWRT 数据</h2><p>HA 设计之初是作为家庭设备的管理中枢，统一管理所有 IoT 设备。路由器在某种意义上也是一个 IoT 设备，我认为一定有人造过相关的轮子，允许 HA 接收 OpenWRT 的上报数据。在理论上，想要实现这个效果，有两种方法：（1）HA 主动轮询 OpenWRT，采集数据；（2）OpenWRT 主动定时上报数据给 HA。经过我的搜索，数据较为详细、自定义程度更高的方案，是由 OpenWRT 主动上报数据给一个 Message Queuing Telemetry Transport（MQTT）服务器，HA 再主动从 MQTT 服务器上获取数据。</p>
+<h3 id="MQTT-服务器安装"><a href="#MQTT-服务器安装" class="headerlink" title="MQTT 服务器安装"></a>MQTT 服务器安装</h3><p><a href="https://www.home-assistant.io/installation/#advanced-installation-methods" target="_blank" rel="noopener">参考</a>，如果是 HA OS 安装方法或 HA Supervised 安装方法，能够直接从 Addon 中安装 MQTT 服务器。由于我使用的是 Container 版本的 HA，需要额外安装 MQTT 服务器，并保持 HA - MQTT 服务器 - OpenWRT 的网络联通。这在我使用的 Docker 部署方案上并不是什么难题。</p>
+<p>MQTT 服务器的 Docker compose 文件样例</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.7"</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="comment"># mqtt5 eclipse-mosquitto</span></span><br><span class="line">  <span class="attr">mqtt5:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">eclipse-mosquitto</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mqtt5</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">1883</span><span class="string">:1883</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9001</span><span class="string">:9001</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./config:/mosquitto/config:rw</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/mosquitto/data:rw</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./log:/mosquitto/log:rw</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br></pre></td></tr></table></figure>
+
+<p>配置密码用于 HA 和 OpenWRT 读写。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it mqtt5 sh</span><br><span class="line">mosquitto_passwd -c /mosquitto/config/pwfile mqtt_openwrt <span class="comment"># 配置 OpenWRT 访问的用户名和密码</span></span><br><span class="line">mosquitto_passwd -c /mosquitto/config/pwfile mqtt_ha <span class="comment"># 配置 HA 访问的用户名和密码</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="OpenWRT-配置"><a href="#OpenWRT-配置" class="headerlink" title="OpenWRT 配置"></a>OpenWRT 配置</h3><h4 id="软件包配置"><a href="#软件包配置" class="headerlink" title="软件包配置"></a>软件包配置</h4><p>OpenWRT 上需要安装以下依赖，用于识别系统的状态和上报消息，包括</p>
+<ul>
+<li>luci-app-statistics </li>
+<li>collectd-mod-mqtt</li>
+<li>mosquitto-client-ssl</li>
+<li>collectd-mod-thermal</li>
+<li>collectd-mod-uptime</li>
+<li>collectd-mod-dhcpleases</li>
+<li>collectd-mod-ping</li>
+<li>collectd-mod-conntrack</li>
+<li>collectd-mod-iwinfo</li>
+</ul>
+<p>直接使用 <code>apk install</code> 安装即可。</p>
+<p><em>小插曲</em></p>
+<p>我的 OpenWRT 还是老版本，并不支持基于 <code>apt</code> 的包管理。现有的 <code>luci snapshots</code> 镜像又基本都已经迁移到 apk 的版本了，导致我只能要么完全升级路由器，要么寻找一个仍然保持对 <code>luci snapshots</code> 提供支持的镜像。好消息是，我找到了。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">src<span class="regexp">/gz openwrt_base https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/base</span><br><span class="line">src<span class="regexp">/gz openwrt_core  https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/packages</span><br><span class="line">src<span class="regexp">/gz openwrt_packages https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/packages</span><br><span class="line">src<span class="regexp">/gz openwrt_routing https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/routing</span><br><span class="line">src<span class="regexp">/gz openwrt_telephony https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/telephony</span><br></pre></td></tr></table></figure>
+
+<p>该镜像依然保持了对 <code>luci snapshots</code> 的 <code>opkg</code> 安装方法支持，最后更新时间 2023年12月。谢谢美国人。</p>
+<h4 id="MQTT-连接"><a href="#MQTT-连接" class="headerlink" title="MQTT 连接"></a>MQTT 连接</h4><p>进入 OpenWRT 的命令行，创建或进入 <code>/etc/collectd/conf.d</code> 文件夹，创建文件 <code>mqtt.conf</code>，写入以下配置文件。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LoadPlugin mqtt</span><br><span class="line">&lt;Plugin &quot;mqtt&quot;&gt;</span><br><span class="line">  &lt;Publish &quot;OpenWRT&quot;&gt;</span><br><span class="line">    Host &quot;MQTT_IP&quot;</span><br><span class="line">    Port &quot;1883&quot;</span><br><span class="line">    User &quot;mqtt_openwrt&quot;</span><br><span class="line">    Password &quot;设置一个密码&quot;</span><br><span class="line">    ClientId &quot;OpenWRT&quot;</span><br><span class="line">    Prefix &quot;collectd&quot;</span><br><span class="line">    Retain true</span><br><span class="line">  &lt;&#x2F;Publish&gt;</span><br><span class="line">&lt;&#x2F;Plugin&gt;</span><br></pre></td></tr></table></figure>
+
+<p>设置的密码需要保持和 MQTT 服务器一致。</p>
+<p>配置完成后，执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service collectd restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-HA"><a href="#配置-HA" class="headerlink" title="配置 HA"></a>配置 HA</h3><p>在 HA 中，添加 MQTT 插件，并配置 IP、端口、用户名密码等。本文使用的用户名为 <code>mqtt_ha</code>。</p>
+<p>添加完成并确认能够正常连接后，进入 HA 的配置文件 <code>configuration.yaml</code>，添加</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">mqtt:</span> <span class="type">!include</span> <span class="string">openwrt.yaml</span></span><br></pre></td></tr></table></figure>
+
+<p>在同目录下新建一个 <code>openwrt.yaml</code>，<a href="https://github.com/lukdwo/OpenWRT-collectd-MQTT-HA/blob/main/openwrt.yaml" target="_blank" rel="noopener">参考这里</a> 写入配置文件。可以手动修改下面部分的信息，用于区分设备。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">device:</span></span><br><span class="line">        <span class="attr">identifiers:</span> <span class="string">WRT7800</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">Router</span> <span class="string">Netgear</span> <span class="string">R7800</span></span><br><span class="line">        <span class="attr">model:</span> <span class="string">R7800</span></span><br><span class="line">        <span class="attr">manufacturer:</span> <span class="string">Netgear</span></span><br></pre></td></tr></table></figure>
+
+<p>设置完成后同样重启 HA，根据系统报错微调 <code>openwrt.yaml</code>。如果没有问题，HA 中将出现一大堆包含统计信息的实体。</p>
+<h2 id="数据美化思路"><a href="#数据美化思路" class="headerlink" title="数据美化思路"></a>数据美化思路</h2><p>善于利用 HA 中的各种 Helper，能够实现数据的美化展示。例如连接数的数据，这里提供一个思路。</p>
+<img src="/blog/2025/03/ha-mqtt-openwrt/2.connections.jpg" class="" title="连接数数据展示">
+
+<p>想要实现上述效果，首先需要在 HA 的 yaml 中增加信息展示。以下为一个示例。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Connections</span> <span class="string">Percentage</span></span><br><span class="line">  <span class="attr">state_topic:</span> <span class="string">collectd/OpenWRT/conntrack/percent-used</span></span><br><span class="line">  <span class="attr">unit_of_measurement:</span> <span class="string">'%'</span></span><br><span class="line">  <span class="attr">value_template:</span> <span class="string">"<span class="template-variable">&#123;&#123; value.split(':')[1].split('\0')[0] | int &#125;&#125;</span>"</span></span><br><span class="line">  <span class="attr">unique_id:</span> <span class="string">ap_connections_percentage</span></span><br><span class="line">  <span class="attr">state_class:</span> <span class="string">measurement</span></span><br><span class="line">  <span class="attr">icon:</span> <span class="string">'mdi:percent'</span></span><br><span class="line">  <span class="attr">device:</span></span><br><span class="line">    <span class="attr">identifiers:</span> <span class="string">OpenWRT</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">OpenWRT</span></span><br><span class="line">    <span class="attr">model:</span> <span class="string">OpenWRT</span></span><br><span class="line">    <span class="attr">manufacturer:</span> <span class="string">Touko</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Max</span> <span class="string">Connections</span></span><br><span class="line">  <span class="attr">state_topic:</span> <span class="string">collectd/OpenWRT/conntrack/conntrack-max</span></span><br><span class="line">  <span class="attr">unit_of_measurement:</span> <span class="string">connections</span></span><br><span class="line">  <span class="attr">value_template:</span> <span class="string">"<span class="template-variable">&#123;&#123; value.split(':')[1].split('\0')[0] | int &#125;&#125;</span>"</span></span><br><span class="line">  <span class="attr">unique_id:</span> <span class="string">max_ap_connections</span></span><br><span class="line">  <span class="attr">state_class:</span> <span class="string">measurement</span></span><br><span class="line">  <span class="attr">icon:</span> <span class="string">'mdi:connection'</span></span><br><span class="line">  <span class="attr">device:</span></span><br><span class="line">    <span class="attr">identifiers:</span> <span class="string">OpenWRT</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">OpenWRT</span></span><br><span class="line">    <span class="attr">model:</span> <span class="string">OpenWRT</span></span><br><span class="line">    <span class="attr">manufacturer:</span> <span class="string">Touko</span></span><br></pre></td></tr></table></figure>
+
+<p>然后需要创建一个 Helpers 用于展示 <code>当前连接数 / 总连接数</code>，类型为 Template。State template 分别为</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">&#123;&#123;</span> <span class="string">states('sensor.connections')</span> <span class="string">&#125;&#125;</span> <span class="string">/</span> <span class="string">&#123;&#123;</span> <span class="string">states('sensor.max_connections')</span> <span class="string">&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2025/03/ha-mqtt-openwrt/3.uptime.jpg" class="" title="Uptime 文本展示">
+
+<p>Uptime 同理。创建一个 Template，填入以下模板</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">&#123;%</span> <span class="string">set</span> <span class="string">uptime</span> <span class="string">=</span> <span class="string">now()</span> <span class="bullet">-</span> <span class="string">states('sensor.gnsh_main_gateway_uptime')</span> <span class="string">|</span> <span class="string">as_datetime</span> <span class="string">%&#125;</span></span><br><span class="line"><span class="string">&#123;%</span> <span class="string">set</span> <span class="string">hours</span> <span class="string">=</span> <span class="string">(uptime.total_seconds()</span> <span class="string">//</span> <span class="number">3600</span><span class="string">)</span> <span class="string">|</span> <span class="string">int</span> <span class="string">%&#125;</span></span><br><span class="line"><span class="string">&#123;%</span> <span class="string">set</span> <span class="string">minutes</span> <span class="string">=</span> <span class="string">((uptime.total_seconds()</span> <span class="string">%</span> <span class="number">3600</span><span class="string">)</span> <span class="string">//</span> <span class="number">60</span><span class="string">)</span> <span class="string">|</span> <span class="string">int</span> <span class="string">%&#125;</span></span><br><span class="line"><span class="string">&#123;%</span> <span class="string">set</span> <span class="string">seconds</span> <span class="string">=</span> <span class="string">(uptime.total_seconds()</span> <span class="string">%</span> <span class="number">60</span><span class="string">)</span> <span class="string">|</span> <span class="string">int</span> <span class="string">%&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#123;&#123;</span> <span class="string">hours</span> <span class="string">&#125;&#125;小时</span> <span class="string">&#123;&#123;</span> <span class="string">minutes</span> <span class="string">&#125;&#125;分钟</span> <span class="string">&#123;&#123;</span> <span class="string">seconds</span> <span class="string">&#125;&#125;秒</span></span><br></pre></td></tr></table></figure>
+
+<p>最后再手动配置 Dashboard，调整各种配色，就能实现想要的效果。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://www.home-assistant.io/installation/linux" target="_blank" rel="noopener">https://www.home-assistant.io/installation/linux</a></li>
+<li><a href="https://hacs.xyz/" target="_blank" rel="noopener">https://hacs.xyz/</a></li>
+<li><a href="https://www.home-assistant.io/integrations/" target="_blank" rel="noopener">https://www.home-assistant.io/integrations/</a></li>
+<li><a href="https://mosquitto.org/documentation/authentication-methods/" target="_blank" rel="noopener">https://mosquitto.org/documentation/authentication-methods/</a></li>
+<li><a href="https://github.com/XiaoMi/ha_xiaomi_home" target="_blank" rel="noopener">https://github.com/XiaoMi/ha_xiaomi_home</a></li>
+<li><a href="https://github.com/lukdwo/OpenWRT-collectd-MQTT-HA" target="_blank" rel="noopener">https://github.com/lukdwo/OpenWRT-collectd-MQTT-HA</a></li>
+</ul>
+<p>———— <br/>License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">BY-NC-SA 4.0</a> <br/>Link:  <a href="https://wasteland.touko.moe//blog/2025/03/ha-mqtt-openwrt/">https://wasteland.touko.moe//blog/2025/03/ha-mqtt-openwrt/</a> <br/>Written with <strong>Passion</strong> and <strong>Hope</strong></p>
+]]></content>
+      <categories>
+        <category>Network</category>
+        <category>Router</category>
+      </categories>
+      <tags>
+        <tag>Router</tag>
+        <tag>Openwrt</tag>
+        <tag>Homelab</tag>
+        <tag>HomeAssistant</tag>
+        <tag>Xiaomi</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>保持云相册和 NAS 同步（iCloud &amp; Google Photos）</title>
     <url>//blog/2022/06/photo-sync-from-cloud-to-nas/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相册这种东西，堆着堆着就几万张了。粗略看了一下统计，我存放在 iCloud 上的相册中包含了 45k 张照片，在 Google Photos 上的相册有 30k 左右的照片。这些照片的成分也很复杂，包括日常拍照、屏幕截图和一堆纸片人图。因此，我需要一种方式管理这些照片。</p>
@@ -811,8 +911,8 @@
 ]]></content>
       <categories>
         <category>Network</category>
-        <category>NAS</category>
         <category>Router</category>
+        <category>NAS</category>
       </categories>
       <tags>
         <tag>NAS</tag>

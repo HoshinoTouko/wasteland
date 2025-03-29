@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/</loc>
+    
+    <lastmod>2025-03-29T13:59:04.348Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wasteland.touko.moe/page/links/index.html</loc>
+    
+    <lastmod>2022-06-14T07:50:02.100Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wasteland.touko.moe/blog/2022/06/photo-sync-from-cloud-to-nas/</loc>
     
     <lastmod>2022-06-13T12:20:47.533Z</lastmod>
@@ -26,13 +40,6 @@
     <loc>https://wasteland.touko.moe/blog/2022/05/uninst-txagent/</loc>
     
     <lastmod>2022-05-27T17:14:20.676Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wasteland.touko.moe/page/links/index.html</loc>
-    
-    <lastmod>2022-03-15T07:32:54.389Z</lastmod>
     
   </url>
   

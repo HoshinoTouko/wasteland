@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "css": "^3.0.0",
     "hexo": "^7.3.0",
     "hexo-addlink": "^1.0.4",
     "hexo-cli": "^4.3.2",

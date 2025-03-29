@@ -1,5 +1,5 @@
 ---
-title: 在 Home Assistant 收集 OpenWRT 数据
+title: 基于 MQTT 将 OpenWRT 接入 Home Assistant
 date: 2025-03-29 20:40:44
 categories:
 - [Network, Router]

@@ -91,9 +91,9 @@
     
     <category term="Homelab" scheme="https://wasteland.touko.moe/tags/Homelab/"/>
     
-    <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
-    
     <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
+    
+    <category term="Mastodon" scheme="https://wasteland.touko.moe/tags/Mastodon/"/>
     
   </entry>
   
@@ -115,9 +115,9 @@
     <category term="WebApp" scheme="https://wasteland.touko.moe/categories/WebApp/"/>
     
     
-    <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
-    
     <category term="Note" scheme="https://wasteland.touko.moe/tags/Note/"/>
+    
+    <category term="WebApp" scheme="https://wasteland.touko.moe/tags/WebApp/"/>
     
   </entry>
   

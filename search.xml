@@ -226,8 +226,8 @@
 ]]></content>
       <tags>
         <tag>Homelab</tag>
-        <tag>WebApp</tag>
         <tag>Mastodon</tag>
+        <tag>WebApp</tag>
       </tags>
   </entry>
   <entry>
@@ -270,8 +270,8 @@
         <category>WebApp</category>
       </categories>
       <tags>
-        <tag>Note</tag>
         <tag>WebApp</tag>
+        <tag>Note</tag>
       </tags>
   </entry>
   <entry>
@@ -911,8 +911,8 @@
 ]]></content>
       <categories>
         <category>Network</category>
-        <category>Router</category>
         <category>NAS</category>
+        <category>Router</category>
       </categories>
       <tags>
         <tag>NAS</tag>

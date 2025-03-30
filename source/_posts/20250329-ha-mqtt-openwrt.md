@@ -125,7 +125,11 @@ src/gz openwrt_telephony https://mirror.math.princeton.edu/pub/openwrt/snapshots
 
 #### MQTT 连接
 
-进入 OpenWRT 的命令行，创建或进入 `/etc/collectd/conf.d` 文件夹，创建文件 `mqtt.conf`，写入以下配置文件。
+首先确认是否由图形界面。如果有图形界面的话，直接在图形界面配置。
+
+{% asset_img 5.MQTT-config.jpg OpenWRT 上的 MQTT 配置入口 %}
+
+如果没有图形界面，则需要进入 OpenWRT 的命令行，创建或进入 `/etc/collectd/conf.d` 文件夹，创建文件 `mqtt.conf`，写入以下配置文件。
 
 ```conf
 LoadPlugin mqtt

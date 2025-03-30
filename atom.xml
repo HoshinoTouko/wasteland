@@ -6,7 +6,7 @@
   <link href="https://wasteland.touko.moe/atom.xml" rel="self"/>
   
   <link href="https://wasteland.touko.moe/"/>
-  <updated>2025-03-29T17:45:31.667Z</updated>
+  <updated>2025-03-30T10:37:44.362Z</updated>
   <id>https://wasteland.touko.moe/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/"/>
     <id>https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/</id>
     <published>2025-03-29T12:40:44.000Z</published>
-    <updated>2025-03-29T17:45:31.667Z</updated>
+    <updated>2025-03-30T10:37:44.362Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;惊闻米家官方接入了 Home Assistant（HA），我也是连忙重新捡起被废弃了很久的 Home Assistant。由于我的 Homelab 经过了多次升级和架构调整，已经完成了存算完全分离的架构，与&lt;a href=&quot;/blog/2020/07/raspi-as-router/&quot; title=&quot;在树莓派上运行 OpenWrt 作为软路由&quot;&gt;之前的架构&lt;/a&gt;完全不同。我也会在后期重新详细介绍现有的 Homelab 架构。&lt;/p&gt;
@@ -458,9 +458,9 @@
     
     <category term="Network" scheme="https://wasteland.touko.moe/categories/Network/"/>
     
-    <category term="NAS" scheme="https://wasteland.touko.moe/categories/NAS/"/>
-    
     <category term="Router" scheme="https://wasteland.touko.moe/categories/Network/Router/"/>
+    
+    <category term="NAS" scheme="https://wasteland.touko.moe/categories/NAS/"/>
     
     
     <category term="NAS" scheme="https://wasteland.touko.moe/tags/NAS/"/>

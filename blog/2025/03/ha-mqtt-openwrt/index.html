@@ -31,10 +31,11 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/0.dashboard.jpg">
 <meta property="og:image" content="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/1.hacs-xiaomi-install.jpg">
+<meta property="og:image" content="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/5.MQTT-config.jpg">
 <meta property="og:image" content="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/2.connections.jpg">
 <meta property="og:image" content="https://wasteland.touko.moe/blog/2025/03/ha-mqtt-openwrt/3.uptime.jpg">
 <meta property="article:published_time" content="2025-03-29T12:40:44.000Z">
-<meta property="article:modified_time" content="2025-03-29T17:45:31.667Z">
+<meta property="article:modified_time" content="2025-03-30T10:37:44.362Z">
 <meta property="article:author" content="Touko Hoshino">
 <meta property="article:tag" content="Router">
 <meta property="article:tag" content="Openwrt">
@@ -279,7 +280,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-30 01:45:31" itemprop="dateModified" datetime="2025-03-30T01:45:31+08:00">2025-03-30</time>
+      <time title="Modified: 2025-03-30 18:37:44" itemprop="dateModified" datetime="2025-03-30T18:37:44+08:00">2025-03-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -356,7 +357,10 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">src<span class="regexp">/gz openwrt_base https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/base</span><br><span class="line">src<span class="regexp">/gz openwrt_core  https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/packages</span><br><span class="line">src<span class="regexp">/gz openwrt_packages https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/packages</span><br><span class="line">src<span class="regexp">/gz openwrt_routing https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/routing</span><br><span class="line">src<span class="regexp">/gz openwrt_telephony https:/</span><span class="regexp">/mirror.math.princeton.edu/</span>pub<span class="regexp">/openwrt/</span>snapshots<span class="regexp">/packages/</span>x86_64/telephony</span><br></pre></td></tr></table></figure>
 
 <p>该镜像依然保持了对 <code>luci snapshots</code> 的 <code>opkg</code> 安装方法支持，最后更新时间 2023年12月。谢谢美国人。</p>
-<h4 id="MQTT-连接"><a href="#MQTT-连接" class="headerlink" title="MQTT 连接"></a>MQTT 连接</h4><p>进入 OpenWRT 的命令行，创建或进入 <code>/etc/collectd/conf.d</code> 文件夹，创建文件 <code>mqtt.conf</code>，写入以下配置文件。</p>
+<h4 id="MQTT-连接"><a href="#MQTT-连接" class="headerlink" title="MQTT 连接"></a>MQTT 连接</h4><p>首先确认是否由图形界面。如果有图形界面的话，直接在图形界面配置。</p>
+<img src="/blog/2025/03/ha-mqtt-openwrt/5.MQTT-config.jpg" class="" title="OpenWRT 上的 MQTT 配置入口">
+
+<p>如果没有图形界面，则需要进入 OpenWRT 的命令行，创建或进入 <code>/etc/collectd/conf.d</code> 文件夹，创建文件 <code>mqtt.conf</code>，写入以下配置文件。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">LoadPlugin mqtt</span><br><span class="line">&lt;Plugin &quot;mqtt&quot;&gt;</span><br><span class="line">  &lt;Publish &quot;OpenWRT&quot;&gt;</span><br><span class="line">    Host &quot;MQTT_IP&quot;</span><br><span class="line">    Port &quot;1883&quot;</span><br><span class="line">    User &quot;mqtt_openwrt&quot;</span><br><span class="line">    Password &quot;设置一个密码&quot;</span><br><span class="line">    ClientId &quot;OpenWRT&quot;</span><br><span class="line">    Prefix &quot;collectd&quot;</span><br><span class="line">    Retain true</span><br><span class="line">  &lt;/Publish&gt;</span><br><span class="line">&lt;/Plugin&gt;</span><br></pre></td></tr></table></figure>
 
 <p>设置的密码需要保持和 MQTT 服务器一致。</p>
